@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">uReflect</string>
     <string name="register_btn_text">Je découvre mon reflet</string>
+    <string name="login_btn_text">Je le connais déjà, je me connecte</string>
+	<string name="login_title_text">On se connait, non ?</string>
+	<string name="login_login_btn_text">Se connecter</string>
+	<string name="login_forgot_password_btn_text">Mot de passe oublié ?</string>
+	<string name="form_text_email">Adresse e-mail</string>
+	<string name="form_text_password">Mot de passe</string>
 </resources>

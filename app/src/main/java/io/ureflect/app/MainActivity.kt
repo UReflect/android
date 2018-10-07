@@ -1,7 +1,8 @@
 package io.ureflect.app
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
+import io.ureflect.app.activities.loginIntent
 import io.ureflect.app.activities.registerIntent
 import io.ureflect.app.services.Api
 import kotlinx.android.synthetic.main.activity_main.*
@@ -15,6 +16,11 @@ class MainActivity : AppCompatActivity() {
 
         btnRegister.setOnClickListener {
             startActivity(registerIntent())
+            finish()
+        }
+
+        btnLogin.setOnClickListener {
+            startActivity(loginIntent())
             finish()
         }
     }
