@@ -10,13 +10,16 @@ import com.android.volley.toolbox.Volley
 import com.google.gson.JsonObject
 import io.ureflect.app.services.Api
 import io.ureflect.app.R
-import io.ureflect.app.models.toStorage
 import kotlinx.android.synthetic.main.activity_signin.*
+import com.google.gson.Gson
+import io.ureflect.app.models.ApiErrorResponse
+import io.ureflect.app.utils.*
 
 fun Context.loginIntent(): Intent = Intent(this, Login::class.java)
 
 class Login : AppCompatActivity() {
-    val TAG = "LoginActivity"
+    val TAG = "SignInActivity"
+    var triedOnce = false
     private lateinit var queue: RequestQueue
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,27 +40,47 @@ class Login : AppCompatActivity() {
         finish()
     }
 
+    private fun loginPayloadError(): Boolean {
+        var error = false
+        error = error || !evMailLayout.validate({ s -> s.isNotEmpty() }, "Email obligatoire")
+        error = error || !evMailLayout.validate({ s -> s.isValidEmail() }, "Email incorrect")
+        error = error || !evPasswordLayout.validate({ s -> s.isNotEmpty() }, "Mot de passe obligatoire")
+        return error
+    }
+
+    private fun loginPayloadAutoValidate() {
+        triedOnce = true;
+        evMailLayout.autoValidate({ s -> s.isNotEmpty() }, "Email obligatoire")
+        evMailLayout.autoValidate({ s -> s.isValidEmail() }, "Email incorrect")
+        evPasswordLayout.autoValidate({ s -> s.isNotEmpty() }, "Mot de passe obligatoire")
+    }
+
     private fun setupUI() {
         btnForgotPassword.setOnClickListener {}
         btnLogin.setOnClickListener { _ ->
-            val data = JsonObject()
-            data.addProperty("email", evMail.text.toString().toLowerCase())
-            data.addProperty("password", evPassword.text.toString())
-            queue.add(Api.signin(
-                    data,
-                    Response.Listener { response ->
-                        val user = response.data?.user?.toStorage(this.application)
-                        val token = response.data?.token?.toStorage(this.application, "token")
-                        if (user == null || token == null) {
-                            tvError.text = getString(R.string.api_parse_error)
-                            return@Listener
+            if (!loginPayloadError()) {
+                val data = JsonObject()
+                data.addProperty("email", evMail.text.toString().toLowerCase())
+                data.addProperty("password", evPassword.text.toString())
+                queue.add(Api.signin(
+                        data,
+                        Response.Listener { response ->
+                            val user = response.data?.user?.toStorage(this.application)
+                            val token = response.data?.token?.toStorage(this.application, TOKEN)
+                            if (user == null || token == null) {
+                                tvError.text = getString(R.string.api_parse_error)
+                                return@Listener
+                            }
+                            toHomeView()
+                        },
+                        Response.ErrorListener { error ->
+                            val errorResponse = Gson().fromJson(String(error.networkResponse.data), ApiErrorResponse::class.java)
+                            tvError.text = errorResponse.error
                         }
-                        toHomeView()
-                    },
-                    Response.ErrorListener {error ->
-                        tvError.text = String(error.networkResponse.data)
-                    }
-            ))
+                ))
+            } else if (triedOnce) {
+                loginPayloadAutoValidate()
+            }
         }
     }
 }
