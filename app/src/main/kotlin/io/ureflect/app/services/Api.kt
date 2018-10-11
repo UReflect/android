@@ -1,7 +1,10 @@
 package io.ureflect.app.services
 
+import android.app.Application
+import android.preference.PreferenceManager
 import com.android.volley.Request
 import com.android.volley.Response
+import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.ureflect.app.models.*
 
