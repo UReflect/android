@@ -7,19 +7,19 @@ import android.support.v7.app.AppCompatActivity
 import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.Volley
-import com.google.gson.JsonObject
-import io.ureflect.app.services.Api
-import io.ureflect.app.R
-import kotlinx.android.synthetic.main.activity_signin.*
 import com.google.gson.Gson
+import com.google.gson.JsonObject
+import io.ureflect.app.R
 import io.ureflect.app.models.ApiErrorResponse
+import io.ureflect.app.services.Api
 import io.ureflect.app.utils.*
+import kotlinx.android.synthetic.main.activity_signin.*
 
-fun Context.loginIntent(): Intent = Intent(this, Login::class.java)
+fun Context.loginIntent(): Intent = Intent(this, SignIn::class.java)
 
-class Login : AppCompatActivity() {
-    val TAG = "SignInActivity"
-    var triedOnce = false
+class SignIn : AppCompatActivity() {
+    private val TAG = "SignInActivity"
+    private var triedOnce = false
     private lateinit var queue: RequestQueue
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,7 +49,7 @@ class Login : AppCompatActivity() {
     }
 
     private fun loginPayloadAutoValidate() {
-        triedOnce = true;
+        triedOnce = true
         evMailLayout.autoValidate({ s -> s.isNotEmpty() }, "Email obligatoire")
         evMailLayout.autoValidate({ s -> s.isValidEmail() }, "Email incorrect")
         evPasswordLayout.autoValidate({ s -> s.isNotEmpty() }, "Mot de passe obligatoire")

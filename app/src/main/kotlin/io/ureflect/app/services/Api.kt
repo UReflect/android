@@ -1,12 +1,12 @@
 package io.ureflect.app.services
 
-import android.app.Application
-import android.preference.PreferenceManager
 import com.android.volley.Request
 import com.android.volley.Response
-import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import io.ureflect.app.models.*
+import io.ureflect.app.models.ApiResponse
+import io.ureflect.app.models.GsonRequest
+import io.ureflect.app.models.SigninResponse
+import io.ureflect.app.models.SimpleApiResponse
 
 object Api {
     private const val host = "http://api.dev.ureflect.io"
@@ -24,7 +24,7 @@ object Api {
         return message.isNotEmpty()
     }
 
-    inline fun <reified T> genericType() = object : TypeToken<T>() {}.type
+    private inline fun <reified T> genericType() = object : TypeToken<T>() {}.type
 
     fun ping(callback: Response.Listener<SimpleApiResponse>, error: Response.ErrorListener):
             GsonRequest<SimpleApiResponse> =

@@ -5,16 +5,16 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import io.ureflect.app.R
 import io.ureflect.app.utils.autoValidate
 import io.ureflect.app.utils.validate
-import io.ureflect.app.R
 import kotlinx.android.synthetic.main.fragment_signup_identity.*
 import kotlinx.android.synthetic.main.fragment_signup_identity.view.*
 
 class SignUpIdentityFragment(val next: (Int) -> Unit,
                              var setFirstname: (String) -> Unit,
-                             var setLastname : (String) -> Unit) : Fragment() {
-    var triedOnce = false
+                             var setLastname: (String) -> Unit) : Fragment() {
+    private var triedOnce = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.fragment_signup_identity, container, false)
@@ -32,7 +32,7 @@ class SignUpIdentityFragment(val next: (Int) -> Unit,
     }
 
     private fun identityPayloadAutoValidate(v: View) {
-        triedOnce = true;
+        triedOnce = true
         v.evFirstnameLayout.autoValidate({ s -> s.isNotEmpty() }, "Prenom obligatoire")
         v.evLastnameLayout.autoValidate({ s -> s.isNotEmpty() }, "Nom obligatoire")
     }

@@ -11,11 +11,11 @@ class User {
     var active: Boolean = false
     var email_checked: Boolean = false
 
-    fun toStorage(app: Application) : User {
+    fun toStorage(app: Application): User {
         val preferences = PreferenceManager.getDefaultSharedPreferences(app)
         val editor = preferences.edit()
         val output = Gson().toJson(this)
-        editor.putString(Companion.TAG, output).commit()
+        editor.putString(TAG, output).commit()
         return this
     }
 

@@ -6,10 +6,10 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.Volley
-import io.ureflect.app.services.Api
 import io.ureflect.app.R
 import io.ureflect.app.mainIntent
 import io.ureflect.app.models.User
+import io.ureflect.app.services.Api
 import io.ureflect.app.utils.Storage
 import kotlinx.android.synthetic.main.activity_home.*
 import java.text.SimpleDateFormat
@@ -22,7 +22,7 @@ fun Context.homeIntent(): Intent {
 }
 
 class Home : AppCompatActivity() {
-    val TAG = "HomeActivity"
+    private val TAG = "HomeActivity"
     private lateinit var queue: RequestQueue
 
     override fun onCreate(savedInstanceState: Bundle?) {

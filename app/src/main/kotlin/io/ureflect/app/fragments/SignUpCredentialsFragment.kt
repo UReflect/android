@@ -5,16 +5,17 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import io.ureflect.app.R
 import io.ureflect.app.utils.autoValidate
 import io.ureflect.app.utils.isValidEmail
 import io.ureflect.app.utils.validate
-import io.ureflect.app.R
 import kotlinx.android.synthetic.main.fragment_signup_credentials.*
 import kotlinx.android.synthetic.main.fragment_signup_credentials.view.*
 
 class SignUpCredentialsFragment(var next: (Int) -> Unit,
                                 var setMail: (String) -> Unit,
                                 var setPassword: (String) -> Unit) : Fragment() {
+
     private var triedOnce = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

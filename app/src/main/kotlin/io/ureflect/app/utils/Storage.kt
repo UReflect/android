@@ -3,9 +3,9 @@ package io.ureflect.app.utils
 import android.app.Application
 import android.preference.PreferenceManager
 
-val TOKEN = "token"
+const val TOKEN = "token"
 
-class Storage() {
+class Storage {
     companion object {
         fun clear(app: Application) {
             val preferences = PreferenceManager.getDefaultSharedPreferences(app)

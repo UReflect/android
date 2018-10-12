@@ -4,9 +4,6 @@ import android.support.design.widget.TextInputLayout
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Patterns
-import android.widget.EditText
-import android.widget.TextView
-import kotlinx.android.synthetic.main.activity_signin.*
 
 fun String.isValidEmail(): Boolean = this.isNotEmpty() && Patterns.EMAIL_ADDRESS.matcher(this).matches()
 
