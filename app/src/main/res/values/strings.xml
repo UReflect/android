@@ -16,4 +16,6 @@
 	<string name="form_text_first_name">Prénom</string>
 	<string name="form_text_lastname">Nom</string>
 	<string name="logout_btn_text">Deconnection</string>
+	<string name="home_mirrors_text">Vos miroirs</string>
+	<string name="home_add_mirror_text">Add Mirror</string>
 </resources>
