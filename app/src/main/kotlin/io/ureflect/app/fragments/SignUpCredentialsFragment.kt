@@ -28,17 +28,17 @@ class SignUpCredentialsFragment(var next: (Int) -> Unit,
 
     private fun credentialsPayloadError(v: View): Boolean {
         var error = false
-        error = error || !v.evMailLayout.validate({ s -> s.isNotEmpty() }, "Email obligatoire")
-        error = error || !v.evMailLayout.validate({ s -> s.isValidEmail() }, "Email incorrect")
-        error = error || !v.evPasswordLayout.validate({ s -> s.isNotEmpty() }, "Mot de passe obligatoire")
+        error = error || !v.evMailLayout.validate({ s -> s.isNotEmpty() }, getString(R.string.form_error_email_required))
+        error = error || !v.evMailLayout.validate({ s -> s.isValidEmail() }, getString(R.string.form_error_email_incorrect))
+        error = error || !v.evPasswordLayout.validate({ s -> s.isNotEmpty() }, getString(R.string.form_error_password_required))
         return error
     }
 
     private fun credentialsPayloadAutoValidate(v: View) {
         triedOnce = true
-        v.evMailLayout.autoValidate({ s -> s.isNotEmpty() }, "Email obligatoire")
-        v.evMailLayout.autoValidate({ s -> s.isValidEmail() }, "Email incorrect")
-        v.evPasswordLayout.autoValidate({ s -> s.isNotEmpty() }, "Mot de passe obligatoire")
+        v.evMailLayout.autoValidate({ s -> s.isNotEmpty() }, getString(R.string.form_error_email_required))
+        v.evMailLayout.autoValidate({ s -> s.isValidEmail() }, getString(R.string.form_error_email_incorrect))
+        v.evPasswordLayout.autoValidate({ s -> s.isNotEmpty() }, getString(R.string.form_error_password_required))
     }
 
 

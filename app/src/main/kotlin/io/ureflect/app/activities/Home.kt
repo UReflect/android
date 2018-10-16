@@ -50,11 +50,15 @@ class Home : AppCompatActivity() {
     }
 
     private fun setupUI() {
-        val formatter = SimpleDateFormat("EEEE dd MMMM", Locale.FRANCE)
+        val formatter = SimpleDateFormat("EEEE dd MMMM", Locale.getDefault())
         tvDate.text = formatter.format(Date()).toUpperCase()
+
         val user = User.fromStorage(this.application)
         tvTitle.text = getString(R.string.home_title_text, user.name)
-        rvMirrors.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+
+        rvMirrors.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+
+        btnLogout.transformationMethod = null
         btnLogout.setOnClickListener { _ ->
             logout()
         }

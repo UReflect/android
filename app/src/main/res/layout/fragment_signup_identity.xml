@@ -25,7 +25,6 @@
 		android:layout_marginStart="8dp"
 		android:layout_marginEnd="8dp"
 		app:errorEnabled="true"
-		android:textColor="@color/colorText"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@id/tvTitle">
@@ -47,7 +46,6 @@
 		android:layout_marginStart="8dp"
 		android:layout_marginEnd="8dp"
 		app:errorEnabled="true"
-		android:textColor="@color/colorText"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@id/evFirstnameLayout">
@@ -56,7 +54,7 @@
 			android:id="@+id/evLastname"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:hint="@string/form_text_lastname"
+			android:hint="@string/form_text_last_name"
 			android:inputType="text"
 			android:textColor="@color/colorText"/>
 
@@ -69,6 +67,8 @@
 		android:layout_marginStart="8dp"
 		android:layout_marginEnd="8dp"
 		android:layout_marginBottom="16dp"
+		android:paddingStart="8dp"
+		android:paddingEnd="8dp"
 		android:text="@string/signup_ok_btn_text"
 		android:textColor="@color/colorText"
 		android:background="@color/colorPrimary"

@@ -26,24 +26,25 @@ class SignUpIdentityFragment(val next: (Int) -> Unit,
 
     private fun identityPayloadError(v: View): Boolean {
         var error = false
-        error = error || !v.evFirstnameLayout.validate({ s -> s.isNotEmpty() }, "Prenom obligatoire")
-        error = error || !v.evLastnameLayout.validate({ s -> s.isNotEmpty() }, "Nom obligatoire")
+        error = error || !v.evFirstnameLayout.validate({ s -> s.isNotEmpty() }, getString(R.string.form_error_first_name_required))
+        error = error || !v.evLastnameLayout.validate({ s -> s.isNotEmpty() }, getString(R.string.form_error_last_name_required))
         return error
     }
 
     private fun identityPayloadAutoValidate(v: View) {
         triedOnce = true
-        v.evFirstnameLayout.autoValidate({ s -> s.isNotEmpty() }, "Prenom obligatoire")
-        v.evLastnameLayout.autoValidate({ s -> s.isNotEmpty() }, "Nom obligatoire")
+        v.evFirstnameLayout.autoValidate({ s -> s.isNotEmpty() }, getString(R.string.form_error_first_name_required))
+        v.evLastnameLayout.autoValidate({ s -> s.isNotEmpty() }, getString(R.string.form_error_last_name_required))
     }
 
     private fun setupUI(v: View) {
+        v.btn.transformationMethod = null
         v.btn.setOnClickListener { _ ->
             if (!identityPayloadError(v)) {
                 setFirstname(evFirstname.text.toString())
                 setLastname(evLastname.text.toString())
                 next(0)
-            } else if (triedOnce) {
+            } else if (!triedOnce) {
                 identityPayloadAutoValidate(v)
             }
         }

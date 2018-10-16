@@ -42,26 +42,30 @@ class SignIn : AppCompatActivity() {
 
     private fun loginPayloadError(): Boolean {
         var error = false
-        error = error || !evMailLayout.validate({ s -> s.isNotEmpty() }, "Email obligatoire")
-        error = error || !evMailLayout.validate({ s -> s.isValidEmail() }, "Email incorrect")
-        error = error || !evPasswordLayout.validate({ s -> s.isNotEmpty() }, "Mot de passe obligatoire")
+        error = error || !evMailLayout.validate({ s -> s.isNotEmpty() }, getString(R.string.form_error_email_required))
+        error = error || !evMailLayout.validate({ s -> s.isValidEmail() }, getString(R.string.form_error_email_incorrect))
+        error = error || !evPasswordLayout.validate({ s -> s.isNotEmpty() }, getString(R.string.form_error_password_required))
         return error
     }
 
     private fun loginPayloadAutoValidate() {
         triedOnce = true
-        evMailLayout.autoValidate({ s -> s.isNotEmpty() }, "Email obligatoire")
-        evMailLayout.autoValidate({ s -> s.isValidEmail() }, "Email incorrect")
-        evPasswordLayout.autoValidate({ s -> s.isNotEmpty() }, "Mot de passe obligatoire")
+        evMailLayout.autoValidate({ s -> s.isNotEmpty() }, getString(R.string.form_error_email_required))
+        evMailLayout.autoValidate({ s -> s.isValidEmail() }, getString(R.string.form_error_email_incorrect))
+        evPasswordLayout.autoValidate({ s -> s.isNotEmpty() }, getString(R.string.form_error_password_required))
     }
 
     private fun setupUI() {
+        btnForgotPassword.transformationMethod = null
         btnForgotPassword.setOnClickListener {}
+
+        btnLogin.transformationMethod = null
         btnLogin.setOnClickListener { _ ->
             if (!loginPayloadError()) {
                 val data = JsonObject()
                 data.addProperty("email", evMail.text.toString().toLowerCase())
                 data.addProperty("password", evPassword.text.toString())
+
                 queue.add(Api.signin(
                         data,
                         Response.Listener { response ->
