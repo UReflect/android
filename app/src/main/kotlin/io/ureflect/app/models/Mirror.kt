@@ -1,6 +1,8 @@
 package io.ureflect.app.models
+import java.io.Serializable
 
-class Mirror {
+class Mirror : Serializable {
+    private val serialVersionUID = 0L
     var ID: String = ""
     var name: String = ""
     var location:  String = ""

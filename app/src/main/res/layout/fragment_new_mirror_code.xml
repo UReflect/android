@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+											 xmlns:app="http://schemas.android.com/apk/res-auto"
+											 android:layout_width="match_parent"
+											 android:layout_height="match_parent"
+											 android:background="@color/colorBackground">
+
+	<TextView
+		android:id="@+id/tvTitle"
+		android:layout_width="wrap_content"
+		android:layout_height="48dp"
+		android:layout_marginStart="8dp"
+		android:layout_marginEnd="8dp"
+		android:gravity="center_vertical"
+		android:text="@string/new_mirror_code_title_text"
+		android:textColor="@color/colorText"
+		android:textSize="20sp"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintTop_toTopOf="parent"/>
+
+	<com.raycoarana.codeinputview.CodeInputView
+		android:id="@+id/civCode"
+		android:layout_marginTop="8dp"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		app:underline_color="@color/colorText"
+		app:underline_selected_color="@color/colorText"
+		app:code_text_color="@color/colorText"
+		app:error_color="@color/colorInputError"
+		app:input_type="numeric"
+		app:length_of_code="4"
+		app:layout_constraintTop_toBottomOf="@id/tvTitle"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"/>
+
+	<TextView
+		android:id="@+id/tvGo"
+		android:layout_marginTop="8dp"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:textColor="@color/colorPrimary"
+		android:text="@string/form_text_go"
+		app:layout_constraintTop_toBottomOf="@id/civCode"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"/>
+
+</android.support.constraint.ConstraintLayout>
