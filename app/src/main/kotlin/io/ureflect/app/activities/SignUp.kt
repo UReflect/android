@@ -11,12 +11,12 @@ import com.android.volley.Response
 import com.android.volley.toolbox.Volley
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import io.ureflect.app.R
 import io.ureflect.app.adapters.ListFragmentPagerAdapter
 import io.ureflect.app.fragments.SignUpCredentialsFragment
 import io.ureflect.app.fragments.SignUpIdentityFragment
 import io.ureflect.app.models.ApiErrorResponse
 import io.ureflect.app.services.Api
-import io.ureflect.app.R
 import io.ureflect.app.utils.TOKEN
 import io.ureflect.app.utils.toStorage
 import kotlinx.android.synthetic.main.activity_signup.*
@@ -27,7 +27,7 @@ fun Context.registerIntent(): Intent {
 }
 
 class SignUp : AppCompatActivity() {
-    val TAG = "SignUpActivity"
+    private val TAG = "SignUpActivity"
     private lateinit var queue: RequestQueue
     private lateinit var adapter: ListFragmentPagerAdapter
     private var position = 0

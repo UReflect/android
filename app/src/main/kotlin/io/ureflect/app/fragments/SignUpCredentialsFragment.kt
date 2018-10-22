@@ -5,16 +5,17 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import io.ureflect.app.R
 import io.ureflect.app.utils.autoValidate
 import io.ureflect.app.utils.isValidEmail
 import io.ureflect.app.utils.validate
-import io.ureflect.app.R
 import kotlinx.android.synthetic.main.fragment_signup_credentials.*
 import kotlinx.android.synthetic.main.fragment_signup_credentials.view.*
 
 class SignUpCredentialsFragment(var next: (Int) -> Unit,
                                 var setMail: (String) -> Unit,
                                 var setPassword: (String) -> Unit) : Fragment() {
+
     private var triedOnce = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -27,17 +28,17 @@ class SignUpCredentialsFragment(var next: (Int) -> Unit,
 
     private fun credentialsPayloadError(v: View): Boolean {
         var error = false
-        error = error || !v.evMailLayout.validate({ s -> s.isNotEmpty() }, "Email obligatoire")
-        error = error || !v.evMailLayout.validate({ s -> s.isValidEmail() }, "Email incorrect")
-        error = error || !v.evPasswordLayout.validate({ s -> s.isNotEmpty() }, "Mot de passe obligatoire")
+        error = error || !v.evMailLayout.validate({ s -> s.isNotEmpty() }, getString(R.string.form_error_email_required))
+        error = error || !v.evMailLayout.validate({ s -> s.isValidEmail() }, getString(R.string.form_error_email_incorrect))
+        error = error || !v.evPasswordLayout.validate({ s -> s.isNotEmpty() }, getString(R.string.form_error_password_required))
         return error
     }
 
     private fun credentialsPayloadAutoValidate(v: View) {
         triedOnce = true
-        v.evMailLayout.autoValidate({ s -> s.isNotEmpty() }, "Email obligatoire")
-        v.evMailLayout.autoValidate({ s -> s.isValidEmail() }, "Email incorrect")
-        v.evPasswordLayout.autoValidate({ s -> s.isNotEmpty() }, "Mot de passe obligatoire")
+        v.evMailLayout.autoValidate({ s -> s.isNotEmpty() }, getString(R.string.form_error_email_required))
+        v.evMailLayout.autoValidate({ s -> s.isValidEmail() }, getString(R.string.form_error_email_incorrect))
+        v.evPasswordLayout.autoValidate({ s -> s.isNotEmpty() }, getString(R.string.form_error_password_required))
     }
 
 

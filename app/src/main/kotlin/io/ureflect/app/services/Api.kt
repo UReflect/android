@@ -1,12 +1,13 @@
 package io.ureflect.app.services
 
 import android.app.Application
-import android.preference.PreferenceManager
 import com.android.volley.Request
 import com.android.volley.Response
-import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.ureflect.app.models.*
+import io.ureflect.app.utils.TOKEN
+import io.ureflect.app.utils.fromStorage
+import kotlin.collections.ArrayList
 
 object Api {
     private const val host = "http://api.dev.ureflect.io"
@@ -14,6 +15,7 @@ object Api {
     private const val ping = "/ping"
     private const val signin = "/v1/signin"
     private const val signup = "/v1/signup"
+    private const val mirrors = "/v1/mirror"
 
     init {
         println("Api service initialized")
@@ -24,8 +26,11 @@ object Api {
         return message.isNotEmpty()
     }
 
-    inline fun <reified T> genericType() = object : TypeToken<T>() {}.type
+    private inline fun <reified T> genericType() = object : TypeToken<T>() {}.type
 
+    /**
+     *
+     */
     fun ping(callback: Response.Listener<SimpleApiResponse>, error: Response.ErrorListener):
             GsonRequest<SimpleApiResponse> =
             GsonRequest(Request.Method.POST, host + signin, Object(), SimpleApiResponse::class.java, null, callback, error)
@@ -48,4 +53,11 @@ object Api {
     fun signup(data: Any, callback: Response.Listener<ApiResponse<SigninResponse>>, error: Response.ErrorListener):
             GsonRequest<ApiResponse<SigninResponse>> =
             GsonRequest(Request.Method.POST, host + signup, data, genericType<ApiResponse<SigninResponse>>(), null, callback, error)
+
+    /**
+     * Needs auth token
+     */
+    fun mirrors(app: Application, callback: Response.Listener<ApiResponse<ArrayList<Mirror>>>, error: Response.ErrorListener):
+            GsonRequest<ApiResponse<ArrayList<Mirror>>> =
+            GsonRequest(Request.Method.GET, host + mirrors, Object(), genericType<ApiResponse<ArrayList<Mirror>>>(), mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)), callback, error)
 }

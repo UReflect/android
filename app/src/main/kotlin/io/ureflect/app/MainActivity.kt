@@ -24,10 +24,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         Api.log("hello world")
 
+        btnRegister.transformationMethod = null
         btnRegister.setOnClickListener {
             startActivity(registerIntent())
         }
 
+        btnLogin.transformationMethod = null
         btnLogin.setOnClickListener {
             startActivity(loginIntent())
         }
