@@ -7,19 +7,12 @@ import android.os.Handler
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import com.android.volley.RequestQueue
-import com.android.volley.Response
 import com.android.volley.toolbox.Volley
-import com.google.gson.Gson
 import com.google.gson.JsonObject
 import io.ureflect.app.R
 import io.ureflect.app.adapters.ListFragmentPagerAdapter
 import io.ureflect.app.fragments.*
-import io.ureflect.app.models.ApiErrorResponse
-import io.ureflect.app.services.Api
-import io.ureflect.app.utils.TOKEN
-import io.ureflect.app.utils.toStorage
 import kotlinx.android.synthetic.main.activity_signup.*
-import kotlinx.android.synthetic.main.fragment_signup_credentials.*
 
 fun Context.newMirrorIntent(): Intent {
     return Intent(this, NewMirror::class.java)
@@ -33,6 +26,7 @@ class NewMirror : AppCompatActivity() {
     private val fragments = ArrayList<Fragment>()
     private lateinit var name: String
     private lateinit var location: String
+    private lateinit var mirrorId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,9 +41,11 @@ class NewMirror : AppCompatActivity() {
     }
 
     private fun setupFragments() {
-        fragments.add(NewMirrorCodeFragment { i: Int ->
+        fragments.add(NewMirrorCodeFragment({ i: Int ->
             next(i)
-        })
+        }, { mirrorId: String ->
+            this.mirrorId = mirrorId
+        }))
         fragments.add(NewMirrorNameFragment({ i: Int ->
             next(i)
         }, { name: String ->
@@ -79,7 +75,8 @@ class NewMirror : AppCompatActivity() {
         data.addProperty("name", name)
         data.addProperty("location", location)
 
-//        queue.add(Api.signup(data,
+//        queue.add(Api.signup(
+// data,
 //                Response.Listener { response ->
 //                    val user = response.data?.user?.toStorage(this.application)
 //                    val token = response.data?.token?.toStorage(this.application, TOKEN)
@@ -93,7 +90,8 @@ class NewMirror : AppCompatActivity() {
 //                    val errorResponse = Gson().fromJson(String(error.networkResponse.data), ApiErrorResponse::class.java)
 //                    tvError.text = errorResponse.error
 //                    position = fragments.size
-//                }))
+//                }
+// ))
     }
 
     private fun toMirrorView() {

@@ -15,7 +15,7 @@ import io.ureflect.app.R
 import io.ureflect.app.adapters.ListFragmentPagerAdapter
 import io.ureflect.app.fragments.SignUpCredentialsFragment
 import io.ureflect.app.fragments.SignUpIdentityFragment
-import io.ureflect.app.models.ApiErrorResponse
+import io.ureflect.app.models.Responses.ApiErrorResponse
 import io.ureflect.app.services.Api
 import io.ureflect.app.utils.TOKEN
 import io.ureflect.app.utils.toStorage
@@ -84,7 +84,8 @@ class SignUp : AppCompatActivity() {
         data.addProperty("password", password)
         data.addProperty("name", "$firstName $lastName")
 
-        queue.add(Api.signup(data,
+        queue.add(Api.signup(
+                data,
                 Response.Listener { response ->
                     val user = response.data?.user?.toStorage(this.application)
                     val token = response.data?.token?.toStorage(this.application, TOKEN)
@@ -98,7 +99,8 @@ class SignUp : AppCompatActivity() {
                     val errorResponse = Gson().fromJson(String(error.networkResponse.data), ApiErrorResponse::class.java)
                     tvError.text = errorResponse.error
                     position = fragments.size
-                }))
+                }
+        ))
     }
 
     private fun toHomeView() {

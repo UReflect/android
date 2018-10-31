@@ -14,7 +14,7 @@ import com.google.gson.Gson
 import io.ureflect.app.R
 import io.ureflect.app.adapters.MirrorAdapter
 import io.ureflect.app.mainIntent
-import io.ureflect.app.models.ApiErrorResponse
+import io.ureflect.app.models.Responses.ApiErrorResponse
 import io.ureflect.app.models.Mirror
 import io.ureflect.app.models.User
 import io.ureflect.app.services.Api
@@ -70,8 +70,7 @@ class Home : AppCompatActivity() {
                 Response.Listener { response ->
                     mirrors = response.data!!
                     mirrorAdapter = MirrorAdapter(mirrors, {
-                        //TODO : create Mirror
-                        Log.e(TAG, "Create Mirror")
+                        startActivity(newMirrorIntent())
                     }, { mirror ->
                         //TODO : Mirror details
                         Log.e(TAG, "Select Mirror : " + mirror.name)

@@ -1,4 +1,4 @@
-package io.ureflect.app.models
+package io.ureflect.app.models.Responses
 
 class ApiResponse<T> {
     var message: String? = null

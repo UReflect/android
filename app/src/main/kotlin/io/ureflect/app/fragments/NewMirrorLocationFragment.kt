@@ -1,5 +1,6 @@
 package io.ureflect.app.fragments
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -11,6 +12,7 @@ import io.ureflect.app.utils.validate
 import kotlinx.android.synthetic.main.fragment_new_mirror_location.*
 import kotlinx.android.synthetic.main.fragment_new_mirror_location.view.*
 
+@SuppressLint("ValidFragment")
 class NewMirrorLocationFragment(var next: (Int) -> Unit,
                                 var setLocation: (String) -> Unit) : Fragment() {
 

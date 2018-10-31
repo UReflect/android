@@ -1,5 +1,6 @@
 package io.ureflect.app.fragments
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -12,6 +13,7 @@ import io.ureflect.app.utils.validate
 import kotlinx.android.synthetic.main.fragment_signup_credentials.*
 import kotlinx.android.synthetic.main.fragment_signup_credentials.view.*
 
+@SuppressLint("ValidFragment")
 class SignUpCredentialsFragment(var next: (Int) -> Unit,
                                 var setMail: (String) -> Unit,
                                 var setPassword: (String) -> Unit) : Fragment() {

@@ -10,7 +10,7 @@ import com.android.volley.toolbox.Volley
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import io.ureflect.app.R
-import io.ureflect.app.models.ApiErrorResponse
+import io.ureflect.app.models.Responses.ApiErrorResponse
 import io.ureflect.app.services.Api
 import io.ureflect.app.utils.*
 import kotlinx.android.synthetic.main.activity_signin.*
