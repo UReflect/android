@@ -41,7 +41,7 @@ class SignUpIdentityFragment(val next: (Int) -> Unit,
 
     private fun setupUI(v: View) {
         v.btn.transformationMethod = null
-        v.btn.setOnClickListener { _ ->
+        v.btn.setOnClickListener {
             if (!identityPayloadError(v)) {
                 setFirstname(evFirstname.text.toString())
                 setLastname(evLastname.text.toString())

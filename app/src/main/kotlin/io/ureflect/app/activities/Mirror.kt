@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.Volley
-import io.ureflect.app.R
 import io.ureflect.app.models.Mirror
 import io.ureflect.app.services.Api
 

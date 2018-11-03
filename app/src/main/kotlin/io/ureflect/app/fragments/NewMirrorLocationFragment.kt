@@ -39,7 +39,7 @@ class NewMirrorLocationFragment(var next: (Int) -> Unit,
 
 
     private fun setupUI(v: View) {
-        v.btn.setOnClickListener { _ ->
+        v.btn.setOnClickListener {
             if (!credentialsPayloadError(v)) {
                 setLocation(evLocation.text.toString())
                 next(1)

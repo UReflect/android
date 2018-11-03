@@ -3,10 +3,10 @@ package io.ureflect.app.activities
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
-import android.widget.Toast
 import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.Volley
@@ -59,7 +59,7 @@ class Home : AppCompatActivity() {
         rvMirrors.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
         btnLogout.transformationMethod = null
-        btnLogout.setOnClickListener { _ ->
+        btnLogout.setOnClickListener {
             logout()
         }
     }
@@ -79,7 +79,8 @@ class Home : AppCompatActivity() {
                 },
                 Response.ErrorListener { error ->
                     val errorResponse = Gson().fromJson(String(error.networkResponse.data), ApiErrorResponse::class.java)
-                    Toast.makeText(this, errorResponse.error, Toast.LENGTH_LONG).show()
+                    errorResponse.error?.let { Snackbar.make(root, it, Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show() }
+                    //TODO : Might want to add a retry button
                 }
         ))
     }

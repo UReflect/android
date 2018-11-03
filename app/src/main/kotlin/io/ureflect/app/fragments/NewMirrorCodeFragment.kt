@@ -2,6 +2,7 @@ package io.ureflect.app.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -14,7 +15,6 @@ import com.google.gson.JsonObject
 import io.ureflect.app.R
 import io.ureflect.app.models.Responses.ApiErrorResponse
 import io.ureflect.app.services.Api
-import kotlinx.android.synthetic.main.fragment_new_mirror_code.*
 import kotlinx.android.synthetic.main.fragment_new_mirror_code.view.*
 
 @SuppressLint("ValidFragment")
@@ -48,7 +48,7 @@ class NewMirrorCodeFragment(var next: (Int) -> Unit, var setMirrorId: (String) -
                             Response.Listener { response ->
                                 val mirrorId = response.data?.ID
                                 if (mirrorId == null) {
-                                    v.tvError.text = getString(R.string.api_parse_error)
+                                    Snackbar.make(v.root, getString(R.string.api_parse_error), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
                                     return@Listener
                                 }
                                 setMirrorId(mirrorId)
@@ -56,7 +56,7 @@ class NewMirrorCodeFragment(var next: (Int) -> Unit, var setMirrorId: (String) -
                             },
                             Response.ErrorListener { error ->
                                 val errorResponse = Gson().fromJson(String(error.networkResponse.data), ApiErrorResponse::class.java)
-                                v.tvError.text = errorResponse.error
+                                errorResponse.error?.let { msg -> Snackbar.make(v.root, msg, Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show() }
                             }
                     ))
                 }

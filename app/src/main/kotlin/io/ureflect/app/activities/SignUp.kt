@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import com.android.volley.RequestQueue
@@ -20,7 +21,6 @@ import io.ureflect.app.services.Api
 import io.ureflect.app.utils.TOKEN
 import io.ureflect.app.utils.toStorage
 import kotlinx.android.synthetic.main.activity_signup.*
-import kotlinx.android.synthetic.main.fragment_signup_credentials.*
 
 fun Context.registerIntent(): Intent {
     return Intent(this, SignUp::class.java)
@@ -90,14 +90,14 @@ class SignUp : AppCompatActivity() {
                     val user = response.data?.user?.toStorage(this.application)
                     val token = response.data?.token?.toStorage(this.application, TOKEN)
                     if (user == null || token == null) {
-                        tvError.text = getString(R.string.api_parse_error)
+                        Snackbar.make(root, getString(R.string.api_parse_error), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
                         return@Listener
                     }
                     toHomeView()
                 },
                 Response.ErrorListener { error ->
                     val errorResponse = Gson().fromJson(String(error.networkResponse.data), ApiErrorResponse::class.java)
-                    tvError.text = errorResponse.error
+                    errorResponse.error?.let { msg -> Snackbar.make(root, msg, Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show() }
                     position = fragments.size
                 }
         ))

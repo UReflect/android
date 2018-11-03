@@ -39,7 +39,7 @@ class NewMirrorNameFragment(var next: (Int) -> Unit,
 
 
     private fun setupUI(v: View) {
-        v.btn.setOnClickListener { _ ->
+        v.btn.setOnClickListener {
             if (!credentialsPayloadError(v)) {
                 setName(evName.text.toString())
                 next(1)
