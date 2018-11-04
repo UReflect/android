@@ -88,10 +88,10 @@ class Home : AppCompatActivity() {
                             startActivity(mirrorIntent(mirror))
                         })
                         rvMirrors.adapter = mirrorAdapter
-                        return@Listener
+                    } ?: run {
+                        btnRetry.visibility = View.VISIBLE
+                        Snackbar.make(root, getString(R.string.api_parse_error), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
                     }
-                    btnRetry.visibility = View.VISIBLE
-                    Snackbar.make(root, getString(R.string.api_parse_error), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
                 },
                 Response.ErrorListener { error ->
                     loading.visibility = View.GONE

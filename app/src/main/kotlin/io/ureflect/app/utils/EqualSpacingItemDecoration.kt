@@ -10,7 +10,7 @@ class EqualSpacingItemDecoration @JvmOverloads constructor(private val spacing: 
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State?) {
         val position = parent.getChildViewHolder(view).adapterPosition
-        val itemCount = state!!.itemCount
+        val itemCount = state?.itemCount ?: 1
         val layoutManager = parent.layoutManager
         setSpacingForDirection(outRect, layoutManager, position, itemCount)
     }

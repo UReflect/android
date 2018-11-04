@@ -9,9 +9,12 @@ import com.android.volley.toolbox.Volley
 import io.ureflect.app.R
 import io.ureflect.app.models.MirrorModel
 import io.ureflect.app.services.Api
+import kotlinx.android.synthetic.main.activity_home.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 fun Context.mirrorIntent(mirror: MirrorModel): Intent {
-    val intent = Intent(this, MirrorModel::class.java)
+    val intent = Intent(this, Mirror::class.java)
     intent.putExtra("mirror", mirror)
     return intent
 }
@@ -26,14 +29,15 @@ class Mirror : AppCompatActivity() {
         setContentView(R.layout.activity_mirror)
         Api.log("starting mirror activity")
         queue = Volley.newRequestQueue(this)
-        setupUI()
 
         val args = intent.extras
-        mirror = args.getSerializable("mirror") as MirrorModel
-        if (mirror == null) {
+        args?.getSerializable("mirror")?.let { mirror ->
+            this.mirror = mirror as MirrorModel
+        } ?: run {
             finish()
-            return
         }
+        
+        setupUI()
     }
 
     override fun onStop() {
@@ -42,5 +46,8 @@ class Mirror : AppCompatActivity() {
     }
 
     private fun setupUI() {
+        val formatter = SimpleDateFormat("EEEE dd MMMM", Locale.getDefault())
+        tvDate.text = formatter.format(Date()).toUpperCase()
+        tvTitle.text = mirror.name
     }
 }

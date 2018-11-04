@@ -87,7 +87,11 @@ class NewMirror : AppCompatActivity() {
                 mirrorId,
                 data,
                 Response.Listener { response ->
-                    toMirrorView(response.data!!)
+                    response.data?.let {
+                        toMirrorView(it)
+                    } ?: run {
+                        Snackbar.make(root, getString(R.string.api_parse_error), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
+                    }
                 },
                 Response.ErrorListener { error ->
                     Snackbar.make(root, error.errMsg(getString(R.string.api_parse_error)), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()

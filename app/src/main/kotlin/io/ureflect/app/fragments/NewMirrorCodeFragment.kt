@@ -62,14 +62,13 @@ class NewMirrorCodeFragment(var next: (Int) -> Unit, var setMirrorId: (String) -
                 data,
                 Response.Listener { response ->
                     v.loading.visibility = View.GONE
-                    val mirrorId = response.data?.ID
-                    if (mirrorId == null) {
+                    response.data?.ID?.let { mirrorId ->
+                        setMirrorId(mirrorId)
+                        next(0)
+                    } ?: run {
                         Snackbar.make(v.root, getString(R.string.api_parse_error), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
                         hideKeyboard()
-                        return@Listener
                     }
-                    setMirrorId(mirrorId)
-                    next(0)
                 },
                 Response.ErrorListener { error ->
                     v.loading.visibility = View.GONE
