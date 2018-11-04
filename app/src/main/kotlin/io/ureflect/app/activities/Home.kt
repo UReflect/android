@@ -62,6 +62,7 @@ class Home : AppCompatActivity() {
         rvMirrors.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         rvMirrors.addItemDecoration(EqualSpacingItemDecoration(px, EqualSpacingItemDecoration.HORIZONTAL))
 
+        btnLogout.transformationMethod = null
         btnRetry.setOnClickListener {
             loadMirrors()
         }
