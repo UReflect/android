@@ -42,7 +42,7 @@ class NewMirrorLocationFragment(var next: (Int) -> Unit,
         v.btn.setOnClickListener {
             if (!credentialsPayloadError(v)) {
                 setLocation(evLocation.text.toString())
-                next(1)
+                next(2)
             } else if (!triedOnce) {
                 credentialsPayloadAutoValidate(v)
             }

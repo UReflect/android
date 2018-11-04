@@ -24,6 +24,7 @@
 	<string name="form_error_last_name_required">Last name required</string>
 	<string name="form_error_name_required">Name required</string>
 	<string name="form_error_location_required">Location required</string>
+	<string name="form_error_code_too_short">Code must be complete</string>
 	<string name="logout_btn_text">Sign out</string>
 	<string name="home_mirrors_text">Your mirrors</string>
 	<string name="home_add_mirror_text">New Mirror</string>
@@ -31,4 +32,5 @@
 	<string name="new_mirror_location_title_text">Where is it located ?</string>
 	<string name="new_mirror_code_title_text">What code is displayed on your mirror ?</string>
 	<string name="form_text_go">Let\'s go !</string>
+	<string name="retry">Retry</string>
 </resources>
