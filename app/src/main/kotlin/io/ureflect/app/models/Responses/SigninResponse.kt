@@ -1,4 +1,6 @@
-package io.ureflect.app.models
+package io.ureflect.app.models.Responses
+
+import io.ureflect.app.models.User
 
 class SigninResponse {
     lateinit var token: String

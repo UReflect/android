@@ -1,74 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-											 xmlns:app="http://schemas.android.com/apk/res-auto"
-											 xmlns:tools="http://schemas.android.com/tools"
-											 android:layout_width="match_parent"
-											 android:layout_height="match_parent"
-											 android:background="@color/colorBackground"
-											 tools:context=".activities.Home">
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBackground"
+    tools:context=".activities.Home">
 
-	<TextView
-		android:id="@+id/tvDate"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_marginStart="8dp"
-		android:layout_marginEnd="8dp"
-		android:textSize="14sp"
-		android:textColor="@color/colorText"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toTopOf="parent"/>
 
-	<TextView
-		android:id="@+id/tvTitle"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_marginStart="8dp"
-		android:layout_marginEnd="8dp"
-		android:text="@string/home_title_text"
-		android:textSize="30sp"
-		android:textColor="@color/colorText"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/tvDate"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-	<TextView
-		android:id="@+id/tvYourMirrors"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_marginTop="24dp"
-		android:layout_marginStart="8dp"
-		android:layout_marginEnd="8dp"
-		android:textColor="@color/colorText"
-		android:text="@string/home_mirrors_text"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/tvTitle"/>
+        <TextView
+            android:id="@+id/tvDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:textColor="@color/colorText"
+            android:textSize="14sp" />
 
-	<android.support.v7.widget.RecyclerView
-		android:id="@+id/rvMirrors"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_marginTop="16dp"
-		android:layout_marginStart="8dp"
-		android:layout_marginEnd="8dp"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/tvYourMirrors">
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@string/home_title_text"
+            android:textColor="@color/colorText"
+            android:textSize="30sp" />
 
-	</android.support.v7.widget.RecyclerView>
+        <TextView
+            android:id="@+id/tvYourMirrors"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="8dp"
+            android:text="@string/home_mirrors_text"
+            android:textColor="@color/colorText" />
 
-	<Button
-		android:id="@+id/btnLogout"
-		android:layout_width="wrap_content"
-		android:layout_height="48dp"
-		android:layout_marginStart="8dp"
-		android:layout_marginEnd="8dp"
-		android:paddingStart="8dp"
-		android:paddingEnd="8dp"
-		android:layout_marginBottom="16dp"
-		android:background="@android:color/transparent"
-		android:text="@string/logout_btn_text"
-		android:textColor="@color/colorText"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="parent"/>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvMirrors"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp" />
 
-</android.support.constraint.ConstraintLayout>
+        <Button
+            android:id="@+id/btnRetry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="16dp"
+            android:background="@android:color/transparent"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/retry"
+            android:textColor="@color/colorText"
+            android:visibility="gone" />
+
+        <ProgressBar
+            android:id="@+id/loading"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="16dp"
+            android:layout_gravity="center_horizontal"
+            android:indeterminate="true"
+            android:indeterminateTint="@color/colorPrimary"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnLogout"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="16dp"
+        android:background="@android:color/transparent"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:text="@string/logout_btn_text"
+        android:textColor="@color/colorText"
+        app:layout_behavior="io.ureflect.app.utils.MoveUpwardBehavior" />
+
+</android.support.design.widget.CoordinatorLayout>

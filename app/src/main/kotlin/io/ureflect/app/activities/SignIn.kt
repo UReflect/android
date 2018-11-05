@@ -3,15 +3,15 @@ package io.ureflect.app.activities
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.Volley
-import com.google.gson.Gson
 import com.google.gson.JsonObject
 import io.ureflect.app.R
-import io.ureflect.app.models.ApiErrorResponse
 import io.ureflect.app.services.Api
+import io.ureflect.app.services.errMsg
 import io.ureflect.app.utils.*
 import kotlinx.android.synthetic.main.activity_signin.*
 
@@ -60,26 +60,25 @@ class SignIn : AppCompatActivity() {
         btnForgotPassword.setOnClickListener {}
 
         btnLogin.transformationMethod = null
-        btnLogin.setOnClickListener { _ ->
+        btnLogin.setOnClickListener {
             if (!loginPayloadError()) {
                 val data = JsonObject()
                 data.addProperty("email", evMail.text.toString().toLowerCase())
                 data.addProperty("password", evPassword.text.toString())
 
-                queue.add(Api.signin(
+                queue.add(Api.Auth.signin(
                         data,
                         Response.Listener { response ->
                             val user = response.data?.user?.toStorage(this.application)
                             val token = response.data?.token?.toStorage(this.application, TOKEN)
                             if (user == null || token == null) {
-                                tvError.text = getString(R.string.api_parse_error)
+                                Snackbar.make(root, getString(R.string.api_parse_error), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
                                 return@Listener
                             }
                             toHomeView()
                         },
                         Response.ErrorListener { error ->
-                            val errorResponse = Gson().fromJson(String(error.networkResponse.data), ApiErrorResponse::class.java)
-                            tvError.text = errorResponse.error
+                            Snackbar.make(root, error.errMsg(getString(R.string.api_parse_error)), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
                         }
                 ))
             } else if (triedOnce) {

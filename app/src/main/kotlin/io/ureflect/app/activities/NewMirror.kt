@@ -13,32 +13,31 @@ import com.android.volley.toolbox.Volley
 import com.google.gson.JsonObject
 import io.ureflect.app.R
 import io.ureflect.app.adapters.ListFragmentPagerAdapter
-import io.ureflect.app.fragments.SignUpCredentialsFragment
-import io.ureflect.app.fragments.SignUpIdentityFragment
+import io.ureflect.app.fragments.NewMirrorCodeFragment
+import io.ureflect.app.fragments.NewMirrorLocationFragment
+import io.ureflect.app.fragments.NewMirrorNameFragment
+import io.ureflect.app.models.MirrorModel
 import io.ureflect.app.services.Api
 import io.ureflect.app.services.errMsg
-import io.ureflect.app.utils.TOKEN
-import io.ureflect.app.utils.toStorage
-import kotlinx.android.synthetic.main.activity_signup.*
+import kotlinx.android.synthetic.main.activity_new_mirror.*
 
-fun Context.registerIntent(): Intent {
-    return Intent(this, SignUp::class.java)
+fun Context.newMirrorIntent(): Intent {
+    return Intent(this, NewMirror::class.java)
 }
 
-class SignUp : AppCompatActivity() {
-    private val TAG = "SignUpActivity"
+class NewMirror : AppCompatActivity() {
+    private val TAG = "NewMirrorActivity"
     private lateinit var queue: RequestQueue
     private lateinit var adapter: ListFragmentPagerAdapter
     private var position = 0
     private val fragments = ArrayList<Fragment>()
-    private var firstName = ""
-    private var lastName = ""
-    private var email = ""
-    private var password = ""
+    private lateinit var name: String
+    private lateinit var location: String
+    private lateinit var mirrorId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_signup)
+        setContentView(R.layout.activity_new_mirror)
         queue = Volley.newRequestQueue(this)
         setupFragments()
     }
@@ -49,19 +48,20 @@ class SignUp : AppCompatActivity() {
     }
 
     private fun setupFragments() {
-        fragments.add(SignUpIdentityFragment({ i: Int ->
+        fragments.add(NewMirrorCodeFragment({ i: Int ->
             next(i)
-        }, { firstName: String ->
-            this.firstName = firstName
-        }, { lastName: String ->
-            this.lastName = lastName
+        }, { mirrorId: String ->
+            this.mirrorId = mirrorId
         }))
-        fragments.add(SignUpCredentialsFragment({ i: Int ->
+        fragments.add(NewMirrorNameFragment({ i: Int ->
             next(i)
-        }, { email: String ->
-            this.email = email
-        }, { password: String ->
-            this.password = password
+        }, { name: String ->
+            this.name = name
+        }))
+        fragments.add(NewMirrorLocationFragment({ i: Int ->
+            next(i)
+        }, { location: String ->
+            this.location = location
         }))
         adapter = ListFragmentPagerAdapter(supportFragmentManager, fragments)
         viewPager.adapter = adapter
@@ -73,45 +73,41 @@ class SignUp : AppCompatActivity() {
         if (position < fragments.size) {
             Handler().postDelayed({ viewPager.currentItem = i + 1 }, 100)
         } else if (position == fragments.size) {
-            signUp()
+            createMirror()
         }
     }
 
-    private fun signUp() {
+    private fun createMirror() {
         val data = JsonObject()
-        data.addProperty("email", email)
-        data.addProperty("password", password)
-        data.addProperty("name", "$firstName $lastName")
+        data.addProperty("name", name)
+        data.addProperty("location", location)
 
-        queue.add(Api.Auth.signup(
+        queue.add(Api.Mirror.update(
+                application,
+                mirrorId,
                 data,
                 Response.Listener { response ->
-                    val user = response.data?.user?.toStorage(this.application)
-                    val token = response.data?.token?.toStorage(this.application, TOKEN)
-                    if (user == null || token == null) {
-                        Snackbar.make(root, getString(R.string.api_parse_error), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
-                        return@Listener
-                    }
-                    toHomeView()
+                    toMirrorView(response.data!!)
                 },
                 Response.ErrorListener { error ->
-                    position = fragments.size
                     Snackbar.make(root, error.errMsg(getString(R.string.api_parse_error)), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
                 }
         ))
     }
 
-    private fun toHomeView() {
-        startActivity(homeIntent())
+    private fun toMirrorView(mirror: MirrorModel) {
+        startActivity(mirrorIntent(mirror))
         finish()
     }
 
     override fun onBackPressed() {
-        if (position == 0) {
-            super.onBackPressed()
-        } else {
-            position -= 1
-            viewPager.currentItem = position
+        if (position != 1) {
+            if (position == 0) {
+                super.onBackPressed()
+            } else {
+                position -= 1
+                viewPager.currentItem = position
+            }
         }
     }
 }

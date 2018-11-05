@@ -3,25 +3,27 @@ package io.ureflect.app.activities
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
-import android.widget.Toast
+import android.util.TypedValue
+import android.view.View
 import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.Volley
-import com.google.gson.Gson
 import io.ureflect.app.R
 import io.ureflect.app.adapters.MirrorAdapter
 import io.ureflect.app.mainIntent
-import io.ureflect.app.models.ApiErrorResponse
-import io.ureflect.app.models.Mirror
+import io.ureflect.app.models.MirrorModel
 import io.ureflect.app.models.User
 import io.ureflect.app.services.Api
+import io.ureflect.app.services.errMsg
+import io.ureflect.app.utils.EqualSpacingItemDecoration
 import io.ureflect.app.utils.Storage
 import kotlinx.android.synthetic.main.activity_home.*
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 fun Context.homeIntent(): Intent {
     val intent = Intent(this, Home::class.java)
@@ -32,7 +34,7 @@ fun Context.homeIntent(): Intent {
 class Home : AppCompatActivity() {
     private val TAG = "HomeActivity"
     private lateinit var queue: RequestQueue
-    private lateinit var mirrors: ArrayList<Mirror>
+    private lateinit var mirrors: ArrayList<MirrorModel>
     private lateinit var mirrorAdapter: MirrorAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,31 +58,45 @@ class Home : AppCompatActivity() {
         val user = User.fromStorage(this.application)
         tvTitle.text = getString(R.string.home_title_text, user.name)
 
+        val px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, resources.displayMetrics).toInt()
         rvMirrors.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        rvMirrors.addItemDecoration(EqualSpacingItemDecoration(px, EqualSpacingItemDecoration.HORIZONTAL))
 
         btnLogout.transformationMethod = null
-        btnLogout.setOnClickListener { _ ->
+        btnRetry.setOnClickListener {
+            loadMirrors()
+        }
+
+        btnLogout.transformationMethod = null
+        btnLogout.setOnClickListener {
             logout()
         }
     }
 
     private fun loadMirrors() {
-        queue.add(Api.mirrors(
+        loading.visibility = View.VISIBLE
+        btnRetry.visibility = View.GONE
+        queue.add(Api.Mirror.all(
                 this.application,
                 Response.Listener { response ->
-                    mirrors = response.data!!
-                    mirrorAdapter = MirrorAdapter(mirrors, {
-                        //TODO : create Mirror
-                        Log.e(TAG, "Create Mirror")
-                    }, { mirror ->
-                        //TODO : Mirror details
-                        Log.e(TAG, "Select Mirror : " + mirror.name)
-                    })
-                    rvMirrors.adapter = mirrorAdapter
+                    loading.visibility = View.GONE
+                    response.data?.let { mirrors ->
+                        this.mirrors = mirrors
+                        mirrorAdapter = MirrorAdapter(mirrors, {
+                            startActivity(newMirrorIntent())
+                        }, { mirror ->
+                            startActivity(mirrorIntent(mirror))
+                        })
+                        rvMirrors.adapter = mirrorAdapter
+                        return@Listener
+                    }
+                    btnRetry.visibility = View.VISIBLE
+                    Snackbar.make(root, getString(R.string.api_parse_error), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
                 },
                 Response.ErrorListener { error ->
-                    val errorResponse = Gson().fromJson(String(error.networkResponse.data), ApiErrorResponse::class.java)
-                    Toast.makeText(this, errorResponse.error, Toast.LENGTH_LONG).show()
+                    loading.visibility = View.GONE
+                    btnRetry.visibility = View.VISIBLE
+                    Snackbar.make(root, error.errMsg(getString(R.string.api_parse_error)), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
                 }
         ))
     }
