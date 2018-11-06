@@ -36,7 +36,7 @@ class Mirror : AppCompatActivity() {
         } ?: run {
             finish()
         }
-        
+
         setupUI()
     }
 

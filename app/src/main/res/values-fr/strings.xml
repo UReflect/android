@@ -33,4 +33,5 @@
 	<string name="new_mirror_code_title_text">Quel code s\'affiche sur votre miroir ?</string>
 	<string name="form_text_go">C\'est parti !</string>
 	<string name="retry">Réessayer</string>
+    <string name="logo">Logo</string>
 </resources>

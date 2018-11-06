@@ -20,6 +20,7 @@ import io.ureflect.app.models.MirrorModel
 import io.ureflect.app.services.Api
 import io.ureflect.app.services.errMsg
 import kotlinx.android.synthetic.main.activity_new_mirror.*
+import java.util.*
 
 fun Context.newMirrorIntent(): Intent {
     return Intent(this, NewMirror::class.java)
@@ -81,6 +82,7 @@ class NewMirror : AppCompatActivity() {
         val data = JsonObject()
         data.addProperty("name", name)
         data.addProperty("location", location)
+        data.addProperty("timezone", TimeZone.getDefault().getDisplayName(Locale.US))
 
         queue.add(Api.Mirror.update(
                 application,

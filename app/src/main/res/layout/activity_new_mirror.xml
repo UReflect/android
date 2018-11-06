@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorBackground"
     android:id="@+id/root"
+    android:paddingTop="16dp"
     tools:context=".activities.SignIn">
 
     <android.support.v4.view.ViewPager
