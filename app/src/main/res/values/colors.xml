@@ -5,5 +5,7 @@
     <color name="colorBackground">#1B1D27</color>
     <color name="colorAccent">#D81B60</color>
     <color name="colorInputError">#FFDD2C00</color>
-    <color name="colorText">#FFFFFF</color>
+    <color name="colorTitle">#FFFFFF</color>
+    <color name="colorText">#DDDDDD</color>
+    <color name="colorBorder">#2E3144</color>
 </resources>

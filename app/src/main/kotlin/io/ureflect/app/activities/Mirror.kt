@@ -4,22 +4,23 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.Volley
 import io.ureflect.app.R
 import io.ureflect.app.models.MirrorModel
 import io.ureflect.app.services.Api
-import kotlinx.android.synthetic.main.activity_home.*
+import kotlinx.android.synthetic.main.activity_mirror.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-fun Context.mirrorIntent(mirror: MirrorModel): Intent {
-    val intent = Intent(this, Mirror::class.java)
-    intent.putExtra("mirror", mirror)
-    return intent
-}
+fun Context.mirrorIntent(mirror: MirrorModel): Intent = Intent(this, Mirror::class.java).apply { putExtra(Mirror.MIRROR, mirror) }
 
 class Mirror : AppCompatActivity() {
+    companion object {
+        val MIRROR = "mirror"
+    }
+
     private val TAG = "MirrorActivity"
     private lateinit var queue: RequestQueue
     private lateinit var mirror: MirrorModel
@@ -31,7 +32,7 @@ class Mirror : AppCompatActivity() {
         queue = Volley.newRequestQueue(this)
 
         val args = intent.extras
-        args?.getSerializable("mirror")?.let { mirror ->
+        args?.getSerializable(MIRROR)?.let { mirror ->
             this.mirror = mirror as MirrorModel
         } ?: run {
             finish()
@@ -49,5 +50,9 @@ class Mirror : AppCompatActivity() {
         val formatter = SimpleDateFormat("EEEE dd MMMM", Locale.getDefault())
         tvDate.text = formatter.format(Date()).toUpperCase()
         tvTitle.text = mirror.name
+        //TMP
+        cvLogo.setOnClickListener {
+            startActivity(newProfileIntent())
+        }
     }
 }

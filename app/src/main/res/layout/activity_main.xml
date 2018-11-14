@@ -27,6 +27,7 @@
     <Button
         android:id="@+id/btnRegister"
         android:layout_width="wrap_content"
+        android:minWidth="@dimen/button_min"
         android:layout_height="48dp"
         android:layout_gravity="top|center_horizontal"
         android:layout_marginStart="8dp"

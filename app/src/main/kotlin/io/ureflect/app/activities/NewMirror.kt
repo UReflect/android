@@ -22,15 +22,17 @@ import io.ureflect.app.services.errMsg
 import kotlinx.android.synthetic.main.activity_new_mirror.*
 import java.util.*
 
-fun Context.newMirrorIntent(): Intent {
-    return Intent(this, NewMirror::class.java)
-}
+fun Context.newMirrorIntent(): Intent = Intent(this, NewMirror::class.java)
 
 class NewMirror : AppCompatActivity() {
     private val TAG = "NewMirrorActivity"
+    private val CODE = 0
+    private val NAME = 1
+    private val LOCATION = 2
+    private val CREATE = 3
     private lateinit var queue: RequestQueue
     private lateinit var adapter: ListFragmentPagerAdapter
-    private var position = 0
+    private var position = CODE
     private val fragments = ArrayList<Fragment>()
     private lateinit var name: String
     private lateinit var location: String
@@ -49,18 +51,18 @@ class NewMirror : AppCompatActivity() {
     }
 
     private fun setupFragments() {
-        fragments.add(NewMirrorCodeFragment({ i: Int ->
-            next(i)
+        fragments.add(NewMirrorCodeFragment({
+            next(CODE)
         }, { mirrorId: String ->
             this.mirrorId = mirrorId
         }))
-        fragments.add(NewMirrorNameFragment({ i: Int ->
-            next(i)
+        fragments.add(NewMirrorNameFragment({
+            next(LOCATION)
         }, { name: String ->
             this.name = name
         }))
-        fragments.add(NewMirrorLocationFragment({ i: Int ->
-            next(i)
+        fragments.add(NewMirrorLocationFragment({
+            next(CREATE)
         }, { location: String ->
             this.location = location
         }))
@@ -70,11 +72,10 @@ class NewMirror : AppCompatActivity() {
     }
 
     private fun next(i: Int) {
-        position = i + 1
-        if (position < fragments.size) {
-            Handler().postDelayed({ viewPager.currentItem = i + 1 }, 100)
-        } else if (position == fragments.size) {
-            createMirror()
+        position = i
+        when (position) {
+            CREATE -> createMirror()
+            else -> Handler().postDelayed({ viewPager.currentItem = position }, 100)
         }
     }
 
@@ -107,10 +108,10 @@ class NewMirror : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        if (position != 1) {
-            if (position == 0) {
-                super.onBackPressed()
-            } else {
+        when (position) {
+            CODE -> super.onBackPressed()
+            NAME -> Unit
+            else -> {
                 position -= 1
                 viewPager.currentItem = position
             }

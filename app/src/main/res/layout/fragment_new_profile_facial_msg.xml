@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorBackground"
-    android:paddingTop="16dp"
-    tools:context=".activities.SignIn">
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,54 +15,32 @@
             android:id="@+id/tvTitle"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
-            android:layout_gravity="center_horizontal"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:gravity="center_vertical"
-            android:text="@string/signin_title_text"
+            android:text="@string/new_profile_facial_msg_title_text"
+            android:textAlignment="center"
             android:textColor="@color/colorTitle"
             android:textSize="20sp" />
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/evMailLayout"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            app:errorEnabled="true">
-
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/evMail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/form_text_email"
-                android:inputType="textEmailAddress"
-                android:textColor="@color/colorText" />
-
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/evPasswordLayout"
+        <TextView
+            android:id="@+id/tvMsg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            app:errorEnabled="true">
-
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/evPassword"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/form_text_password"
-                android:inputType="textPassword"
-                android:textColor="@color/colorText" />
-
-        </android.support.design.widget.TextInputLayout>
+            android:gravity="center_vertical"
+            android:text="@string/new_profile_facial_msg_content_text"
+            android:textColor="@color/colorText"
+            android:textSize="14sp" />
     </LinearLayout>
 
     <Button
-        android:id="@+id/btnLogin"
+        android:id="@+id/btnConfigure"
         android:layout_width="wrap_content"
+        android:minWidth="@dimen/button_min"
         android:layout_height="48dp"
         android:layout_gravity="top|center_horizontal"
         android:layout_marginStart="8dp"
@@ -73,13 +48,13 @@
         android:background="@color/colorPrimary"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
-        android:text="@string/signin_login_btn_text"
+        android:text="@string/configure_btn_text"
         android:textColor="@color/colorText"
-        app:layout_anchor="@id/btnForgotPassword"
+        app:layout_anchor="@id/btnSkip"
         app:layout_anchorGravity="top|center_horizontal" />
 
     <Button
-        android:id="@+id/btnForgotPassword"
+        android:id="@+id/btnSkip"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:layout_gravity="bottom|center_horizontal"
@@ -89,8 +64,6 @@
         android:background="@android:color/transparent"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
-        android:text="@string/signin_forgot_password_btn_text"
-        android:textColor="@color/colorText"
-        app:layout_behavior="io.ureflect.app.utils.MoveUpwardBehavior" />
-
+        android:text="@string/skip_step_btn_text"
+        android:textColor="@color/colorText" />
 </android.support.design.widget.CoordinatorLayout>

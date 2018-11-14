@@ -17,63 +17,61 @@ import com.google.gson.JsonObject
 import io.ureflect.app.R
 import io.ureflect.app.services.Api
 import io.ureflect.app.services.errMsg
-import kotlinx.android.synthetic.main.fragment_new_mirror_code.view.*
-
+import kotlinx.android.synthetic.main.fragment_new_mirror_code.*
 
 @SuppressLint("ValidFragment")
-class NewMirrorCodeFragment(var next: (Int) -> Unit, var setMirrorId: (String) -> Unit) : Fragment() {
+class NewMirrorCodeFragment(var next: () -> Unit, var setMirrorId: (String) -> Unit) : Fragment() {
     private lateinit var queue: RequestQueue
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val rootView = inflater.inflate(R.layout.fragment_new_mirror_code, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_new_mirror_code, container, false)
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         queue = Volley.newRequestQueue(this.context)
-        setupUI(rootView)
-
-        return rootView
+        setupUI()
     }
 
-    private fun credentialsPayloadError(v: View): Boolean {
-        return v.civCode.code.length != 4
+    private fun credentialsPayloadError(): Boolean {
+        return civCode.code.length != 4
     }
 
-    private fun setupUI(v: View) {
-        v.civCode.addOnCompleteListener {
-            v.civCode.setEditable(true)
+    private fun setupUI() {
+        civCode.addOnCompleteListener {
+            civCode.setEditable(true)
         }
-        v.tvGo.setOnClickListener {
-            if (!credentialsPayloadError(v)) {
-                v.civCode.clearError()
+        tvGo.setOnClickListener {
+            if (!credentialsPayloadError()) {
+                civCode.clearError()
                 activity?.application?.let { app ->
-                    join(v, app)
+                    join(app)
                 }
             } else {
-                v.civCode.error = getString(R.string.form_error_code_too_short)
+                civCode.error = getString(R.string.form_error_code_too_short)
             }
         }
     }
 
-    private fun join(v: View, app: Application) {
+    private fun join(app: Application) {
         val data = JsonObject()
-        data.addProperty("join_code", v.civCode.code)
-        v.loading.visibility = View.VISIBLE
+        data.addProperty("join_code", civCode.code)
+        loading.visibility = View.VISIBLE
         queue.add(Api.Mirror.join(
                 app,
                 data,
                 Response.Listener { response ->
-                    v.loading.visibility = View.GONE
+                    loading.visibility = View.GONE
                     response.data?.ID?.let { mirrorId ->
                         setMirrorId(mirrorId)
-                        next(0)
+                        next()
                     } ?: run {
-                        Snackbar.make(v.root, getString(R.string.api_parse_error), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
+                        Snackbar.make(root, getString(R.string.api_parse_error), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
                         hideKeyboard()
                     }
                 },
                 Response.ErrorListener { error ->
-                    v.loading.visibility = View.GONE
+                    loading.visibility = View.GONE
                     hideKeyboard()
-                    Snackbar.make(v.root, error.errMsg(getString(R.string.api_parse_error)), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
+                    Snackbar.make(root, error.errMsg(getString(R.string.api_parse_error)), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
                 }
         ))
     }

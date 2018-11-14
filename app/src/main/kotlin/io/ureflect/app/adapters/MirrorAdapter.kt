@@ -35,8 +35,8 @@ class MirrorAdapter(val data: List<MirrorModel>, private val addListener: (Mirro
             else -> LayoutInflater.from(parent.context).inflate(R.layout.view_mirror, parent, false)
         }
 
-        val width = (parent.measuredWidth / NB).toInt()
-        v.layoutParams = RecyclerView.LayoutParams(width, width)
+        val side = (parent.measuredWidth / NB).toInt()
+        v.layoutParams = RecyclerView.LayoutParams(side, side)
 
         return when (viewType) {
             TYPE_ADD_MIRROR -> {

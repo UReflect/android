@@ -15,7 +15,7 @@ import io.ureflect.app.R
 import io.ureflect.app.adapters.MirrorAdapter
 import io.ureflect.app.mainIntent
 import io.ureflect.app.models.MirrorModel
-import io.ureflect.app.models.User
+import io.ureflect.app.models.UserModel
 import io.ureflect.app.services.Api
 import io.ureflect.app.services.errMsg
 import io.ureflect.app.utils.EqualSpacingItemDecoration
@@ -23,7 +23,6 @@ import io.ureflect.app.utils.Storage
 import kotlinx.android.synthetic.main.activity_home.*
 import java.text.SimpleDateFormat
 import java.util.*
-
 
 fun Context.homeIntent(): Intent {
     val intent = Intent(this, Home::class.java)
@@ -55,7 +54,7 @@ class Home : AppCompatActivity() {
         val formatter = SimpleDateFormat("EEEE dd MMMM", Locale.getDefault())
         tvDate.text = formatter.format(Date()).toUpperCase()
 
-        val user = User.fromStorage(this.application)
+        val user = UserModel.fromStorage(this.application)
         tvTitle.text = getString(R.string.home_title_text, user.name)
 
         val px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, resources.displayMetrics).toInt()
@@ -105,5 +104,6 @@ class Home : AppCompatActivity() {
         Storage.clear(this.application)
         startActivity(mainIntent())
         finish()
+//        startActivity(pinIntent()) //TODO : remove
     }
 }

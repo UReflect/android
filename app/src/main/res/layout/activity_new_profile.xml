@@ -6,7 +6,7 @@
     android:background="@color/colorBackground"
     android:id="@+id/root"
     android:paddingTop="16dp"
-    tools:context=".activities.NewMirror">
+    tools:context=".activities.NewProfile">
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewPager"

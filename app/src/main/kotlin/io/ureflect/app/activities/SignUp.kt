@@ -21,12 +21,13 @@ import io.ureflect.app.utils.TOKEN
 import io.ureflect.app.utils.toStorage
 import kotlinx.android.synthetic.main.activity_signup.*
 
-fun Context.registerIntent(): Intent {
-    return Intent(this, SignUp::class.java)
-}
+fun Context.registerIntent(): Intent = Intent(this, SignUp::class.java)
 
 class SignUp : AppCompatActivity() {
     private val TAG = "SignUpActivity"
+    private val IDENTITY = 0
+    private val CREDENTIAL = 1
+    private val SIGN_UP = 2
     private lateinit var queue: RequestQueue
     private lateinit var adapter: ListFragmentPagerAdapter
     private var position = 0
@@ -49,15 +50,15 @@ class SignUp : AppCompatActivity() {
     }
 
     private fun setupFragments() {
-        fragments.add(SignUpIdentityFragment({ i: Int ->
-            next(i)
+        fragments.add(SignUpIdentityFragment({
+            next(CREDENTIAL)
         }, { firstName: String ->
             this.firstName = firstName
         }, { lastName: String ->
             this.lastName = lastName
         }))
-        fragments.add(SignUpCredentialsFragment({ i: Int ->
-            next(i)
+        fragments.add(SignUpCredentialsFragment({
+            next(SIGN_UP)
         }, { email: String ->
             this.email = email
         }, { password: String ->
@@ -69,11 +70,10 @@ class SignUp : AppCompatActivity() {
     }
 
     private fun next(i: Int) {
-        position = i + 1
-        if (position < fragments.size) {
-            Handler().postDelayed({ viewPager.currentItem = i + 1 }, 100)
-        } else if (position == fragments.size) {
-            signUp()
+        position = i
+        when (position) {
+            SIGN_UP -> signUp()
+            else -> Handler().postDelayed({ viewPager.currentItem = position }, 100)
         }
     }
 
@@ -107,11 +107,12 @@ class SignUp : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        if (position == 0) {
-            super.onBackPressed()
-        } else {
-            position -= 1
-            viewPager.currentItem = position
+        when (position) {
+            IDENTITY -> super.onBackPressed()
+            else -> {
+                position -= 1
+                viewPager.currentItem = position
+            }
         }
     }
 }
