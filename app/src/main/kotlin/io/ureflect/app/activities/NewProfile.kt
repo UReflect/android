@@ -4,43 +4,35 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import com.android.volley.RequestQueue
-import com.android.volley.Response
 import com.android.volley.toolbox.Volley
-import com.google.gson.JsonObject
 import io.ureflect.app.R
 import io.ureflect.app.adapters.ListFragmentPagerAdapter
-import io.ureflect.app.fragments.FacialRecognitionSetupFragment
-import io.ureflect.app.fragments.NewProfileCompletedFragment
-import io.ureflect.app.fragments.NewProfileFacialRecognitionMessageFragment
-import io.ureflect.app.fragments.NewProfileNameFragment
+import io.ureflect.app.fragments.*
 import io.ureflect.app.models.ProfileModel
-import io.ureflect.app.services.Api
-import io.ureflect.app.services.errMsg
 import kotlinx.android.synthetic.main.activity_new_mirror.*
 import java.util.*
 
 fun Context.newProfileIntent(): Intent = Intent(this, NewProfile::class.java)
 
 class NewProfile : AppCompatActivity() {
-    companion object {
-        val PROFILE = "profile"
-    }
-
     private val TAG = "NewProfileActivity"
     private val NAME = 0
     private val FACIALMSG = 1
-    private val COMPLETED = 2
-    private val CREATE = 3
-    private val FACIALSETUP = 4
+    private val FACIALSETUP = 2
+    private val PIN = 3
+    private val COMPLETED = 4
+    private val CREATE = 5
     private lateinit var queue: RequestQueue
     private lateinit var adapter: ListFragmentPagerAdapter
     private var position = 0
     private val fragments = ArrayList<Fragment>()
     private lateinit var name: String
+    private lateinit var code: String
+    private var images: List<String> = ArrayList()
+    private var skipFacial = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,15 +53,24 @@ class NewProfile : AppCompatActivity() {
             this.name = name
         }))
         fragments.add(NewProfileFacialRecognitionMessageFragment({
-            next(COMPLETED)
+            next(PIN)
+            skipFacial = true
         }, {
             next(FACIALSETUP)
+            skipFacial = false
         }))
+        fragments.add(FacialRecognitionSetupFragment({
+            next(PIN)
+        }, {
+            images = it
+        }))
+        fragments.add(PinFragment({
+            next(COMPLETED)
+        }, {
+            code = it
+        }).apply { isSetup = true })
         fragments.add(NewProfileCompletedFragment {
             next(CREATE)
-        })
-        fragments.add(FacialRecognitionSetupFragment {
-            next(COMPLETED)
         })
         adapter = ListFragmentPagerAdapter(supportFragmentManager, fragments)
         viewPager.adapter = adapter
@@ -113,9 +114,18 @@ class NewProfile : AppCompatActivity() {
     override fun onBackPressed() {
         when (position) {
             NAME -> super.onBackPressed()
-            FACIALSETUP -> {
-                position = FACIALMSG
+            PIN -> {
+                position = when(skipFacial) {
+                    true -> FACIALMSG
+                    else -> FACIALSETUP
+                }
                 viewPager.currentItem = position
+            }
+            FACIALSETUP -> {
+                if (!(fragments[FACIALSETUP] as FacialRecognitionSetupFragment).backPressed()) {
+                    position = FACIALMSG
+                    viewPager.currentItem = position
+                }
             }
             else -> {
                 position -= 1

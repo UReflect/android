@@ -85,7 +85,7 @@ class Home : AppCompatActivity() {
                             startActivity(newMirrorIntent())
                         }, { mirror ->
                             startActivity(mirrorIntent(mirror))
-                        })
+                        }, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, resources.displayMetrics).toInt())
                         rvMirrors.adapter = mirrorAdapter
                     } ?: run {
                         btnRetry.visibility = View.VISIBLE

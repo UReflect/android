@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">uReflect</string>
     <string name="api_parse_error">Mauvaise réponse du serveur</string>
+    <string name="generic_error">Une erreur s\'est produite…</string>
+    <string name="file_error">Impossible de créer le fichier</string>
+    <string name="no_photo_error">Vous n\'avez pas pris la photo</string>
     <string name="facial_no_camera_error">Une caméra est nécessaire</string>
     <string name="register_btn_text">Je découvre mon reflet</string>
     <string name="configure_btn_text">Configurer</string>
@@ -40,8 +43,14 @@
     <string name="new_profile_name_child_account_text">Compte enfant</string>
     <string name="new_profile_facial_msg_title_text">Reconnaissance faciale</string>
     <string name="new_profile_facial_msg_content_text">Toujours dans l\'optique d\'assurer votre confort, la reconnaissance faciale vous permettra de déverouiller votre miroir dès votre entrée dans la pièce. Elle est cependant facultative.</string>
+    <string name="new_profile_completed_title_text">Enregistrement terminé !</string>
+    <string name="new_profile_pin_title_text">Configurer votre code pin</string>
     <string name="form_text_go">C\'est parti !</string>
     <string name="retry">Réessayer</string>
     <string name="logo">Logo</string>
     <string name="smile_text">Souriez !</string>
+    <string name="angry_text">Enervé.</string>
+    <string name="neutral_text">Neutre de face.</string>
+    <string name="neutral_left_text">Neutre profil gauche.</string>
+    <string name="neutral_right_text">Neutre profil droit.</string>
 </resources>

@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">uReflect</string>
     <string name="api_parse_error">Bad server response</string>
+    <string name="generic_error">Something happened…</string>
+    <string name="file_error">Could not create file</string>
+    <string name="no_photo_error">Please take a photo</string>
     <string name="facial_no_camera_error">A camera is required</string>
     <string name="register_btn_text">Meet my reflection</string>
     <string name="configure_btn_text">Configure</string>
@@ -40,8 +43,14 @@
     <string name="new_profile_name_child_account_text">Child account</string>
     <string name="new_profile_facial_msg_title_text">Facial recognition</string>
     <string name="new_profile_facial_msg_content_text">As a way to assure you full comfort, the facial recognition will open your profile as soon as you step into the room. It it however optional.</string>
+    <string name="new_profile_completed_title_text">Registration completed !</string>
+    <string name="new_profile_pin_title_text">Setup your pin code</string>
     <string name="form_text_go">Let\'s go !</string>
     <string name="retry">Retry</string>
     <string name="logo">Logo</string>
     <string name="smile_text">Smile !</string>
+    <string name="angry_text">Be angry.</string>
+    <string name="neutral_text">Be neutral.</string>
+    <string name="neutral_left_text">Be neutral and slightly turn your face to your left.</string>
+    <string name="neutral_right_text">Be neutral and slightly turn your face to your right.</string>
 </resources>

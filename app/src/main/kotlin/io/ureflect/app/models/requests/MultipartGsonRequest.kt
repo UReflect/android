@@ -18,8 +18,7 @@ import java.lang.reflect.Type
  *
  * @param method Method of the http request
  * @param url URL of the request to make
- * @param filePart File to send
- * @param stringPart: Data to send
+ * @param fileParts Files to send
  * @param type Relevant class object, for Gson's reflection
  * @param headers Map of request headers
  * @param listener Callback for success
@@ -27,8 +26,7 @@ import java.lang.reflect.Type
  */
 class MultipartGsonRequest<T>(method: Int,
                               url: String,
-                              filePart: File,
-                              stringPart: String,
+                              fileParts: List<File>,
                               type: Type,
                               headers: MutableMap<String, String>?,
                               listener: Response.Listener<T>,
@@ -38,8 +36,9 @@ class MultipartGsonRequest<T>(method: Int,
     init {
         try {
             val builder = MultipartEntityBuilder.create()
-            builder.addPart("file", FileBody(filePart))
-            builder.addPart("text", StringBody(stringPart, ContentType.APPLICATION_JSON))
+            fileParts.forEach {filePart ->
+                builder.addPart("file", FileBody(filePart))
+            }
             entity = builder.build()
         } catch (e: UnsupportedEncodingException) {
             VolleyLog.e("UnsupportedEncodingException")

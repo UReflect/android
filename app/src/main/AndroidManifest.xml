@@ -24,7 +24,7 @@
         <activity android:name=".activities.NewMirror" />
         <activity android:name=".activities.NewProfile" />
         <activity android:name=".activities.Mirror" />
-        <activity android:name=".activities.PinTMP" />
+        <activity android:name=".fragments.PinTMP" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"

@@ -228,13 +228,12 @@ object Api {
          *
          * Needs auth token
          */
-        fun face(app: Application, profileId: String, filePart: File, stringPart: String, callback: Response.Listener<ApiResponse<ProfileModel>>, error: Response.ErrorListener):
+        fun face(app: Application, profileId: String, fileParts: List<File>, callback: Response.Listener<ApiResponse<ProfileModel>>, error: Response.ErrorListener):
                 MultipartGsonRequest<ApiResponse<ProfileModel>> =
                 MultipartGsonRequest(
                         Request.Method.POST,
                         "$host$url/$profileId",
-                        filePart,
-                        stringPart,
+                        fileParts,
                         genericType<ApiResponse<ProfileModel>>(),
                         mutableMapOf(
                                 "x-access-token" to String.fromStorage(app, TOKEN),

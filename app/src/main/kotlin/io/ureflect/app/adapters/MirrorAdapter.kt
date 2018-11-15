@@ -8,7 +8,10 @@ import io.ureflect.app.R
 import io.ureflect.app.models.MirrorModel
 import kotlinx.android.synthetic.main.view_mirror.view.*
 
-class MirrorAdapter(val data: List<MirrorModel>, private val addListener: (MirrorModel) -> Unit, private val selectListener: (MirrorModel) -> Unit) : RecyclerView.Adapter<MirrorAdapter.MirrorAdapterViewHolder>() {
+class MirrorAdapter(val data: List<MirrorModel>,
+                    private val addListener: (MirrorModel) -> Unit,
+                    private val selectListener: (MirrorModel) -> Unit,
+                    private val margin: Int) : RecyclerView.Adapter<MirrorAdapter.MirrorAdapterViewHolder>() {
     /**
      * Number of mirror icon on the screen
      */
@@ -35,7 +38,7 @@ class MirrorAdapter(val data: List<MirrorModel>, private val addListener: (Mirro
             else -> LayoutInflater.from(parent.context).inflate(R.layout.view_mirror, parent, false)
         }
 
-        val side = (parent.measuredWidth / NB).toInt()
+        val side = ((parent.measuredWidth - margin * (NB + 1)) / NB).toInt()
         v.layoutParams = RecyclerView.LayoutParams(side, side)
 
         return when (viewType) {
