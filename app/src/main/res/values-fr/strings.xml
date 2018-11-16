@@ -53,4 +53,10 @@
     <string name="neutral_text">Neutre de face.</string>
     <string name="neutral_left_text">Neutre profil gauche.</string>
     <string name="neutral_right_text">Neutre profil droit.</string>
+    <string name="mirror_profiles_text">Profiles</string>
+    <string name="profile_title_text">Profile</string>
+    <string name="profile_security_text">Sécurité</string>
+    <string name="profile_facial_text">Reconnaissance faciale</string>
+    <string name="profile_pin_text">Code pin</string>
+    <string name="profile_delete_text">Supprimer le profile</string>
 </resources>

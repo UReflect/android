@@ -24,18 +24,24 @@ import kotlinx.android.synthetic.main.activity_signup.*
 fun Context.registerIntent(): Intent = Intent(this, SignUp::class.java)
 
 class SignUp : AppCompatActivity() {
-    private val TAG = "SignUpActivity"
-    private val IDENTITY = 0
-    private val CREDENTIAL = 1
-    private val SIGN_UP = 2
+    companion object {
+        const val TAG = "SignUpActivity"
+    }
+
     private lateinit var queue: RequestQueue
     private lateinit var adapter: ListFragmentPagerAdapter
-    private var position = 0
+    private var position = Steps.IDENTITY.step
     private val fragments = ArrayList<Fragment>()
     private var firstName = ""
     private var lastName = ""
     private var email = ""
     private var password = ""
+
+    enum class Steps(val step: Int) {
+        IDENTITY(0),
+        CREDENTIAL(1),
+        SIGN_UP(2)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,41 +56,42 @@ class SignUp : AppCompatActivity() {
     }
 
     private fun setupFragments() {
-        fragments.add(SignUpIdentityFragment({
-            next(CREDENTIAL)
-        }, { firstName: String ->
-            this.firstName = firstName
-        }, { lastName: String ->
-            this.lastName = lastName
-        }))
-        fragments.add(SignUpCredentialsFragment({
-            next(SIGN_UP)
-        }, { email: String ->
-            this.email = email
-        }, { password: String ->
-            this.password = password
-        }))
+        fragments.add(
+                SignUpIdentityFragment({
+                    next(Steps.CREDENTIAL)
+                }, { firstName: String ->
+                    this.firstName = firstName
+                }, { lastName: String ->
+                    this.lastName = lastName
+                })
+        )
+        fragments.add(
+                SignUpCredentialsFragment({
+                    next(Steps.SIGN_UP)
+                }, { email: String ->
+                    this.email = email
+                }, { password: String ->
+                    this.password = password
+                })
+        )
         adapter = ListFragmentPagerAdapter(supportFragmentManager, fragments)
         viewPager.adapter = adapter
         viewPager.currentItem = position
     }
 
-    private fun next(i: Int) {
-        position = i
+    private fun next(step: Steps) {
+        position = step.step
         when (position) {
-            SIGN_UP -> signUp()
+            Steps.SIGN_UP.step -> signUp()
             else -> Handler().postDelayed({ viewPager.currentItem = position }, 100)
         }
     }
 
     private fun signUp() {
-        val data = JsonObject()
-        data.addProperty("email", email)
-        data.addProperty("password", password)
-        data.addProperty("name", "$firstName $lastName")
-
         queue.add(Api.Auth.signup(
-                data,
+                JsonObject().apply { addProperty("email", email) }
+                        .apply { addProperty("password", password) }
+                        .apply { addProperty("name", "$firstName $lastName") },
                 Response.Listener { response ->
                     val user = response.data?.user?.toStorage(this.application)
                     val token = response.data?.token?.toStorage(this.application, TOKEN)
@@ -98,7 +105,7 @@ class SignUp : AppCompatActivity() {
                     position = fragments.size
                     Snackbar.make(root, error.errMsg(getString(R.string.api_parse_error)), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
                 }
-        ))
+        ).apply { tag = TAG })
     }
 
     private fun toHomeView() {
@@ -108,7 +115,7 @@ class SignUp : AppCompatActivity() {
 
     override fun onBackPressed() {
         when (position) {
-            IDENTITY -> super.onBackPressed()
+            Steps.IDENTITY.step -> super.onBackPressed()
             else -> {
                 position -= 1
                 viewPager.currentItem = position

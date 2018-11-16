@@ -2,11 +2,9 @@ package io.ureflect.app.models.requests
 
 import com.android.volley.Response
 import com.android.volley.VolleyLog
-import org.apache.http.HttpEntity
-import org.apache.http.entity.ContentType
-import org.apache.http.entity.mime.MultipartEntityBuilder
-import org.apache.http.entity.mime.content.FileBody
-import org.apache.http.entity.mime.content.StringBody
+import cz.msebera.android.httpclient.HttpEntity
+import cz.msebera.android.httpclient.entity.mime.MultipartEntityBuilder
+import cz.msebera.android.httpclient.entity.mime.content.FileBody
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
@@ -26,7 +24,7 @@ import java.lang.reflect.Type
  */
 class MultipartGsonRequest<T>(method: Int,
                               url: String,
-                              fileParts: List<File>,
+                              fileParts: List<String>,
                               type: Type,
                               headers: MutableMap<String, String>?,
                               listener: Response.Listener<T>,
@@ -36,8 +34,8 @@ class MultipartGsonRequest<T>(method: Int,
     init {
         try {
             val builder = MultipartEntityBuilder.create()
-            fileParts.forEach {filePart ->
-                builder.addPart("file", FileBody(filePart))
+            fileParts.forEach { filePart ->
+                builder.addPart("file", FileBody(File(filePart)))
             }
             entity = builder.build()
         } catch (e: UnsupportedEncodingException) {

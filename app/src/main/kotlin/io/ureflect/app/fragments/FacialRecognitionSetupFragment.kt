@@ -38,6 +38,11 @@ class FacialRecognitionSetupFragment(var next: () -> Unit, var setPaths: (List<S
     private var hasContext = false
     private var step = 0
 
+    companion object {
+        val HANDLED = true
+        val NOT_HANDLED = false
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_facial_setup, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

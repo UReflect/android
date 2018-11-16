@@ -6,27 +6,30 @@ import com.android.volley.Response
 import com.android.volley.VolleyError
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import io.ureflect.app.models.requests.GsonRequest
-import io.ureflect.app.models.requests.MultipartGsonRequest
 import io.ureflect.app.models.MirrorModel
 import io.ureflect.app.models.ProfileModel
-import io.ureflect.app.models.Responses.ApiErrorResponse
-import io.ureflect.app.models.Responses.ApiResponse
-import io.ureflect.app.models.Responses.SigninResponse
-import io.ureflect.app.models.Responses.SimpleApiResponse
+import io.ureflect.app.models.requests.GsonRequest
+import io.ureflect.app.models.requests.MultipartGsonRequest
+import io.ureflect.app.models.responses.ApiErrorResponse
+import io.ureflect.app.models.responses.ApiResponse
+import io.ureflect.app.models.responses.SigninResponse
+import io.ureflect.app.models.responses.SimpleApiResponse
 import io.ureflect.app.utils.TOKEN
 import io.ureflect.app.utils.fromStorage
-import java.io.File
+import java.lang.reflect.Type
 
 fun VolleyError.errMsg(fallback: String): String {
-    networkResponse?.let {
-        val errorResponse = Gson().fromJson(String(networkResponse.data), ApiErrorResponse::class.java)
-        errorResponse.error?.let { error ->
+    try {
+        networkResponse?.let {
+            val errorResponse = Gson().fromJson(String(networkResponse.data), ApiErrorResponse::class.java)
+            errorResponse.error?.let { error ->
+                return error
+            }
+        }
+        message?.let { error ->
             return error
         }
-    }
-    message?.let { error ->
-        return error
+    } catch (e: Exception) {
     }
     return fallback
 }
@@ -44,7 +47,7 @@ object Api {
         return message.isNotEmpty()
     }
 
-    private inline fun <reified T> genericType() = object : TypeToken<T>() {}.type
+    inline fun <reified T> genericType(): Type = object : TypeToken<T>() {}.type
 
     object Misc {
         private const val ping = "/ping"
@@ -106,7 +109,9 @@ object Api {
 
     object Mirror {
         private const val url = "/v1/mirror"
-        private const val join = "/v1/mirror/join"
+        private const val join = "join"
+        private const val linkProfile = "profile"
+        private const val allProfile = "profiles"
 
         /**
          * Needs auth token
@@ -133,7 +138,7 @@ object Api {
                 GsonRequest<ApiResponse<MirrorModel>> =
                 GsonRequest(
                         Request.Method.POST,
-                        host + join,
+                        "$host$url/$join",
                         data,
                         genericType<ApiResponse<MirrorModel>>(),
                         mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),
@@ -153,7 +158,7 @@ object Api {
         fun update(app: Application, mirrorId: String, data: Any, callback: Response.Listener<ApiResponse<MirrorModel>>, error: Response.ErrorListener):
                 GsonRequest<ApiResponse<MirrorModel>> =
                 GsonRequest(
-                        Request.Method.POST,
+                        Request.Method.PUT,
                         "$host$url/$mirrorId",
                         data,
                         genericType<ApiResponse<MirrorModel>>(),
@@ -161,15 +166,50 @@ object Api {
                         callback,
                         error
                 )
-    }
 
-    object Profile {
-        private const val url = "/v1/mirror"
+        /**
+         * data:
+         * profile_id: ID of the profile to link
+         *
+         * Needs auth token
+         */
+        fun linkProfile(app: Application, mirrorId: String, data: Any, callback: Response.Listener<ApiResponse<MirrorModel>>, error: Response.ErrorListener):
+                GsonRequest<ApiResponse<MirrorModel>> =
+                GsonRequest(
+                        Request.Method.POST,
+                        "$host$url" + "s" + "/$mirrorId/$linkProfile",
+                        data,
+                        genericType<ApiResponse<MirrorModel>>(),
+                        mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),
+                        callback,
+                        error
+                )
 
         /**
          * Needs auth token
          */
-        fun all(app: Application, callback: Response.Listener<ApiResponse<ArrayList<ProfileModel>>>, error: Response.ErrorListener):
+        fun profiles(app: Application, mirrorId: String, callback: Response.Listener<ApiResponse<ArrayList<ProfileModel>>>, error: Response.ErrorListener):
+                GsonRequest<ApiResponse<ArrayList<ProfileModel>>> =
+                GsonRequest(
+                        Request.Method.GET,
+                        "$host$url/$mirrorId/$allProfile",
+                        Unit,
+                        genericType<ApiResponse<ArrayList<ProfileModel>>>(),
+                        mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),
+                        callback,
+                        error
+                )
+    }
+
+    object Profile {
+        private const val url = "/v1/profile"
+        private const val face = "face"
+        private const val pin = "pin"
+
+        /**
+         * Needs auth token
+         */
+        fun mine(app: Application, callback: Response.Listener<ApiResponse<ArrayList<ProfileModel>>>, error: Response.ErrorListener):
                 GsonRequest<ApiResponse<ArrayList<ProfileModel>>> =
                 GsonRequest(
                         Request.Method.GET,
@@ -207,16 +247,14 @@ object Api {
          *
          * Needs auth token
          */
-        fun update(app: Application, profileId: String, data: Any, callback: Response.Listener<ApiResponse<ProfileModel>>, error: Response.ErrorListener):
+        fun update(app: Application, profileId: Long, data: Any, callback: Response.Listener<ApiResponse<ProfileModel>>, error: Response.ErrorListener):
                 GsonRequest<ApiResponse<ProfileModel>> =
                 GsonRequest(
                         Request.Method.POST,
                         "$host$url/$profileId",
                         data,
                         genericType<ApiResponse<ProfileModel>>(),
-                        mutableMapOf(
-                                "x-access-token" to String.fromStorage(app, TOKEN),
-                                "" to ""),
+                        mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),
                         callback,
                         error
                 )
@@ -228,16 +266,32 @@ object Api {
          *
          * Needs auth token
          */
-        fun face(app: Application, profileId: String, fileParts: List<File>, callback: Response.Listener<ApiResponse<ProfileModel>>, error: Response.ErrorListener):
+        fun setupFaces(app: Application, profileId: Long, fileParts: List<String>, callback: Response.Listener<ApiResponse<ProfileModel>>, error: Response.ErrorListener):
                 MultipartGsonRequest<ApiResponse<ProfileModel>> =
                 MultipartGsonRequest(
                         Request.Method.POST,
-                        "$host$url/$profileId",
+                        "$host$url/$profileId/$face",
                         fileParts,
                         genericType<ApiResponse<ProfileModel>>(),
-                        mutableMapOf(
-                                "x-access-token" to String.fromStorage(app, TOKEN),
-                                "" to ""),
+                        mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),
+                        callback,
+                        error
+                )
+
+        /**
+         * data:
+         * pin: String
+         *
+         * Needs auth token
+         */
+        fun setupPin(app: Application, profileId: Long, data: Any, callback: Response.Listener<ApiResponse<ProfileModel>>, error: Response.ErrorListener):
+                GsonRequest<ApiResponse<ProfileModel>> =
+                GsonRequest(
+                        Request.Method.POST,
+                        "$host$url/$profileId/$pin",
+                        data,
+                        genericType<ApiResponse<ProfileModel>>(),
+                        mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),
                         callback,
                         error
                 )

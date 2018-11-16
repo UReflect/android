@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/colorPrimaryDark">
 
     <TextView
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:layout_gravity="center_horizontal"
         android:text="@string/new_profile_pin_title_text"
-        android:textColor="@color/colorTitlew"
-        android:layout_gravity="center_horizontal" />
+        android:textColor="@color/colorTitle"
+        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/tvPin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:textSize="20sp"
         android:textColor="@color/colorText"
+        android:textSize="20sp"
         app:layout_anchor="@id/pinLayout"
-        app:layout_anchorGravity="center_horizontal"/>
+        app:layout_anchorGravity="center_horizontal" />
 
     <LinearLayout
         android:id="@+id/pinLayout"
@@ -33,6 +33,10 @@
         android:layout_marginEnd="16dp"
         android:background="@color/colorBorder"
         android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -150,8 +154,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:gravity="center"
-                android:background="@color/colorPrimaryDark">
+                android:background="@color/colorPrimaryDark"
+                android:gravity="center">
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -159,5 +163,9 @@
                     android:src="@drawable/ic_backspace_white_24dp" />
             </LinearLayout>
         </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp" />
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

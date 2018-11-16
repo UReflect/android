@@ -25,18 +25,24 @@ import java.util.*
 fun Context.newMirrorIntent(): Intent = Intent(this, NewMirror::class.java)
 
 class NewMirror : AppCompatActivity() {
-    private val TAG = "NewMirrorActivity"
-    private val CODE = 0
-    private val NAME = 1
-    private val LOCATION = 2
-    private val CREATE = 3
+    companion object {
+        const val TAG = "NewMirrorActivity"
+    }
+
     private lateinit var queue: RequestQueue
     private lateinit var adapter: ListFragmentPagerAdapter
-    private var position = CODE
+    private var position = Steps.CODE.step
     private val fragments = ArrayList<Fragment>()
     private lateinit var name: String
     private lateinit var location: String
     private lateinit var mirrorId: String
+
+    enum class Steps(val step: Int) {
+        CODE(0),
+        NAME(1),
+        LOCATION(2),
+        CREATE(3)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,44 +57,47 @@ class NewMirror : AppCompatActivity() {
     }
 
     private fun setupFragments() {
-        fragments.add(NewMirrorCodeFragment({
-            next(CODE)
-        }, { mirrorId: String ->
-            this.mirrorId = mirrorId
-        }))
-        fragments.add(NewMirrorNameFragment({
-            next(LOCATION)
-        }, { name: String ->
-            this.name = name
-        }))
-        fragments.add(NewMirrorLocationFragment({
-            next(CREATE)
-        }, { location: String ->
-            this.location = location
-        }))
+        fragments.add(
+                NewMirrorCodeFragment({
+                    next(Steps.NAME)
+                }, { mirrorId: String ->
+                    this.mirrorId = mirrorId
+                })
+        )
+        fragments.add(
+                NewMirrorNameFragment({
+                    next(Steps.LOCATION)
+                }, { name: String ->
+                    this.name = name
+                })
+        )
+        fragments.add(
+                NewMirrorLocationFragment({
+                    next(Steps.CREATE)
+                }, { location: String ->
+                    this.location = location
+                })
+        )
         adapter = ListFragmentPagerAdapter(supportFragmentManager, fragments)
         viewPager.adapter = adapter
         viewPager.currentItem = position
     }
 
-    private fun next(i: Int) {
-        position = i
+    private fun next(step: Steps) {
+        position = step.step
         when (position) {
-            CREATE -> createMirror()
+            Steps.CREATE.step -> createMirror()
             else -> Handler().postDelayed({ viewPager.currentItem = position }, 100)
         }
     }
 
     private fun createMirror() {
-        val data = JsonObject()
-        data.addProperty("name", name)
-        data.addProperty("location", location)
-        data.addProperty("timezone", TimeZone.getDefault().getDisplayName(Locale.US))
-
         queue.add(Api.Mirror.update(
                 application,
                 mirrorId,
-                data,
+                JsonObject().apply { addProperty("name", name) }
+                        .apply { addProperty("location", location) }
+                        .apply { addProperty("timezone", TimeZone.getDefault().id) },
                 Response.Listener { response ->
                     response.data?.let {
                         toMirrorView(it)
@@ -99,7 +108,7 @@ class NewMirror : AppCompatActivity() {
                 Response.ErrorListener { error ->
                     Snackbar.make(root, error.errMsg(getString(R.string.api_parse_error)), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
                 }
-        ))
+        ).apply { tag = TAG })
     }
 
     private fun toMirrorView(mirror: MirrorModel) {
@@ -109,8 +118,8 @@ class NewMirror : AppCompatActivity() {
 
     override fun onBackPressed() {
         when (position) {
-            CODE -> super.onBackPressed()
-            NAME -> Unit
+            Steps.CODE.step -> super.onBackPressed()
+            Steps.NAME.step -> Unit
             else -> {
                 position -= 1
                 viewPager.currentItem = position

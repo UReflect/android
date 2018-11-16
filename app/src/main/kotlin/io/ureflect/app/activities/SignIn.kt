@@ -18,7 +18,10 @@ import kotlinx.android.synthetic.main.activity_signin.*
 fun Context.loginIntent(): Intent = Intent(this, SignIn::class.java)
 
 class SignIn : AppCompatActivity() {
-    private val TAG = "SignInActivity"
+    companion object {
+        const val TAG = "SignInActivity"
+    }
+
     private var triedOnce = false
     private lateinit var queue: RequestQueue
 
@@ -27,6 +30,7 @@ class SignIn : AppCompatActivity() {
         setContentView(R.layout.activity_signin)
         Api.log("starting login activity")
         queue = Volley.newRequestQueue(this)
+        queue
         setupUI()
     }
 
@@ -62,12 +66,9 @@ class SignIn : AppCompatActivity() {
         btnLogin.transformationMethod = null
         btnLogin.setOnClickListener {
             if (!loginPayloadError()) {
-                val data = JsonObject()
-                data.addProperty("email", evMail.text.toString().toLowerCase())
-                data.addProperty("password", evPassword.text.toString())
-
                 queue.add(Api.Auth.signin(
-                        data,
+                        JsonObject().apply { addProperty("email", evMail.text.toString().toLowerCase()) }
+                                .apply { addProperty("password", evPassword.text.toString()) },
                         Response.Listener { response ->
                             val user = response.data?.user?.toStorage(this.application)
                             val token = response.data?.token?.toStorage(this.application, TOKEN)
@@ -80,7 +81,7 @@ class SignIn : AppCompatActivity() {
                         Response.ErrorListener { error ->
                             Snackbar.make(root, error.errMsg(getString(R.string.api_parse_error)), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
                         }
-                ))
+                ).apply { tag = TAG })
             } else if (triedOnce) {
                 loginPayloadAutoValidate()
             }

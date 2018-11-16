@@ -1,4 +1,4 @@
-package io.ureflect.app.models.Responses
+package io.ureflect.app.models.responses
 
 import io.ureflect.app.models.UserModel
 

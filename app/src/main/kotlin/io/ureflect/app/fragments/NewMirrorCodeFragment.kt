@@ -21,6 +21,7 @@ import kotlinx.android.synthetic.main.fragment_new_mirror_code.*
 
 @SuppressLint("ValidFragment")
 class NewMirrorCodeFragment(var next: () -> Unit, var setMirrorId: (String) -> Unit) : Fragment() {
+    private val TAG = "NewMirrorCodeFragment"
     private lateinit var queue: RequestQueue
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_new_mirror_code, container, false)
@@ -29,6 +30,11 @@ class NewMirrorCodeFragment(var next: () -> Unit, var setMirrorId: (String) -> U
         super.onViewCreated(view, savedInstanceState)
         queue = Volley.newRequestQueue(this.context)
         setupUI()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        queue.cancelAll(TAG)
     }
 
     private fun credentialsPayloadError(): Boolean {
@@ -52,12 +58,10 @@ class NewMirrorCodeFragment(var next: () -> Unit, var setMirrorId: (String) -> U
     }
 
     private fun join(app: Application) {
-        val data = JsonObject()
-        data.addProperty("join_code", civCode.code)
         loading.visibility = View.VISIBLE
         queue.add(Api.Mirror.join(
                 app,
-                data,
+                JsonObject().apply { addProperty("join_code", civCode.code) },
                 Response.Listener { response ->
                     loading.visibility = View.GONE
                     response.data?.ID?.let { mirrorId ->
@@ -73,7 +77,7 @@ class NewMirrorCodeFragment(var next: () -> Unit, var setMirrorId: (String) -> U
                     hideKeyboard()
                     Snackbar.make(root, error.errMsg(getString(R.string.api_parse_error)), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
                 }
-        ))
+        ).apply { tag = TAG })
     }
 
     private fun hideKeyboard() {

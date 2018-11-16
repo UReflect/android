@@ -53,4 +53,10 @@
     <string name="neutral_text">Be neutral.</string>
     <string name="neutral_left_text">Be neutral and slightly turn your face to your left.</string>
     <string name="neutral_right_text">Be neutral and slightly turn your face to your right.</string>
+    <string name="mirror_profiles_text">Profiles</string>
+    <string name="profile_title_text">Profile</string>
+    <string name="profile_security_text">Security</string>
+    <string name="profile_facial_text">Facial recognition</string>
+    <string name="profile_pin_text">Pin code</string>
+    <string name="profile_delete_text">Delete the profile</string>
 </resources>
