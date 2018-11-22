@@ -13,6 +13,7 @@
     <string name="finish_btn_text">Finish</string>
     <string name="logout_btn_text">Sign out</string>
     <string name="next_step_btn_text">Next step</string>
+    <string name="update_btn_text">Update</string>
     <string name="signin_btn_text">Met it already, sign in</string>
     <string name="signin_login_btn_text">Login</string>
     <string name="signin_forgot_password_btn_text">Forgot password ?</string>
@@ -54,11 +55,13 @@
     <string name="neutral_left_text">Be neutral and slightly turn your face to your left.</string>
     <string name="neutral_right_text">Be neutral and slightly turn your face to your right.</string>
     <string name="mirror_profiles_text">Profiles</string>
+    <string name="mirror_modules_text">Modules</string>
+    <string name="mirror_devices_text">Connected devices</string>
     <string name="profile_title_text">Profile</string>
     <string name="profile_security_text">Security</string>
     <string name="profile_facial_text">Facial recognition</string>
     <string name="profile_pin_text">Pin code</string>
     <string name="profile_delete_text">Delete the profile</string>
-    <string name="mirror_modules_text">Modules</string>
-    <string name="mirror_devices_text">Connected devices</string>
+    <string name="confirmation_text">Are you sure ?</string>
+    <string name="profile_confirmation_text">The profile will be deleted.</string>
 </resources>

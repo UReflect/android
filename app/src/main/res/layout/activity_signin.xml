@@ -73,7 +73,7 @@
             android:visibility="gone" />
     </LinearLayout>
 
-    <Button
+    <io.ureflect.app.utils.AnimatedButton
         android:id="@+id/btnLogin"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
@@ -88,7 +88,7 @@
         app:layout_anchor="@id/btnForgotPassword"
         app:layout_anchorGravity="top|center_horizontal" />
 
-    <Button
+    <io.ureflect.app.utils.AnimatedButton
         android:id="@+id/btnForgotPassword"
         android:layout_width="wrap_content"
         android:layout_height="48dp"

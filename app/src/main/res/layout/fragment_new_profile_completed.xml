@@ -20,7 +20,7 @@
         android:layout_gravity="center"
         android:orientation="vertical">
 
-        <Button
+        <io.ureflect.app.utils.AnimatedButton
             android:id="@+id/btn"
             android:layout_width="wrap_content"
             android:layout_height="48dp"

@@ -17,9 +17,7 @@ class NewMirrorCodeFragment(var next: () -> Unit) : CoordinatorRootFragment() {
         setupUI()
     }
 
-    private fun credentialsPayloadError(): Boolean {
-        return civCode.code.length != 4
-    }
+    private fun credentialsPayloadError(): Boolean = civCode.code.length != 4
 
     private fun setupUI() {
         civCode.addOnCompleteListener {

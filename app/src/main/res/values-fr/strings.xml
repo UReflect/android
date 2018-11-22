@@ -13,6 +13,7 @@
     <string name="finish_btn_text">Finaliser</string>
     <string name="logout_btn_text">Deconnection</string>
     <string name="next_step_btn_text">Etape suivante</string>
+    <string name="update_btn_text">Mettre à jour</string>
     <string name="signin_btn_text">Je le connais déjà, je me connecte</string>
     <string name="signin_login_btn_text">Se connecter</string>
     <string name="signin_forgot_password_btn_text">Mot de passe oublié ?</string>
@@ -54,11 +55,13 @@
     <string name="neutral_left_text">Neutre profil gauche.</string>
     <string name="neutral_right_text">Neutre profil droit.</string>
     <string name="mirror_profiles_text">Profiles</string>
+    <string name="mirror_modules_text">Modules</string>
+    <string name="mirror_devices_text">Objets connectés</string>
     <string name="profile_title_text">Profile</string>
     <string name="profile_security_text">Sécurité</string>
     <string name="profile_facial_text">Reconnaissance faciale</string>
     <string name="profile_pin_text">Code pin</string>
     <string name="profile_delete_text">Supprimer le profile</string>
-    <string name="mirror_modules_text">Modules</string>
-    <string name="mirror_devices_text">Objets connectés</string>
+    <string name="confirmation_text">Etes vous sûr ?</string>
+    <string name="profile_confirmation_text">Ce profile sera supprimé.</string>
 </resources>

@@ -21,17 +21,12 @@ class NewMirrorLocationFragment(var next: (String) -> Unit) : CoordinatorRootFra
         setupUI()
     }
 
-    private fun credentialsPayloadError(): Boolean {
-        var error = false
-        error = error || !evLocationLayout.validate({ s -> s.isNotEmpty() }, getString(R.string.form_error_location_required))
-        return error
-    }
+    private fun credentialsPayloadError(): Boolean = !evLocationLayout.validate({ s -> s.isNotEmpty() }, getString(R.string.form_error_location_required))
 
     private fun credentialsPayloadAutoValidate() {
         triedOnce = true
         evLocationLayout.autoValidate({ s -> s.isNotEmpty() }, getString(R.string.form_error_location_required))
     }
-
 
     private fun setupUI() {
         btn.setOnClickListener {

@@ -283,10 +283,25 @@ object Api {
         fun update(app: Application, profileId: Long, data: Any, callback: Response.Listener<ApiResponse<ProfileModel>>, error: Response.ErrorListener):
                 GsonRequest<ApiResponse<ProfileModel>> =
                 GsonRequest(
-                        Request.Method.POST,
+                        Request.Method.PUT,
                         "$host$url/$profileId",
                         data,
                         genericType<ApiResponse<ProfileModel>>(),
+                        mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),
+                        callback,
+                        error
+                )
+
+        /**
+         * Needs auth token
+         */
+        fun delete(app: Application, profileId: Long, callback: Response.Listener<SimpleApiResponse>, error: Response.ErrorListener):
+                GsonRequest<SimpleApiResponse> =
+                GsonRequest(
+                        Request.Method.DELETE,
+                        "$host$url/$profileId",
+                        Unit,
+                        genericType<SimpleApiResponse>(),
                         mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),
                         callback,
                         error

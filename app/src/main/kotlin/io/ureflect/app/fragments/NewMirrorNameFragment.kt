@@ -21,11 +21,7 @@ class NewMirrorNameFragment(var next: (String) -> Unit) : CoordinatorRootFragmen
         setupUI()
     }
 
-    private fun credentialsPayloadError(): Boolean {
-        var error = false
-        error = error || !evNameLayout.validate({ s -> s.isNotEmpty() }, getString(R.string.form_error_name_required))
-        return error
-    }
+    private fun credentialsPayloadError(): Boolean = !evNameLayout.validate({ s -> s.isNotEmpty() }, getString(R.string.form_error_name_required))
 
     private fun credentialsPayloadAutoValidate() {
         triedOnce = true

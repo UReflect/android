@@ -156,6 +156,8 @@ class FacialRecognitionSetupFragment(var next: () -> Unit, var upload: (String) 
                 next()
             }
         }
+
+        //Wait for root to have a width
         root.post {
             val side = (root.measuredWidth / 2)
             ivPreview.layoutParams = ivPreview.layoutParams
