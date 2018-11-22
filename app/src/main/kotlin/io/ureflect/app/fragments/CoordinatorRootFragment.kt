@@ -6,16 +6,33 @@ import android.support.v4.app.Fragment
 import android.view.View
 import android.widget.ProgressBar
 import io.ureflect.app.R
+import java.io.InvalidClassException
 
 abstract class CoordinatorRootFragment : Fragment() {
     private lateinit var view: CoordinatorLayout
+    private lateinit var loader: ProgressBar
+
+    companion object {
+        const val REQUIREMENT = "CoordinatorRootFragment needs a CoordinatorLayout root and a ProgressBar with id @+id/loading"
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        this.view = view as CoordinatorLayout
+        if (view is CoordinatorLayout) {
+            this.view = view
+            this.view.findViewById<View>(R.id.loading)?.let {
+                if (it is ProgressBar) {
+                    this.loader = it
+                } else {
+                    throw InvalidClassException(REQUIREMENT)
+                }
+            } ?: throw InvalidClassException(REQUIREMENT)
+        } else {
+            throw InvalidClassException(REQUIREMENT)
+        }
     }
 
     fun getRoot(): CoordinatorLayout = view
 
-    fun getLoader(): ProgressBar = view.findViewById(R.id.loading)
+    fun getLoader(): ProgressBar = loader
 }

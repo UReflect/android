@@ -22,14 +22,18 @@ import kotlinx.android.synthetic.main.fragment_facial_setup.*
 import kotlinx.android.synthetic.main.view_image.*
 import java.io.File
 import java.io.IOException
-import java.text.SimpleDateFormat
 import java.util.*
 
 @SuppressLint("ValidFragment")
 class FacialRecognitionSetupFragment(var next: () -> Unit, var upload: (String) -> Unit) : CoordinatorRootFragment() {
-    private val TAG = "FacialSetupFragment"
-    private val CAMERA_REQUEST_CODE = 0
     private lateinit var messages: List<String>
+    private var names = Arrays.asList(
+            "smile",
+            "angry",
+            "neutral",
+            "neutral_left",
+            "neutral_right"
+    )
     private var images = ArrayList<String>()
     private lateinit var imageFilePath: String
     private lateinit var thatContext: Context
@@ -38,6 +42,7 @@ class FacialRecognitionSetupFragment(var next: () -> Unit, var upload: (String) 
     private var step = 0
 
     companion object {
+        private val CAMERA_REQUEST_CODE = 0
         val HANDLED = true
         val NOT_HANDLED = false
     }
@@ -125,13 +130,11 @@ class FacialRecognitionSetupFragment(var next: () -> Unit, var upload: (String) 
 
     @Throws(IOException::class)
     private fun createImageFile(): File {
-        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())
-        val imageFileName: String = "JPEG_" + timeStamp + "_"
         val storageDir: File = thatContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         if (!storageDir.exists()) {
             storageDir.mkdirs()
         }
-        val imageFile = File.createTempFile(imageFileName, ".jpg", storageDir)
+        val imageFile = File.createTempFile(names[step], ".jpg", storageDir)
         imageFilePath = imageFile.absolutePath
         return imageFile
     }

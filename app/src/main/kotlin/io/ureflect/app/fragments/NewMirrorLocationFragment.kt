@@ -12,7 +12,6 @@ import kotlinx.android.synthetic.main.fragment_new_mirror_location.*
 
 @SuppressLint("ValidFragment")
 class NewMirrorLocationFragment(var next: (String) -> Unit) : CoordinatorRootFragment() {
-
     private var triedOnce = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_new_mirror_location, container, false)

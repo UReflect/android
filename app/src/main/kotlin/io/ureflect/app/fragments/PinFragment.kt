@@ -11,7 +11,6 @@ import kotlinx.android.synthetic.main.view_pin_number.view.*
 
 @SuppressLint("ValidFragment")
 class PinFragment(var next: (String) -> Unit) : CoordinatorRootFragment() {
-    private val TAG = "PinFragment"
     private lateinit var list: List<View>
     private var pinVal = ""
     var isSetup = false

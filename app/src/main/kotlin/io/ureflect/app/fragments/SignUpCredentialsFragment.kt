@@ -13,10 +13,7 @@ import kotlinx.android.synthetic.main.fragment_signup_credentials.*
 
 @SuppressLint("ValidFragment")
 class SignUpCredentialsFragment(var next: (String, String) -> Unit) : CoordinatorRootFragment() {
-
     private var triedOnce = false
-
-    //TODO : request here for move upward behavior
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_signup_credentials, container, false)
 

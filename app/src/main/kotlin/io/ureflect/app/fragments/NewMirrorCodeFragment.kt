@@ -5,15 +5,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.android.volley.RequestQueue
 import io.ureflect.app.R
 import kotlinx.android.synthetic.main.fragment_new_mirror_code.*
 
 @SuppressLint("ValidFragment")
 class NewMirrorCodeFragment(var next: () -> Unit) : CoordinatorRootFragment() {
-    private val TAG = "NewMirrorCodeFragment"
-    private lateinit var queue: RequestQueue
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_new_mirror_code, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
