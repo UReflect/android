@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.Snackbar
-import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.android.volley.RequestQueue
@@ -13,6 +12,7 @@ import com.android.volley.Response
 import com.android.volley.toolbox.Volley
 import com.google.gson.JsonObject
 import io.ureflect.app.R
+import io.ureflect.app.activities.Mirror.Companion.MIRROR
 import io.ureflect.app.adapters.ListFragmentPagerAdapter
 import io.ureflect.app.fragments.*
 import io.ureflect.app.fragments.FacialRecognitionSetupFragment.Companion.NOT_HANDLED
@@ -20,6 +20,7 @@ import io.ureflect.app.models.MirrorModel
 import io.ureflect.app.models.ProfileModel
 import io.ureflect.app.services.Api
 import io.ureflect.app.services.errMsg
+import io.ureflect.app.utils.getArg
 import kotlinx.android.synthetic.main.activity_new_profile.*
 import java.util.*
 
@@ -30,14 +31,14 @@ class NewProfile : AppCompatActivity() {
         const val TAG = "NewProfileActivity"
     }
 
+    private lateinit var profile: ProfileModel
     private lateinit var queue: RequestQueue
     private lateinit var mirror: MirrorModel
     private lateinit var adapter: ListFragmentPagerAdapter
     private var position = Steps.NAME.step
-    private val fragments = ArrayList<Fragment>()
+    private val fragments = ArrayList<CoordinatorRootFragment>()
     private lateinit var title: String
     private lateinit var pinCode: String
-    private var images: List<String> = ArrayList()
     private var skipFacial = true
 
     enum class Steps(val step: Int) {
@@ -45,8 +46,7 @@ class NewProfile : AppCompatActivity() {
         FACIAL_MSG(1),
         FACIAL_SETUP(2),
         PIN(3),
-        COMPLETED(4),
-        CREATE(5)
+        COMPLETED(4)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,12 +54,9 @@ class NewProfile : AppCompatActivity() {
         setContentView(R.layout.activity_new_profile)
         queue = Volley.newRequestQueue(this)
 
-        val args = intent.extras
-        args?.getSerializable(Mirror.MIRROR)?.let { mirror ->
-            this.mirror = mirror as MirrorModel
-        } ?: run {
-            finish()
-        }
+        getArg<MirrorModel>(MIRROR)?.let {
+            this.mirror = it
+        } ?: finish()
 
         setupFragments()
     }
@@ -71,11 +68,12 @@ class NewProfile : AppCompatActivity() {
 
     private fun setupFragments() {
         fragments.add(
-                NewProfileNameFragment({
-                    next(Steps.FACIAL_MSG)
-                }, { name: String ->
-                    this.title = name
-                })
+                NewProfileNameFragment { title ->
+                    this.title = title
+                    createProfile {
+                        next(Steps.FACIAL_MSG)
+                    }
+                }
         )
         fragments.add(
                 NewProfileFacialRecognitionMessageFragment({
@@ -89,21 +87,21 @@ class NewProfile : AppCompatActivity() {
         fragments.add(
                 FacialRecognitionSetupFragment({
                     next(Steps.PIN)
-                }, {
-                    images = it
+                }, { image ->
+                    updateFacial(image)
                 })
         )
         fragments.add(
-                PinFragment({
-                    next(Steps.COMPLETED)
-                }, {
-                    pinCode = it
-                }
-                ).apply { isSetup = true })
+                PinFragment { code ->
+                    pinCode = code
+                    updatePin {
+                        next(Steps.COMPLETED)
+                    }
+                }.apply { isSetup = true })
 
         fragments.add(
                 NewProfileCompletedFragment {
-                    next(Steps.CREATE)
+                    linkToMirror()
                 }
         )
         adapter = ListFragmentPagerAdapter(supportFragmentManager, fragments)
@@ -113,84 +111,93 @@ class NewProfile : AppCompatActivity() {
 
     private fun next(step: Steps) {
         position = step.step
-        when (position) {
-            Steps.CREATE.step -> createProfile()
-            else -> Handler().postDelayed({ viewPager.currentItem = position }, 100)
-        }
+        Handler().postDelayed({ viewPager.currentItem = position }, 100)
     }
 
-    private fun createProfile() {
-        loading.visibility = View.VISIBLE
+    private fun createProfile(then: () -> Unit) {
+        val root = fragments[Steps.NAME.step].getRoot()
+        val loader = fragments[Steps.NAME.step].getLoader()
+        loader.visibility = View.VISIBLE
         queue.add(Api.Profile.create(
                 application,
                 JsonObject().apply { addProperty("title", title) },
                 Response.Listener { response ->
+                    loader.visibility = View.GONE
                     response.data?.let {
-                        updateFacial(it)
+                        this.profile = it
+                        then()
                     } ?: run {
-                        loading.visibility = View.GONE
                         Snackbar.make(root, getString(R.string.api_parse_error), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
                     }
                 },
                 Response.ErrorListener { error ->
-                    loading.visibility = View.GONE
+                    loader.visibility = View.GONE
                     Snackbar.make(root, error.errMsg(getString(R.string.api_parse_error)), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
                 }
         ).apply { tag = TAG })
     }
 
-    private fun updateFacial(profile: ProfileModel) {
-        if (images.isNotEmpty()) {
-            queue.add(Api.Profile.setupFaces(
-                    application,
-                    profile.ID,
-                    images,
-                    Response.Listener {
-                        updatePin(profile)
-                    },
-                    Response.ErrorListener { error ->
-                        loading.visibility = View.GONE
-                        Snackbar.make(root, error.errMsg(getString(R.string.api_parse_error)), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
+    private fun updateFacial(path: String) {
+        val root = fragments[Steps.FACIAL_SETUP.step].getRoot()
+        val loader = fragments[Steps.FACIAL_SETUP.step].getLoader()
+        loader.visibility = View.VISIBLE
+        queue.add(Api.Profile.setupFaces(
+                application,
+                profile.ID,
+                Arrays.asList(path),
+                Response.Listener {
+                    loader.visibility = View.GONE
+                    updatePin {
+                        next(Steps.COMPLETED)
                     }
-            ).apply { tag = TAG })
-        } else {
-            updatePin(profile)
-        }
+                },
+                Response.ErrorListener { error ->
+                    loader.visibility = View.GONE
+                    Snackbar.make(root, error.errMsg(getString(R.string.api_parse_error)), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
+                }
+        ).apply { tag = TAG })
     }
 
-    private fun updatePin(profile: ProfileModel) {
+    private fun updatePin(then: () -> Unit) {
+        val root = fragments[Steps.PIN.step].getRoot()
+        val loader = fragments[Steps.PIN.step].getLoader()
+        loader.visibility = View.VISIBLE
         queue.add(Api.Profile.setupPin(
                 application,
                 profile.ID,
                 JsonObject().apply { addProperty("pin", pinCode) },
                 Response.Listener {
-                    linkToMirror(profile)
+                    loader.visibility = View.GONE
+                    then()
                 },
                 Response.ErrorListener { error ->
-                    loading.visibility = View.GONE
+                    loader.visibility = View.GONE
                     Snackbar.make(root, error.errMsg(getString(R.string.api_parse_error)), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
                 }
         ).apply { tag = TAG })
     }
 
-    private fun linkToMirror(profile: ProfileModel) {
+    private fun linkToMirror() {
+        val root = fragments[Steps.COMPLETED.step].getRoot()
+        val loader = fragments[Steps.COMPLETED.step].getLoader()
+        loader.visibility = View.VISIBLE
         queue.add(Api.Mirror.linkProfile(
                 application,
                 mirror.ID,
                 JsonObject().apply { addProperty("profile_id", profile.ID) },
-                Response.Listener {
-                    toProfileView(profile)
+                Response.Listener {response ->
+                    loader.visibility = View.INVISIBLE
+                    response.data?.let {
+                        finish()
+                    } ?: run {
+                        Snackbar.make(root, getString(R.string.api_parse_error), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
+                    }
                 },
                 Response.ErrorListener { error ->
-                    loading.visibility = View.GONE
+                    loader.visibility = View.INVISIBLE
                     Snackbar.make(root, error.errMsg(getString(R.string.api_parse_error)), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
                 }
         ).apply { tag = TAG })
-    }
-
-    private fun toProfileView(profile: ProfileModel) {
-        startActivity(profileIntent(profile))
-        finish()
     }
 
     override fun onBackPressed() {

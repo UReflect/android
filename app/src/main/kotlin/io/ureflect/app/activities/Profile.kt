@@ -9,9 +9,8 @@ import com.android.volley.toolbox.Volley
 import io.ureflect.app.R
 import io.ureflect.app.models.ProfileModel
 import io.ureflect.app.services.Api
+import io.ureflect.app.utils.getArg
 import kotlinx.android.synthetic.main.activity_profile.*
-import java.text.SimpleDateFormat
-import java.util.*
 
 fun Context.profileIntent(profile: ProfileModel): Intent = Intent(this, Profile::class.java).apply { putExtra(Profile.PROFILE, profile) }
 
@@ -30,12 +29,9 @@ class Profile : AppCompatActivity() {
         Api.log("starting Profile activity")
         queue = Volley.newRequestQueue(this)
 
-        val args = intent.extras
-        args?.getSerializable(PROFILE)?.let { Profile ->
-            this.profile = Profile as ProfileModel
-        } ?: run {
-            finish()
-        }
+        getArg<ProfileModel>(PROFILE)?.let {
+            this.profile = it
+        } ?: finish()
 
         setupUI()
     }

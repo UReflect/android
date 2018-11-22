@@ -111,6 +111,5 @@ class Home : AppCompatActivity() {
         Storage.clear(this.application)
         startActivity(mainIntent())
         finish()
-//        startActivity(pinIntent()) //TODO : remove
     }
 }

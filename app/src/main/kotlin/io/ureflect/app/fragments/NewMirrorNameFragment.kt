@@ -2,7 +2,6 @@ package io.ureflect.app.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,8 +11,7 @@ import io.ureflect.app.utils.validate
 import kotlinx.android.synthetic.main.fragment_new_mirror_name.*
 
 @SuppressLint("ValidFragment")
-class NewMirrorNameFragment(var next: () -> Unit,
-                            var setName: (String) -> Unit) : Fragment() {
+class NewMirrorNameFragment(var next: (String) -> Unit) : CoordinatorRootFragment() {
 
     private var triedOnce = false
 
@@ -39,8 +37,7 @@ class NewMirrorNameFragment(var next: () -> Unit,
     private fun setupUI() {
         btn.setOnClickListener {
             if (!credentialsPayloadError()) {
-                setName(evName.text.toString())
-                next()
+                next(evName.text.toString())
             } else if (!triedOnce) {
                 credentialsPayloadAutoValidate()
             }

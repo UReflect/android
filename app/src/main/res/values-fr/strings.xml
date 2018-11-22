@@ -59,4 +59,6 @@
     <string name="profile_facial_text">Reconnaissance faciale</string>
     <string name="profile_pin_text">Code pin</string>
     <string name="profile_delete_text">Supprimer le profile</string>
+    <string name="mirror_modules_text">Modules</string>
+    <string name="mirror_devices_text">Objets connectés</string>
 </resources>

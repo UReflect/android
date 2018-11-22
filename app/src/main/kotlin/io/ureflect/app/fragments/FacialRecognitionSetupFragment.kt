@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.support.design.widget.Snackbar
-import android.support.v4.app.Fragment
 import android.support.v4.content.FileProvider
 import android.support.v7.widget.LinearLayoutManager
 import android.util.TypedValue
@@ -27,7 +26,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 @SuppressLint("ValidFragment")
-class FacialRecognitionSetupFragment(var next: () -> Unit, var setPaths: (List<String>) -> Unit) : Fragment() {
+class FacialRecognitionSetupFragment(var next: () -> Unit, var upload: (String) -> Unit) : CoordinatorRootFragment() {
     private val TAG = "FacialSetupFragment"
     private val CAMERA_REQUEST_CODE = 0
     private lateinit var messages: List<String>
@@ -141,10 +140,11 @@ class FacialRecognitionSetupFragment(var next: () -> Unit, var setPaths: (List<S
         btnNext.transformationMethod = null
         btnNext.setOnClickListener {
             if (hasContext) {
+                upload(imageFilePath)
                 step++
                 when (step) {
                     messages.size -> {
-                        process()
+                        next()
                         step--
                     }
                     else -> setupLegend()
@@ -159,11 +159,6 @@ class FacialRecognitionSetupFragment(var next: () -> Unit, var setPaths: (List<S
                     .apply { height = side }
                     .apply { width = side }
         }
-    }
-
-    private fun process() {
-        setPaths(images)
-        next()
     }
 
     fun backPressed(): Boolean {

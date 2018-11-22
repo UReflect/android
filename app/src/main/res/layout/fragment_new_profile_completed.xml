@@ -14,14 +14,30 @@
         android:textColor="@color/colorTitle"
         android:textSize="20sp" />
 
-    <Button
-        android:id="@+id/btn"
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="@android:color/transparent"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        android:text="@string/form_text_go"
-        android:textColor="@color/colorText" />
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/btn"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:background="@android:color/transparent"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="@string/form_text_go"
+            android:textColor="@color/colorText" />
+
+        <ProgressBar
+            android:id="@+id/loading"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            android:indeterminate="true"
+            android:indeterminateTint="@color/colorPrimary"
+            android:visibility="invisible" />
+    </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

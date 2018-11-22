@@ -6,8 +6,10 @@ import com.android.volley.Response
 import com.android.volley.VolleyError
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import io.ureflect.app.models.ConnectedDeviceModel
 import io.ureflect.app.models.MirrorModel
 import io.ureflect.app.models.ProfileModel
+import io.ureflect.app.models.requests.AssetGsonRequest
 import io.ureflect.app.models.requests.GsonRequest
 import io.ureflect.app.models.requests.MultipartGsonRequest
 import io.ureflect.app.models.responses.ApiErrorResponse
@@ -16,6 +18,7 @@ import io.ureflect.app.models.responses.SigninResponse
 import io.ureflect.app.models.responses.SimpleApiResponse
 import io.ureflect.app.utils.TOKEN
 import io.ureflect.app.utils.fromStorage
+import java.io.InputStream
 import java.lang.reflect.Type
 
 fun VolleyError.errMsg(fallback: String): String {
@@ -53,7 +56,7 @@ object Api {
         private const val ping = "/ping"
 
         /**
-         *
+         * Useless
          */
         fun ping(callback: Response.Listener<SimpleApiResponse>, error: Response.ErrorListener):
                 GsonRequest<SimpleApiResponse> =
@@ -63,6 +66,21 @@ object Api {
                         Unit,
                         SimpleApiResponse::class.java,
                         null,
+                        callback,
+                        error
+                )
+
+        /**
+         * Useless
+         */
+        fun connectedDevices(app: Application, data: InputStream, callback: Response.Listener<ApiResponse<ArrayList<ConnectedDeviceModel>>>, error: Response.ErrorListener):
+                AssetGsonRequest<ApiResponse<ArrayList<ConnectedDeviceModel>>> =
+                AssetGsonRequest(
+                        Request.Method.GET,
+                        host + ping,
+                        data,
+                        genericType<ApiResponse<ArrayList<ConnectedDeviceModel>>>(),
+                        mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),
                         callback,
                         error
                 )
@@ -173,13 +191,13 @@ object Api {
          *
          * Needs auth token
          */
-        fun linkProfile(app: Application, mirrorId: String, data: Any, callback: Response.Listener<ApiResponse<MirrorModel>>, error: Response.ErrorListener):
-                GsonRequest<ApiResponse<MirrorModel>> =
+        fun linkProfile(app: Application, mirrorId: String, data: Any, callback: Response.Listener<ApiResponse<ProfileModel>>, error: Response.ErrorListener):
+                GsonRequest<ApiResponse<ProfileModel>> =
                 GsonRequest(
                         Request.Method.POST,
                         "$host$url" + "s" + "/$mirrorId/$linkProfile",
                         data,
-                        genericType<ApiResponse<MirrorModel>>(),
+                        genericType<ApiResponse<ProfileModel>>(),
                         mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),
                         callback,
                         error
@@ -216,6 +234,21 @@ object Api {
                         host + url,
                         Unit,
                         genericType<ApiResponse<ArrayList<ProfileModel>>>(),
+                        mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),
+                        callback,
+                        error
+                )
+
+        /**
+         * Needs auth token
+         */
+        fun one(app: Application, profileId: Long, callback: Response.Listener<ApiResponse<ProfileModel>>, error: Response.ErrorListener):
+                GsonRequest<ApiResponse<ProfileModel>> =
+                GsonRequest(
+                        Request.Method.GET,
+                        "$host$url/$profileId",
+                        Unit,
+                        genericType<ApiResponse<ProfileModel>>(),
                         mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),
                         callback,
                         error
@@ -260,10 +293,6 @@ object Api {
                 )
 
         /**
-         * data:
-         * title: String
-         * content: String
-         *
          * Needs auth token
          */
         fun setupFaces(app: Application, profileId: Long, fileParts: List<String>, callback: Response.Listener<ApiResponse<ProfileModel>>, error: Response.ErrorListener):

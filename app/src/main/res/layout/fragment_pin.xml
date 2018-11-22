@@ -25,147 +25,163 @@
         app:layout_anchorGravity="center_horizontal" />
 
     <LinearLayout
-        android:id="@+id/pinLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:background="@color/colorBorder"
         android:orientation="vertical">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp" />
-
         <LinearLayout
+            android:id="@+id/pinLayout"
             android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:orientation="horizontal">
-
-            <include
-                android:id="@+id/number1"
-                layout="@layout/view_pin_number" />
+            android:layout_height="wrap_content"
+            android:background="@color/colorBorder"
+            android:orientation="vertical">
 
             <View
-                android:layout_width="2dp"
-                android:layout_height="match_parent" />
-
-            <include
-                android:id="@+id/number2"
-                layout="@layout/view_pin_number" />
-
-            <View
-                android:layout_width="2dp"
-                android:layout_height="match_parent" />
-
-            <include
-                android:id="@+id/number3"
-                layout="@layout/view_pin_number" />
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:orientation="horizontal">
-
-            <include
-                android:id="@+id/number4"
-                layout="@layout/view_pin_number" />
-
-            <View
-                android:layout_width="2dp"
-                android:layout_height="match_parent" />
-
-            <include
-                android:id="@+id/number5"
-                layout="@layout/view_pin_number" />
-
-            <View
-                android:layout_width="2dp"
-                android:layout_height="match_parent" />
-
-            <include
-                android:id="@+id/number6"
-                layout="@layout/view_pin_number" />
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:orientation="horizontal">
-
-            <include
-                android:id="@+id/number7"
-                layout="@layout/view_pin_number" />
-
-            <View
-                android:layout_width="2dp"
-                android:layout_height="match_parent" />
-
-            <include
-                android:id="@+id/number8"
-                layout="@layout/view_pin_number" />
-
-            <View
-                android:layout_width="2dp"
-                android:layout_height="match_parent" />
-
-            <include
-                android:id="@+id/number9"
-                layout="@layout/view_pin_number" />
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:orientation="horizontal">
-
-            <include
-                android:id="@+id/empty"
-                layout="@layout/view_pin_number" />
-
-            <View
-                android:layout_width="2dp"
-                android:layout_height="match_parent" />
-
-            <include
-                android:id="@+id/number0"
-                layout="@layout/view_pin_number" />
-
-            <View
-                android:layout_width="2dp"
-                android:layout_height="match_parent" />
+                android:layout_width="match_parent"
+                android:layout_height="2dp" />
 
             <LinearLayout
-                android:id="@+id/delete"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@color/colorPrimaryDark"
-                android:gravity="center">
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:orientation="horizontal">
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_backspace_white_24dp" />
+                <include
+                    android:id="@+id/number1"
+                    layout="@layout/view_pin_number" />
+
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent" />
+
+                <include
+                    android:id="@+id/number2"
+                    layout="@layout/view_pin_number" />
+
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent" />
+
+                <include
+                    android:id="@+id/number3"
+                    layout="@layout/view_pin_number" />
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:orientation="horizontal">
+
+                <include
+                    android:id="@+id/number4"
+                    layout="@layout/view_pin_number" />
+
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent" />
+
+                <include
+                    android:id="@+id/number5"
+                    layout="@layout/view_pin_number" />
+
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent" />
+
+                <include
+                    android:id="@+id/number6"
+                    layout="@layout/view_pin_number" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:orientation="horizontal">
+
+                <include
+                    android:id="@+id/number7"
+                    layout="@layout/view_pin_number" />
+
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent" />
+
+                <include
+                    android:id="@+id/number8"
+                    layout="@layout/view_pin_number" />
+
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent" />
+
+                <include
+                    android:id="@+id/number9"
+                    layout="@layout/view_pin_number" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:orientation="horizontal">
+
+                <include
+                    android:id="@+id/empty"
+                    layout="@layout/view_pin_number" />
+
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent" />
+
+                <include
+                    android:id="@+id/number0"
+                    layout="@layout/view_pin_number" />
+
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent" />
+
+                <LinearLayout
+                    android:id="@+id/delete"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/colorPrimaryDark"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_backspace_white_24dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp" />
         </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp" />
+        <ProgressBar
+            android:id="@+id/loading"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            android:indeterminate="true"
+            android:indeterminateTint="@color/colorPrimary"
+            android:visibility="gone" />
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

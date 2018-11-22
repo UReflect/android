@@ -2,7 +2,6 @@ package io.ureflect.app.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,9 +11,7 @@ import io.ureflect.app.utils.validate
 import kotlinx.android.synthetic.main.fragment_signup_identity.*
 
 @SuppressLint("ValidFragment")
-class SignUpIdentityFragment(val next: () -> Unit,
-                             var setFirstname: (String) -> Unit,
-                             var setLastname: (String) -> Unit) : Fragment() {
+class SignUpIdentityFragment(val next: (String, String) -> Unit) : CoordinatorRootFragment() {
     private var triedOnce = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_signup_identity, container, false)
@@ -41,9 +38,7 @@ class SignUpIdentityFragment(val next: () -> Unit,
         btn.transformationMethod = null
         btn.setOnClickListener {
             if (!identityPayloadError()) {
-                setFirstname(evFirstname.text.toString())
-                setLastname(evLastname.text.toString())
-                next()
+                next(evFirstname.text.toString(), evLastname.text.toString())
             } else if (!triedOnce) {
                 identityPayloadAutoValidate()
             }

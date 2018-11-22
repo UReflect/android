@@ -2,7 +2,6 @@ package io.ureflect.app.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,11 +12,11 @@ import io.ureflect.app.utils.validate
 import kotlinx.android.synthetic.main.fragment_signup_credentials.*
 
 @SuppressLint("ValidFragment")
-class SignUpCredentialsFragment(var next: () -> Unit,
-                                var setMail: (String) -> Unit,
-                                var setPassword: (String) -> Unit) : Fragment() {
+class SignUpCredentialsFragment(var next: (String, String) -> Unit) : CoordinatorRootFragment() {
 
     private var triedOnce = false
+
+    //TODO : request here for move upward behavior
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_signup_credentials, container, false)
 
@@ -41,13 +40,10 @@ class SignUpCredentialsFragment(var next: () -> Unit,
         evPasswordLayout.autoValidate({ s -> s.isNotEmpty() }, getString(R.string.form_error_password_required))
     }
 
-
     private fun setupUI() {
         btn.setOnClickListener {
             if (!credentialsPayloadError()) {
-                setMail(evMail.text.toString())
-                setPassword(evPassword.text.toString())
-                next()
+                next(evMail.text.toString(), evPassword.text.toString())
             } else if (!triedOnce) {
                 credentialsPayloadAutoValidate()
             }

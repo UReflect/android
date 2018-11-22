@@ -57,38 +57,119 @@
             </android.support.v7.widget.CardView>
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/tvProfiles"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="8dp"
-            android:text="@string/mirror_profiles_text"
-            android:textColor="@color/colorText" />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rvProfiles"
+        <LinearLayout
+            android:id="@+id/llProfiles"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="8dp" />
-
-        <Button
-            android:id="@+id/btnRetryProfiles"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginBottom="16dp"
-            android:background="@android:color/transparent"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:text="@string/retry"
-            android:textColor="@color/colorText"
-            android:visibility="gone" />
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tvProfiles"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mirror_profiles_text"
+                android:textColor="@color/colorText" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rvProfiles"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp" />
+
+            <Button
+                android:id="@+id/btnRetryProfiles"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="16dp"
+                android:background="@android:color/transparent"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:text="@string/retry"
+                android:textColor="@color/colorText"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llDevices"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tvDevices"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mirror_devices_text"
+                android:textColor="@color/colorText" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rvDevices"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp" />
+
+            <Button
+                android:id="@+id/btnRetryDevices"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="16dp"
+                android:background="@android:color/transparent"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:text="@string/retry"
+                android:textColor="@color/colorText"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llModules"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tvModules"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mirror_modules_text"
+                android:textColor="@color/colorText" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rvModules"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp" />
+
+            <Button
+                android:id="@+id/btnRetryModules"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="16dp"
+                android:background="@android:color/transparent"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:text="@string/retry"
+                android:textColor="@color/colorText"
+                android:visibility="gone" />
+        </LinearLayout>
 
         <ProgressBar
             android:id="@+id/loading"

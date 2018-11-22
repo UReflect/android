@@ -25,7 +25,7 @@ import java.nio.charset.Charset
 open class GsonRequest<T>(method: Int,
                           url: String,
                           private val data: Any,
-                          private val type: Type,
+                          protected val type: Type,
                           private val headers: MutableMap<String, String>?,
                           private val listener: Response.Listener<T>,
                           errorListener: Response.ErrorListener) : Request<T>(method, url, errorListener) {

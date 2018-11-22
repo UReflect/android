@@ -30,6 +30,7 @@
             android:id="@+id/evNameLayout"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             app:errorEnabled="true">
 
             <android.support.design.widget.TextInputEditText
@@ -48,20 +49,22 @@
             android:layout_gravity="center_vertical"
             android:text="@string/profile_security_text"
             android:textAlignment="gravity"
+            android:textAllCaps="true"
             android:textColor="@color/colorTitle"
-            android:textSize="20sp" />
+            android:textSize="16sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingTop="8dp">
+            android:layout_marginTop="16dp">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
+                android:gravity="center_vertical"
                 android:text="@string/profile_facial_text"
                 android:textAlignment="gravity"
                 android:textColor="@color/colorTitle"
@@ -77,13 +80,14 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/colorBorder" />
+            android:background="@color/colorText"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingTop="8dp">
+            android:orientation="horizontal">
 
             <TextView
                 android:layout_width="0dp"
@@ -112,7 +116,9 @@
         android:layout_marginEnd="8dp"
         android:text="@string/profile_delete_text"
         android:textColor="@color/colorPrimary"
-        android:textSize="20sp"
+        android:textSize="18sp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
         app:layout_anchor="@id/btnContainer"
         app:layout_anchorGravity="top|start" />
 

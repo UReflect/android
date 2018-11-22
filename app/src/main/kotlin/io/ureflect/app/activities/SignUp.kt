@@ -5,14 +5,15 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.Snackbar
-import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
+import android.view.View
 import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.Volley
 import com.google.gson.JsonObject
 import io.ureflect.app.R
 import io.ureflect.app.adapters.ListFragmentPagerAdapter
+import io.ureflect.app.fragments.CoordinatorRootFragment
 import io.ureflect.app.fragments.SignUpCredentialsFragment
 import io.ureflect.app.fragments.SignUpIdentityFragment
 import io.ureflect.app.services.Api
@@ -31,7 +32,7 @@ class SignUp : AppCompatActivity() {
     private lateinit var queue: RequestQueue
     private lateinit var adapter: ListFragmentPagerAdapter
     private var position = Steps.IDENTITY.step
-    private val fragments = ArrayList<Fragment>()
+    private val fragments = ArrayList<CoordinatorRootFragment>()
     private var firstName = ""
     private var lastName = ""
     private var email = ""
@@ -39,8 +40,7 @@ class SignUp : AppCompatActivity() {
 
     enum class Steps(val step: Int) {
         IDENTITY(0),
-        CREDENTIAL(1),
-        SIGN_UP(2)
+        CREDENTIAL(1)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,22 +57,18 @@ class SignUp : AppCompatActivity() {
 
     private fun setupFragments() {
         fragments.add(
-                SignUpIdentityFragment({
-                    next(Steps.CREDENTIAL)
-                }, { firstName: String ->
+                SignUpIdentityFragment { firstName: String, lastName: String ->
                     this.firstName = firstName
-                }, { lastName: String ->
                     this.lastName = lastName
-                })
+                    next(Steps.CREDENTIAL)
+                }
         )
         fragments.add(
-                SignUpCredentialsFragment({
-                    next(Steps.SIGN_UP)
-                }, { email: String ->
+                SignUpCredentialsFragment { email: String, password: String ->
                     this.email = email
-                }, { password: String ->
                     this.password = password
-                })
+                    signUp()
+                }
         )
         adapter = ListFragmentPagerAdapter(supportFragmentManager, fragments)
         viewPager.adapter = adapter
@@ -81,18 +77,19 @@ class SignUp : AppCompatActivity() {
 
     private fun next(step: Steps) {
         position = step.step
-        when (position) {
-            Steps.SIGN_UP.step -> signUp()
-            else -> Handler().postDelayed({ viewPager.currentItem = position }, 100)
-        }
+        Handler().postDelayed({ viewPager.currentItem = position }, 100)
     }
 
     private fun signUp() {
+        val root = fragments[Steps.CREDENTIAL.step].getRoot()
+        val loader = fragments[Steps.CREDENTIAL.step].getLoader()
+        loader.visibility = View.VISIBLE
         queue.add(Api.Auth.signup(
                 JsonObject().apply { addProperty("email", email) }
                         .apply { addProperty("password", password) }
                         .apply { addProperty("name", "$firstName $lastName") },
                 Response.Listener { response ->
+                    loader.visibility = View.GONE
                     val user = response.data?.user?.toStorage(this.application)
                     val token = response.data?.token?.toStorage(this.application, TOKEN)
                     if (user == null || token == null) {
@@ -102,7 +99,7 @@ class SignUp : AppCompatActivity() {
                     toHomeView()
                 },
                 Response.ErrorListener { error ->
-                    position = fragments.size
+                    loader.visibility = View.GONE
                     Snackbar.make(root, error.errMsg(getString(R.string.api_parse_error)), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
                 }
         ).apply { tag = TAG })

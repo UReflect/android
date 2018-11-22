@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
+import android.view.View
 import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.Volley
@@ -66,10 +67,12 @@ class SignIn : AppCompatActivity() {
         btnLogin.transformationMethod = null
         btnLogin.setOnClickListener {
             if (!loginPayloadError()) {
+                loading.visibility = View.VISIBLE
                 queue.add(Api.Auth.signin(
                         JsonObject().apply { addProperty("email", evMail.text.toString().toLowerCase()) }
                                 .apply { addProperty("password", evPassword.text.toString()) },
                         Response.Listener { response ->
+                            loading.visibility = View.GONE
                             val user = response.data?.user?.toStorage(this.application)
                             val token = response.data?.token?.toStorage(this.application, TOKEN)
                             if (user == null || token == null) {
@@ -79,6 +82,7 @@ class SignIn : AppCompatActivity() {
                             toHomeView()
                         },
                         Response.ErrorListener { error ->
+                            loading.visibility = View.GONE
                             Snackbar.make(root, error.errMsg(getString(R.string.api_parse_error)), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
                         }
                 ).apply { tag = TAG })

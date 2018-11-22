@@ -2,7 +2,6 @@ package io.ureflect.app.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +10,7 @@ import kotlinx.android.synthetic.main.fragment_pin.*
 import kotlinx.android.synthetic.main.view_pin_number.view.*
 
 @SuppressLint("ValidFragment")
-class PinFragment(var next: () -> Unit, var setCode: (String) -> Unit) : Fragment() {
+class PinFragment(var next: (String) -> Unit) : CoordinatorRootFragment() {
     private val TAG = "PinFragment"
     private lateinit var list: List<View>
     private var pinVal = ""
@@ -48,8 +47,7 @@ class PinFragment(var next: () -> Unit, var setCode: (String) -> Unit) : Fragmen
     private fun updatePin() {
         tvPin.text = if (isSetup) pinVal else "*".repeat(pinVal.length)
         if (tvPin.text.length == 4) {
-            setCode(pinVal)
-            next()
+            next(pinVal)
         }
     }
 }
