@@ -134,7 +134,7 @@
             android:layout_gravity="bottom|end"
             android:layout_marginBottom="16dp"
             android:orientation="horizontal"
-            app:layout_behavior="io.ureflect.app.utils.MoveUpwardBehavior">
+            app:layout_behavior="io.ureflect.app.ui.MoveUpwardBehavior">
 
             <TextView
                 android:id="@+id/tvDelete"
@@ -153,7 +153,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1" />
 
-            <io.ureflect.app.utils.AnimatedButton
+            <io.ureflect.app.ui.AnimatedButton
                 android:id="@+id/btn"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"

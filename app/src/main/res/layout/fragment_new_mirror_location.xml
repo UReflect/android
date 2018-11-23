@@ -59,7 +59,7 @@
 
         </android.support.design.widget.TextInputLayout>
 
-        <io.ureflect.app.utils.AnimatedButton
+        <io.ureflect.app.ui.AnimatedButton
             android:id="@+id/btn"
             android:layout_width="wrap_content"
             android:layout_height="48dp"

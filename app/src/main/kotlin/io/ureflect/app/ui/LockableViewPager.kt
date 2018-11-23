@@ -1,4 +1,4 @@
-package io.ureflect.app.utils
+package io.ureflect.app.ui
 
 import android.content.Context
 import android.support.v4.view.ViewPager

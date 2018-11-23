@@ -79,7 +79,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp" />
 
-            <io.ureflect.app.utils.AnimatedButton
+            <io.ureflect.app.ui.AnimatedButton
                 android:id="@+id/btnRetryProfiles"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -115,7 +115,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp" />
 
-            <io.ureflect.app.utils.AnimatedButton
+            <io.ureflect.app.ui.AnimatedButton
                 android:id="@+id/btnRetryDevices"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -154,7 +154,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp" />
 
-            <io.ureflect.app.utils.AnimatedButton
+            <io.ureflect.app.ui.AnimatedButton
                 android:id="@+id/btnRetryModules"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

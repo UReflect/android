@@ -37,7 +37,7 @@
             android:textSize="14sp" />
     </LinearLayout>
 
-    <io.ureflect.app.utils.AnimatedButton
+    <io.ureflect.app.ui.AnimatedButton
         android:id="@+id/btnConfigure"
         android:layout_width="wrap_content"
         android:minWidth="@dimen/button_min"
@@ -53,7 +53,7 @@
         app:layout_anchor="@id/btnSkip"
         app:layout_anchorGravity="top|center_horizontal" />
 
-    <io.ureflect.app.utils.AnimatedButton
+    <io.ureflect.app.ui.AnimatedButton
         android:id="@+id/btnSkip"
         android:layout_width="wrap_content"
         android:layout_height="48dp"

@@ -42,11 +42,20 @@ fun AppCompatActivity.logout() {
     finish()
 }
 
-fun AppCompatActivity.addFragment(fragment: Fragment, frameId: Int) = supportFragmentManager.inTransaction { add(frameId, fragment) }
+fun AppCompatActivity.addFragment(fragment: Fragment, frameId: Int) = supportFragmentManager.inTransaction {
+    setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right)
+    add(frameId, fragment)
+}
 
-fun AppCompatActivity.replaceFragment(fragment: Fragment, frameId: Int) = supportFragmentManager.inTransaction { replace(frameId, fragment) }
+fun AppCompatActivity.replaceFragment(fragment: Fragment, frameId: Int) = supportFragmentManager.inTransaction {
+    setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+    replace(frameId, fragment)
+}
 
-fun AppCompatActivity.removeFragment(fragment: Fragment) = supportFragmentManager.inTransaction { remove(fragment) }
+fun AppCompatActivity.removeFragment(fragment: Fragment) = supportFragmentManager.inTransaction {
+    setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right)
+    remove(fragment)
+}
 
 inline fun <reified T : Serializable> Activity.getArg(identifier: String): T? {
     val args = intent.extras

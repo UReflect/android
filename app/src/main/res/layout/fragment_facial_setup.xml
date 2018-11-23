@@ -50,7 +50,7 @@
 
     </LinearLayout>
 
-    <io.ureflect.app.utils.AnimatedButton
+    <io.ureflect.app.ui.AnimatedButton
         android:id="@+id/btnNext"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
@@ -64,5 +64,5 @@
         android:paddingEnd="8dp"
         android:text="@string/next_step_btn_text"
         android:textColor="@color/colorText"
-        app:layout_behavior="io.ureflect.app.utils.MoveUpwardBehavior" />
+        app:layout_behavior="io.ureflect.app.ui.MoveUpwardBehavior" />
 </android.support.design.widget.CoordinatorLayout>

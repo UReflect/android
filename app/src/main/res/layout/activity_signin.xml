@@ -73,7 +73,7 @@
             android:visibility="gone" />
     </LinearLayout>
 
-    <io.ureflect.app.utils.AnimatedButton
+    <io.ureflect.app.ui.AnimatedButton
         android:id="@+id/btnLogin"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
@@ -88,7 +88,7 @@
         app:layout_anchor="@id/btnForgotPassword"
         app:layout_anchorGravity="top|center_horizontal" />
 
-    <io.ureflect.app.utils.AnimatedButton
+    <io.ureflect.app.ui.AnimatedButton
         android:id="@+id/btnForgotPassword"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
@@ -101,6 +101,6 @@
         android:paddingEnd="8dp"
         android:text="@string/signin_forgot_password_btn_text"
         android:textColor="@color/colorText"
-        app:layout_behavior="io.ureflect.app.utils.MoveUpwardBehavior" />
+        app:layout_behavior="io.ureflect.app.ui.MoveUpwardBehavior" />
 
 </android.support.design.widget.CoordinatorLayout>

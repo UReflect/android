@@ -58,7 +58,7 @@
         </android.support.design.widget.TextInputLayout>
     </LinearLayout>
 
-    <io.ureflect.app.utils.AnimatedButton
+    <io.ureflect.app.ui.AnimatedButton
         android:id="@+id/btn"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
@@ -71,6 +71,6 @@
         android:text="@string/ok_btn_text"
         android:textColor="@color/colorText"
         android:layout_gravity="bottom|end"
-        app:layout_behavior="io.ureflect.app.utils.MoveUpwardBehavior" />
+        app:layout_behavior="io.ureflect.app.ui.MoveUpwardBehavior" />
 
 </android.support.design.widget.CoordinatorLayout>

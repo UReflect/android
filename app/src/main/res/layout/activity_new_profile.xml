@@ -9,7 +9,7 @@
     android:paddingTop="16dp"
     tools:context=".activities.NewProfile">
 
-    <io.ureflect.app.utils.LockableViewPager
+    <io.ureflect.app.ui.LockableViewPager
         android:id="@+id/viewPager"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
