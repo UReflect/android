@@ -46,6 +46,7 @@
     <string name="new_profile_facial_msg_content_text">As a way to assure you full comfort, the facial recognition will open your profile as soon as you step into the room. It it however optional.</string>
     <string name="new_profile_completed_title_text">Registration completed !</string>
     <string name="new_profile_pin_title_text">Setup your pin code</string>
+    <string name="new_profile_confirm_pin_title_text">Confirm your pin code</string>
     <string name="form_text_go">Let\'s go !</string>
     <string name="retry">Retry</string>
     <string name="logo">Logo</string>
@@ -64,4 +65,7 @@
     <string name="profile_delete_text">Delete the profile</string>
     <string name="confirmation_text">Are you sure ?</string>
     <string name="profile_confirmation_text">The profile will be deleted.</string>
+    <string name="new_profile_pin_match_error">The pins do not match</string>
+    <string name="success_text">Success !</string>
+    <string name="new_profile_pin_title_check_text">Enter PIN</string>
 </resources>

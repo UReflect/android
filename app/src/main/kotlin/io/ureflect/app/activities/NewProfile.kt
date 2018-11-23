@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.android.volley.RequestQueue
@@ -15,11 +14,13 @@ import io.ureflect.app.R
 import io.ureflect.app.activities.Mirror.Companion.MIRROR
 import io.ureflect.app.adapters.ListFragmentPagerAdapter
 import io.ureflect.app.fragments.*
-import io.ureflect.app.fragments.FacialRecognitionSetupFragment.Companion.NOT_HANDLED
+import io.ureflect.app.fragments.BackPressedFragment.Companion.NOT_HANDLED
 import io.ureflect.app.models.MirrorModel
 import io.ureflect.app.models.ProfileModel
 import io.ureflect.app.services.Api
 import io.ureflect.app.services.errMsg
+import io.ureflect.app.services.expired
+import io.ureflect.app.utils.errorSnackbar
 import io.ureflect.app.utils.getArg
 import kotlinx.android.synthetic.main.activity_new_profile.*
 import java.util.*
@@ -87,8 +88,10 @@ class NewProfile : AppCompatActivity() {
         fragments.add(
                 FacialRecognitionSetupFragment({
                     next(Steps.PIN)
-                }, { image ->
-                    updateFacial(image)
+                }, { path: String, callback: () -> Unit ->
+                    updateFacial(path) {
+                        callback()
+                    }
                 })
         )
         fragments.add(
@@ -97,8 +100,8 @@ class NewProfile : AppCompatActivity() {
                     updatePin {
                         next(Steps.COMPLETED)
                     }
-                }.apply { isSetup = true })
-
+                }
+        )
         fragments.add(
                 NewProfileCompletedFragment {
                     linkToMirror()
@@ -114,7 +117,7 @@ class NewProfile : AppCompatActivity() {
         Handler().postDelayed({ viewPager.currentItem = position }, 100)
     }
 
-    private fun createProfile(then: () -> Unit) {
+    private fun createProfile(callback: () -> Unit) {
         val root = fragments[Steps.NAME.step].getRoot()
         val loader = fragments[Steps.NAME.step].getLoader()
         loader.visibility = View.VISIBLE
@@ -125,19 +128,19 @@ class NewProfile : AppCompatActivity() {
                     loader.visibility = View.GONE
                     response.data?.let {
                         this.profile = it
-                        then()
+                        callback()
                     } ?: run {
-                        Snackbar.make(root, getString(R.string.api_parse_error), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
+                        errorSnackbar(root, getString(R.string.api_parse_error))
                     }
                 },
                 Response.ErrorListener { error ->
                     loader.visibility = View.GONE
-                    Snackbar.make(root, error.errMsg(getString(R.string.api_parse_error)), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
+                    errorSnackbar(root, error.errMsg(getString(R.string.api_parse_error)), error.expired())
                 }
         ).apply { tag = TAG })
     }
 
-    private fun updateFacial(path: String) {
+    private fun updateFacial(path: String, callback: () -> Unit) {
         val root = fragments[Steps.FACIAL_SETUP.step].getRoot()
         val loader = fragments[Steps.FACIAL_SETUP.step].getLoader()
         loader.visibility = View.VISIBLE
@@ -147,18 +150,16 @@ class NewProfile : AppCompatActivity() {
                 Arrays.asList(path),
                 Response.Listener {
                     loader.visibility = View.GONE
-                    updatePin {
-                        next(Steps.COMPLETED)
-                    }
+                    callback()
                 },
                 Response.ErrorListener { error ->
                     loader.visibility = View.GONE
-                    Snackbar.make(root, error.errMsg(getString(R.string.api_parse_error)), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
+                    errorSnackbar(root, error.errMsg(getString(R.string.api_parse_error)), error.expired())
                 }
         ).apply { tag = TAG })
     }
 
-    private fun updatePin(then: () -> Unit) {
+    private fun updatePin(callback: () -> Unit) {
         val root = fragments[Steps.PIN.step].getRoot()
         val loader = fragments[Steps.PIN.step].getLoader()
         loader.visibility = View.VISIBLE
@@ -167,12 +168,12 @@ class NewProfile : AppCompatActivity() {
                 profile.ID,
                 JsonObject().apply { addProperty("pin", pinCode) },
                 Response.Listener {
-                    loader.visibility = View.GONE
-                    then()
+                    loader.visibility = View.INVISIBLE
+                    callback()
                 },
                 Response.ErrorListener { error ->
-                    loader.visibility = View.GONE
-                    Snackbar.make(root, error.errMsg(getString(R.string.api_parse_error)), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
+                    loader.visibility = View.INVISIBLE
+                    errorSnackbar(root, error.errMsg(getString(R.string.api_parse_error)), error.expired())
                 }
         ).apply { tag = TAG })
     }
@@ -185,17 +186,17 @@ class NewProfile : AppCompatActivity() {
                 application,
                 mirror.ID,
                 JsonObject().apply { addProperty("profile_id", profile.ID) },
-                Response.Listener {response ->
+                Response.Listener { response ->
                     loader.visibility = View.INVISIBLE
                     response.data?.let {
                         finish()
                     } ?: run {
-                        Snackbar.make(root, getString(R.string.api_parse_error), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
+                        errorSnackbar(root, getString(R.string.api_parse_error))
                     }
                 },
                 Response.ErrorListener { error ->
                     loader.visibility = View.INVISIBLE
-                    Snackbar.make(root, error.errMsg(getString(R.string.api_parse_error)), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
+                    errorSnackbar(root, error.errMsg(getString(R.string.api_parse_error)), error.expired())
                 }
         ).apply { tag = TAG })
     }
@@ -204,14 +205,16 @@ class NewProfile : AppCompatActivity() {
         when (position) {
             Steps.NAME.step -> super.onBackPressed()
             Steps.PIN.step -> {
-                position = when (skipFacial) {
-                    true -> Steps.FACIAL_MSG.step
-                    else -> Steps.FACIAL_SETUP.step
+                if ((fragments[position] as BackPressedFragment).backPressed() == NOT_HANDLED) {
+                    position = when (skipFacial) {
+                        true -> Steps.FACIAL_MSG.step
+                        else -> Steps.FACIAL_SETUP.step
+                    }
+                    viewPager.currentItem = position
                 }
-                viewPager.currentItem = position
             }
             Steps.FACIAL_SETUP.step -> {
-                if ((fragments[Steps.FACIAL_SETUP.step] as FacialRecognitionSetupFragment).backPressed() == NOT_HANDLED) {
+                if ((fragments[position] as BackPressedFragment).backPressed() == NOT_HANDLED) {
                     position = Steps.FACIAL_MSG.step
                     viewPager.currentItem = position
                 }

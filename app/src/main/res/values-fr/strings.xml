@@ -45,7 +45,8 @@
     <string name="new_profile_facial_msg_title_text">Reconnaissance faciale</string>
     <string name="new_profile_facial_msg_content_text">Toujours dans l\'optique d\'assurer votre confort, la reconnaissance faciale vous permettra de déverouiller votre miroir dès votre entrée dans la pièce. Elle est cependant facultative.</string>
     <string name="new_profile_completed_title_text">Enregistrement terminé !</string>
-    <string name="new_profile_pin_title_text">Configurer votre code pin</string>
+    <string name="new_profile_pin_title_text">Configurez votre code pin</string>
+    <string name="new_profile_confirm_pin_title_text">Confirmez votre code pin</string>
     <string name="form_text_go">C\'est parti !</string>
     <string name="retry">Réessayer</string>
     <string name="logo">Logo</string>
@@ -64,4 +65,7 @@
     <string name="profile_delete_text">Supprimer le profile</string>
     <string name="confirmation_text">Etes vous sûr ?</string>
     <string name="profile_confirmation_text">Ce profile sera supprimé.</string>
+    <string name="new_profile_pin_match_error">Les code pins ne correspondent pash</string>
+    <string name="success_text">Succès !</string>
+    <string name="new_profile_pin_title_check_text">Entrez votre code PIN</string>
 </resources>

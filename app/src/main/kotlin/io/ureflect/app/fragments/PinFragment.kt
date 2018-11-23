@@ -6,14 +6,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import io.ureflect.app.R
+import io.ureflect.app.fragments.BackPressedFragment.Companion.HANDLED
+import io.ureflect.app.fragments.BackPressedFragment.Companion.NOT_HANDLED
+import io.ureflect.app.utils.errorSnackbar
 import kotlinx.android.synthetic.main.fragment_pin.*
 import kotlinx.android.synthetic.main.view_pin_number.view.*
 
 @SuppressLint("ValidFragment")
-class PinFragment(var next: (String) -> Unit) : CoordinatorRootFragment() {
+class PinFragment(var next: (String) -> Unit) : CoordinatorRootFragment(), BackPressedFragment {
     private lateinit var list: List<View>
     private var pinVal = ""
-    var isSetup = false
+    private var confirmPinVal = ""
+    var isDoublePass = true
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_pin, container, false)
 
@@ -36,17 +40,61 @@ class PinFragment(var next: (String) -> Unit) : CoordinatorRootFragment() {
             i++
         }
         empty.tvNumber.text = ""
+
+        setTitleFirstPass()
+
         delete.setOnClickListener {
             pinVal = pinVal.dropLast(1)
             updatePin()
         }
-        tvTitle.visibility = if (isSetup) View.VISIBLE else View.GONE
     }
 
+    private fun setTitleFirstPass() {
+        tvTitle.text = if (isDoublePass) getString(R.string.new_profile_pin_title_text) else getString(R.string.new_profile_pin_title_check_text)
+    }
+
+    private fun setTitleSecondPass() {
+        tvTitle.text = getString(R.string.new_profile_confirm_pin_title_text)
+    }
+
+    private fun match(): Boolean = confirmPinVal == pinVal
+
+    private fun secondPass(): Boolean = confirmPinVal != ""
+
+    private fun pinFull(): Boolean = pinVal.length == 4
+
     private fun updatePin() {
-        tvPin.text = if (isSetup) pinVal else "*".repeat(pinVal.length)
-        if (tvPin.text.length == 4) {
-            next(pinVal)
+        tvPin.text = "*".repeat(pinVal.length)
+        if (pinFull()) {
+            if (!isDoublePass) {
+                next(pinVal)
+                return
+            }
+            if (secondPass()) {
+                if (match()) {
+                    next(pinVal)
+                    return
+                }
+                confirmPinVal = ""
+                setTitleFirstPass()
+                errorSnackbar(getRoot(), getString(R.string.new_profile_pin_match_error))
+            } else {
+                confirmPinVal = pinVal
+                setTitleSecondPass()
+            }
+            tvPin.text = ""
+            pinVal = ""
         }
+    }
+
+    override fun backPressed(): Boolean {
+        if (isDoublePass && secondPass()) {
+            confirmPinVal = ""
+            pinVal = ""
+            setTitleFirstPass()
+            updatePin()
+            return HANDLED
+        }
+        return NOT_HANDLED
     }
 }

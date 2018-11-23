@@ -2,12 +2,10 @@
 <resources>
     <color name="colorPrimary">#EB1C5D</color>
     <color name="colorPrimaryDark">#1B1D27</color>
-    <!--<color name="colorAccent">#D81B60</color>-->
+    <color name="colorSuccess">#4CAF50</color>
     <color name="colorAccent">#EB1C5D</color>
     <color name="colorInputError">#DD2C00</color>
     <color name="colorTitle">#FFFFFF</color>
-    <!--<color name="colorText">#DDDDDD</color>-->
     <color name="colorText">#FFFFFF</color>
-    <!--<color name="colorBorder">#2E3144</color>-->
     <color name="colorBorder">#53597B</color>
 </resources>

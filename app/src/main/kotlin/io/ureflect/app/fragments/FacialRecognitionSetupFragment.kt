@@ -8,7 +8,6 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.support.design.widget.Snackbar
 import android.support.v4.content.FileProvider
 import android.support.v7.widget.LinearLayoutManager
 import android.util.TypedValue
@@ -17,7 +16,10 @@ import android.view.View
 import android.view.ViewGroup
 import io.ureflect.app.R
 import io.ureflect.app.adapters.ImageAdapter
+import io.ureflect.app.fragments.BackPressedFragment.Companion.HANDLED
+import io.ureflect.app.fragments.BackPressedFragment.Companion.NOT_HANDLED
 import io.ureflect.app.utils.EqualSpacingItemDecoration
+import io.ureflect.app.utils.errorSnackbar
 import kotlinx.android.synthetic.main.fragment_facial_setup.*
 import kotlinx.android.synthetic.main.view_image.*
 import java.io.File
@@ -25,7 +27,7 @@ import java.io.IOException
 import java.util.*
 
 @SuppressLint("ValidFragment")
-class FacialRecognitionSetupFragment(var next: () -> Unit, var upload: (String) -> Unit) : CoordinatorRootFragment() {
+class FacialRecognitionSetupFragment(var next: () -> Unit, var upload: (String, () -> Unit) -> Unit) : CoordinatorRootFragment(), BackPressedFragment {
     private lateinit var messages: List<String>
     private var names = Arrays.asList(
             "smile",
@@ -40,11 +42,10 @@ class FacialRecognitionSetupFragment(var next: () -> Unit, var upload: (String) 
     private lateinit var adapter: ImageAdapter
     private var hasContext = false
     private var step = 0
+    private var waitingForNext = false;
 
     companion object {
         private val CAMERA_REQUEST_CODE = 0
-        val HANDLED = true
-        val NOT_HANDLED = false
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_facial_setup, container, false)
@@ -64,7 +65,7 @@ class FacialRecognitionSetupFragment(var next: () -> Unit, var upload: (String) 
             hasContext = true
             setupCamera()
         } ?: run {
-            Snackbar.make(root, getString(R.string.generic_error), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
+            errorSnackbar(getRoot(), getString(R.string.generic_error))
         }
     }
 
@@ -84,7 +85,7 @@ class FacialRecognitionSetupFragment(var next: () -> Unit, var upload: (String) 
 
     private fun setupCamera() {
         if (!checkPrerequisites()) {
-            Snackbar.make(root, getString(R.string.facial_no_camera_error), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
+            errorSnackbar(getRoot(), getString(R.string.facial_no_camera_error))
             return
         }
 
@@ -105,7 +106,7 @@ class FacialRecognitionSetupFragment(var next: () -> Unit, var upload: (String) 
             } catch (e: IOException) {
 
             }
-            Snackbar.make(root, getString(R.string.file_error), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
+            errorSnackbar(getRoot(), getString(R.string.facial_no_camera_error))
         }
         setupLegend()
     }
@@ -124,7 +125,7 @@ class FacialRecognitionSetupFragment(var next: () -> Unit, var upload: (String) 
                     }
                 }
             }
-            else -> Snackbar.make(root, getString(R.string.generic_error), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
+            else -> errorSnackbar(root, getString(R.string.generic_error))
         }
     }
 
@@ -143,11 +144,15 @@ class FacialRecognitionSetupFragment(var next: () -> Unit, var upload: (String) 
         btnNext.transformationMethod = null
         btnNext.setOnClickListener {
             if (hasContext) {
-                upload(imageFilePath)
+                upload(imageFilePath) {
+                    if (waitingForNext) {
+                        next()
+                    }
+                }
                 step++
                 when (step) {
                     messages.size -> {
-                        next()
+                        waitingForNext = true
                         step--
                     }
                     else -> setupLegend()
@@ -166,15 +171,16 @@ class FacialRecognitionSetupFragment(var next: () -> Unit, var upload: (String) 
         }
     }
 
-    fun backPressed(): Boolean {
+    override fun backPressed(): Boolean {
         val stepWhenPressed = step
         if (step != 0) {
             step--
+            waitingForNext = false
             setupLegend()
         }
         return when (stepWhenPressed) {
-            0 -> false
-            else -> true
+            0 -> NOT_HANDLED
+            else -> HANDLED
         }
     }
 }

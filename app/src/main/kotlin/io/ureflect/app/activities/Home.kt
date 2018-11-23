@@ -3,7 +3,6 @@ package io.ureflect.app.activities
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.util.TypedValue
@@ -13,13 +12,14 @@ import com.android.volley.Response
 import com.android.volley.toolbox.Volley
 import io.ureflect.app.R
 import io.ureflect.app.adapters.EntityAdapter
-import io.ureflect.app.mainIntent
 import io.ureflect.app.models.MirrorModel
 import io.ureflect.app.models.UserModel
 import io.ureflect.app.services.Api
 import io.ureflect.app.services.errMsg
+import io.ureflect.app.services.expired
 import io.ureflect.app.utils.EqualSpacingItemDecoration
-import io.ureflect.app.utils.Storage
+import io.ureflect.app.utils.errorSnackbar
+import io.ureflect.app.utils.logout
 import kotlinx.android.synthetic.main.activity_home.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -96,20 +96,14 @@ class Home : AppCompatActivity() {
                         rvMirrors.adapter = mirrorAdapter
                     } ?: run {
                         btnRetry.visibility = View.VISIBLE
-                        Snackbar.make(root, getString(R.string.api_parse_error), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
+                        errorSnackbar(root, getString(R.string.api_parse_error))
                     }
                 },
                 Response.ErrorListener { error ->
                     loading.visibility = View.GONE
                     btnRetry.visibility = View.VISIBLE
-                    Snackbar.make(root, error.errMsg(getString(R.string.api_parse_error)), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
+                    errorSnackbar(root, error.errMsg(getString(R.string.api_parse_error)), error.expired())
                 }
         ).apply { tag = TAG })
-    }
-
-    private fun logout() {
-        Storage.clear(this.application)
-        startActivity(mainIntent())
-        finish()
     }
 }

@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.android.volley.RequestQueue
@@ -18,7 +17,9 @@ import io.ureflect.app.fragments.SignUpCredentialsFragment
 import io.ureflect.app.fragments.SignUpIdentityFragment
 import io.ureflect.app.services.Api
 import io.ureflect.app.services.errMsg
+import io.ureflect.app.services.expired
 import io.ureflect.app.utils.TOKEN
+import io.ureflect.app.utils.errorSnackbar
 import io.ureflect.app.utils.toStorage
 import kotlinx.android.synthetic.main.activity_signup.*
 
@@ -93,14 +94,14 @@ class SignUp : AppCompatActivity() {
                     val user = response.data?.user?.toStorage(this.application)
                     val token = response.data?.token?.toStorage(this.application, TOKEN)
                     if (user == null || token == null) {
-                        Snackbar.make(root, getString(R.string.api_parse_error), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
+                        errorSnackbar(root, getString(R.string.api_parse_error))
                         return@Listener
                     }
                     toHomeView()
                 },
                 Response.ErrorListener { error ->
                     loader.visibility = View.GONE
-                    Snackbar.make(root, error.errMsg(getString(R.string.api_parse_error)), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
+                    errorSnackbar(root, error.errMsg(getString(R.string.api_parse_error)), error.expired())
                 }
         ).apply { tag = TAG })
     }

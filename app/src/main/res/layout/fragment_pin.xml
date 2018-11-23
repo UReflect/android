@@ -182,6 +182,6 @@
             android:layout_marginTop="16dp"
             android:indeterminate="true"
             android:indeterminateTint="@color/colorPrimary"
-            android:visibility="gone" />
+            android:visibility="invisible" />
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

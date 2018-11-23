@@ -21,7 +21,9 @@ import io.ureflect.app.utils.fromStorage
 import java.io.InputStream
 import java.lang.reflect.Type
 
-fun VolleyError.errMsg(fallback: String): String {
+fun VolleyError.expired(): Boolean = networkResponse?.statusCode == 401 && errMsg().contains("Token expired")
+
+fun VolleyError.errMsg(fallback: String = ""): String {
     try {
         networkResponse?.let {
             val errorResponse = Gson().fromJson(String(networkResponse.data), ApiErrorResponse::class.java)
@@ -333,6 +335,24 @@ object Api {
                 GsonRequest(
                         Request.Method.POST,
                         "$host$url/$profileId/$pin",
+                        data,
+                        genericType<ApiResponse<ProfileModel>>(),
+                        mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),
+                        callback,
+                        error
+                )
+
+        /**
+         * data:
+         * pin: String
+         *
+         * Needs auth token
+         */
+        fun verifyPin(app: Application, profileId: Long, data: Any, callback: Response.Listener<ApiResponse<ProfileModel>>, error: Response.ErrorListener):
+                GsonRequest<ApiResponse<ProfileModel>> =
+                GsonRequest(
+                        Request.Method.POST,
+                        "$host$url/$profileId/$pin/verify",
                         data,
                         genericType<ApiResponse<ProfileModel>>(),
                         mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),

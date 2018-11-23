@@ -3,7 +3,6 @@ package io.ureflect.app.activities
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.util.TypedValue
@@ -19,7 +18,9 @@ import io.ureflect.app.models.ModuleModel
 import io.ureflect.app.models.ProfileModel
 import io.ureflect.app.services.Api
 import io.ureflect.app.services.errMsg
+import io.ureflect.app.services.expired
 import io.ureflect.app.utils.EqualSpacingItemDecoration
+import io.ureflect.app.utils.errorSnackbar
 import io.ureflect.app.utils.getArg
 import kotlinx.android.synthetic.main.activity_mirror.*
 import java.text.SimpleDateFormat
@@ -98,7 +99,7 @@ class Mirror : AppCompatActivity() {
         }
     }
 
-    private fun loadProfiles(then: () -> Unit) {
+    private fun loadProfiles(callback: () -> Unit) {
         loading.visibility = View.VISIBLE
         btnRetryProfiles.visibility = View.GONE
         queue.add(Api.Mirror.profiles(
@@ -114,16 +115,16 @@ class Mirror : AppCompatActivity() {
                             startActivity(profile?.let { profileIntent(it) })
                         }, 4.5f, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, resources.displayMetrics).toInt())
                         rvProfiles.adapter = profileAdapter
-                        then()
+                        callback()
                     } ?: run {
                         btnRetryProfiles.visibility = View.VISIBLE
-                        Snackbar.make(root, getString(R.string.api_parse_error), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
+                        errorSnackbar(root, getString(R.string.api_parse_error))
                     }
                 },
                 Response.ErrorListener { error ->
                     loading.visibility = View.GONE
                     btnRetryProfiles.visibility = View.VISIBLE
-                    Snackbar.make(root, error.errMsg(getString(R.string.api_parse_error)), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
+                    errorSnackbar(root, error.errMsg(getString(R.string.api_parse_error)), error.expired())
                 }
         ).apply { tag = TAG })
     }
@@ -146,13 +147,13 @@ class Mirror : AppCompatActivity() {
                         rvDevices.adapter = deviceAdapter
                     } ?: run {
                         btnRetryDevices.visibility = View.VISIBLE
-                        Snackbar.make(root, getString(R.string.api_parse_error), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
+                        errorSnackbar(root, getString(R.string.api_parse_error))
                     }
                 },
                 Response.ErrorListener { error ->
                     loading.visibility = View.GONE
                     btnRetryDevices.visibility = View.VISIBLE
-                    Snackbar.make(root, error.errMsg(getString(R.string.api_parse_error)), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
+                    errorSnackbar(root, error.errMsg(getString(R.string.api_parse_error)), error.expired())
                 }
         ).apply { tag = TAG })
     }
@@ -176,13 +177,13 @@ class Mirror : AppCompatActivity() {
                             rvModules.adapter = moduleAdapter
                         } ?: run {
                             btnRetryModules.visibility = View.VISIBLE
-                            Snackbar.make(root, getString(R.string.api_parse_error), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
+                            errorSnackbar(root, getString(R.string.api_parse_error))
                         }
                     },
                     Response.ErrorListener { error ->
                         loading.visibility = View.GONE
                         btnRetryModules.visibility = View.VISIBLE
-                        Snackbar.make(root, error.errMsg(getString(R.string.api_parse_error)), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
+                        errorSnackbar(root, error.errMsg(getString(R.string.api_parse_error)), error.expired())
                     }
             ).apply { tag = TAG })
         }
