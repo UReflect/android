@@ -24,7 +24,8 @@
         <activity android:name=".activities.NewMirror" />
         <activity android:name=".activities.NewProfile" />
         <activity android:name=".activities.Mirror" />
-        <activity android:name=".activities.Profile" />
+        <activity android:name=".activities.EditProfile" />
+        <activity android:name=".activities.EditMirror" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"

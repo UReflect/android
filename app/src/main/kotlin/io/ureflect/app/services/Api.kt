@@ -130,6 +130,7 @@ object Api {
     object Mirror {
         private const val url = "/v1/mirror"
         private const val join = "join"
+        private const val unjoin = "unjoin"
         private const val linkProfile = "profile"
         private const val allProfile = "profiles"
 
@@ -167,6 +168,21 @@ object Api {
                 )
 
         /**
+         * Needs auth token
+         */
+        fun unjoin(app: Application, mirrorId: Long, callback: Response.Listener<ApiResponse<MirrorModel>>, error: Response.ErrorListener):
+                GsonRequest<ApiResponse<MirrorModel>> =
+                GsonRequest(
+                        Request.Method.POST,
+                        "$host$url/$mirrorId/$unjoin",
+                        Unit,
+                        genericType<ApiResponse<MirrorModel>>(),
+                        mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),
+                        callback,
+                        error
+                )
+
+        /**
          * data:
          * name: String
          * location: String
@@ -175,7 +191,7 @@ object Api {
          *
          * Needs auth token
          */
-        fun update(app: Application, mirrorId: String, data: Any, callback: Response.Listener<ApiResponse<MirrorModel>>, error: Response.ErrorListener):
+        fun update(app: Application, mirrorId: Long, data: Any, callback: Response.Listener<ApiResponse<MirrorModel>>, error: Response.ErrorListener):
                 GsonRequest<ApiResponse<MirrorModel>> =
                 GsonRequest(
                         Request.Method.PUT,
@@ -193,7 +209,7 @@ object Api {
          *
          * Needs auth token
          */
-        fun linkProfile(app: Application, mirrorId: String, data: Any, callback: Response.Listener<ApiResponse<ProfileModel>>, error: Response.ErrorListener):
+        fun linkProfile(app: Application, mirrorId: Long, data: Any, callback: Response.Listener<ApiResponse<ProfileModel>>, error: Response.ErrorListener):
                 GsonRequest<ApiResponse<ProfileModel>> =
                 GsonRequest(
                         Request.Method.POST,
@@ -208,7 +224,7 @@ object Api {
         /**
          * Needs auth token
          */
-        fun profiles(app: Application, mirrorId: String, callback: Response.Listener<ApiResponse<ArrayList<ProfileModel>>>, error: Response.ErrorListener):
+        fun profiles(app: Application, mirrorId: Long, callback: Response.Listener<ApiResponse<ArrayList<ProfileModel>>>, error: Response.ErrorListener):
                 GsonRequest<ApiResponse<ArrayList<ProfileModel>>> =
                 GsonRequest(
                         Request.Method.GET,
@@ -225,6 +241,7 @@ object Api {
         private const val url = "/v1/profile"
         private const val face = "face"
         private const val pin = "pin"
+        private const val verify = "verify"
 
         /**
          * Needs auth token
@@ -352,7 +369,7 @@ object Api {
                 GsonRequest<ApiResponse<ProfileModel>> =
                 GsonRequest(
                         Request.Method.POST,
-                        "$host$url/$profileId/$pin/verify",
+                        "$host$url/$profileId/$pin/$verify",
                         data,
                         genericType<ApiResponse<ProfileModel>>(),
                         mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),

@@ -39,7 +39,7 @@ class NewMirror : AppCompatActivity() {
     private val fragments = ArrayList<CoordinatorRootFragment>()
     private lateinit var name: String
     private lateinit var location: String
-    private lateinit var mirrorId: String
+    private var mirrorId: Long = -1
 
     enum class Steps(val step: Int) {
         CODE(0),

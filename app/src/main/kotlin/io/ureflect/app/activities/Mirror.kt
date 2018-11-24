@@ -1,5 +1,6 @@
 package io.ureflect.app.activities
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -30,6 +31,7 @@ fun Context.mirrorIntent(mirror: MirrorModel): Intent = Intent(this, Mirror::cla
 
 class Mirror : AppCompatActivity() {
     companion object {
+        private const val EDIT_MIRROR = 12321
         const val MIRROR = "mirror"
         const val TAG = "MirrorActivity"
     }
@@ -50,7 +52,7 @@ class Mirror : AppCompatActivity() {
         queue = Volley.newRequestQueue(this)
 
         getArg<MirrorModel>(MIRROR)?.let {
-            this.mirror = it
+            mirror = it
         } ?: finish()
 
         setupUI()
@@ -72,7 +74,17 @@ class Mirror : AppCompatActivity() {
     private fun setupUI() {
         val formatter = SimpleDateFormat("EEEE dd MMMM", Locale.getDefault())
         tvDate.text = formatter.format(Date()).toUpperCase()
-        tvTitle.text = mirror.name
+        setupMirror()
+
+        tvName.setOnClickListener {
+            toEditMirror()
+        }
+        tvLocation.setOnClickListener {
+            toEditMirror()
+        }
+        tvTimezone.setOnClickListener {
+            toEditMirror()
+        }
 
         val px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, resources.displayMetrics).toInt()
 
@@ -99,11 +111,37 @@ class Mirror : AppCompatActivity() {
         }
     }
 
+    fun setupMirror() {
+        tvTitle.text = mirror.name
+        tvNameDetails.text = mirror.name
+        tvLocationDetails.text = mirror.location
+        tvTimezoneDetails.text = mirror.timezone
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            EDIT_MIRROR -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    data?.getSerializableExtra(MIRROR)?.let {
+                        if (it is MirrorModel) {
+                            mirror = it
+                            setupMirror()
+                        }
+                    }
+                }
+            }
+            else -> errorSnackbar(root, getString(R.string.generic_error))
+        }
+    }
+
+    private fun toEditMirror() = startActivityForResult(editMirrorIntent(mirror), EDIT_MIRROR)
+
     private fun loadProfiles(callback: () -> Unit) {
         loading.visibility = View.VISIBLE
         btnRetryProfiles.visibility = View.GONE
         queue.add(Api.Mirror.profiles(
-                this.application,
+                application,
                 mirror.ID,
                 Response.Listener { response ->
                     loading.visibility = View.GONE
@@ -112,7 +150,7 @@ class Mirror : AppCompatActivity() {
                         profileAdapter = EntityAdapter(profiles, {
                             startActivity(newProfileIntent(mirror))
                         }, { profile ->
-                            startActivity(profile?.let { profileIntent(it) })
+                            startActivity(profile?.let { editProfileIntent(it) })
                         }, 4.5f, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, resources.displayMetrics).toInt())
                         rvProfiles.adapter = profileAdapter
                         callback()
@@ -133,7 +171,7 @@ class Mirror : AppCompatActivity() {
         loading.visibility = View.VISIBLE
         btnRetryDevices.visibility = View.GONE
         queue.add(Api.Misc.connectedDevices(
-                this.application,
+                application,
                 application.assets.open("connectedDevices.json"),
                 Response.Listener { response ->
                     loading.visibility = View.GONE
@@ -163,12 +201,12 @@ class Mirror : AppCompatActivity() {
             loading.visibility = View.VISIBLE
             btnRetryModules.visibility = View.GONE
             queue.add(Api.Profile.one(
-                    this.application,
+                    application,
                     profiles[0].ID, //TODO : This is shit
                     Response.Listener { response ->
                         loading.visibility = View.GONE
                         response.data?.let { profile ->
-                            this.modules = profile.modules
+                            modules = profile.modules
                             moduleAdapter = EntityAdapter(modules, {
                                 //                                startActivity(installModuleIntent(mirror))
                             }, { module ->

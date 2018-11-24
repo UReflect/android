@@ -26,7 +26,8 @@
     <string name="form_text_first_name">Prénom</string>
     <string name="form_text_last_name">Nom</string>
     <string name="form_text_name">Nom</string>
-    <string name="form_text_location">Salle de bain</string>
+    <string name="form_text_location">Localisation</string>
+    <string name="form_text_location_bathroom">Salle de bain</string>
     <string name="form_error_email_required">Adresse e-mail obligatoire</string>
     <string name="form_error_email_incorrect">Adresse e-mail incorrecte</string>
     <string name="form_error_password_required">Mot de passe obligatoire</string>
@@ -68,4 +69,8 @@
     <string name="new_profile_pin_match_error">Les code pins ne correspondent pash</string>
     <string name="success_text">Succès !</string>
     <string name="new_profile_pin_title_check_text">Entrez votre code PIN</string>
+    <string name="form_text_timezone">Fuseau horraire</string>
+    <string name="mirror_title_text">Miroir</string>
+    <string name="mirror_delete_text">Supprimer le miroir</string>
+    <string name="mirror_confirmation_text">Ce miroir sera supprimé.</string>
 </resources>

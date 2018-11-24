@@ -51,7 +51,7 @@
                 android:layout_gravity="center_vertical"
                 android:contentDescription="@string/logo"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_settings_white_40dp" />
+                android:src="@drawable/ic_settings" />
 
         </LinearLayout>
 

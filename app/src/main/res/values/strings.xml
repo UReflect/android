@@ -26,7 +26,8 @@
     <string name="form_text_first_name">First name</string>
     <string name="form_text_last_name">Last name</string>
     <string name="form_text_name">Name</string>
-    <string name="form_text_location">Bathroom</string>
+    <string name="form_text_location">Location</string>
+    <string name="form_text_location_bathroom">Bathroom</string>
     <string name="form_error_email_required">Email required</string>
     <string name="form_error_email_incorrect">Incorrect email</string>
     <string name="form_error_password_required">Password required</string>
@@ -68,4 +69,8 @@
     <string name="new_profile_pin_match_error">The pins do not match</string>
     <string name="success_text">Success !</string>
     <string name="new_profile_pin_title_check_text">Enter PIN</string>
+    <string name="form_text_timezone">Timezone</string>
+    <string name="mirror_title_text">Mirror</string>
+    <string name="mirror_delete_text">Delete the mirror</string>
+    <string name="mirror_confirmation_text">The mirror will be deleted.</string>
 </resources>

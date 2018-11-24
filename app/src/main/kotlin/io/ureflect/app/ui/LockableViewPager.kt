@@ -20,14 +20,14 @@ class LockableViewPager(context: Context, attrs: AttributeSet) : ViewPager(conte
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        return if (this.swipeable) {
+        return if (swipeable) {
             super.onTouchEvent(event)
         } else false
 
     }
 
     override fun onInterceptTouchEvent(event: MotionEvent): Boolean {
-        return if (this.swipeable) {
+        return if (swipeable) {
             super.onInterceptTouchEvent(event)
         } else false
 

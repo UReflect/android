@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun redirect() {
-        if (String.fromStorage(this.application, TOKEN).isNotEmpty()) {
+        if (String.fromStorage(application, TOKEN).isNotEmpty()) {
             startActivity(homeIntent())
         }
     }

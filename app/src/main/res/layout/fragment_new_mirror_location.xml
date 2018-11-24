@@ -53,7 +53,7 @@
                 android:id="@+id/evLocation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/form_text_location"
+                android:hint="@string/form_text_location_bathroom"
                 android:inputType="textEmailAddress"
                 android:textColor="@color/colorText" />
 

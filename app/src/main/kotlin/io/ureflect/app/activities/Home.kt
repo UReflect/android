@@ -61,7 +61,7 @@ class Home : AppCompatActivity() {
         val formatter = SimpleDateFormat("EEEE dd MMMM", Locale.getDefault())
         tvDate.text = formatter.format(Date()).toUpperCase()
 
-        val user = UserModel.fromStorage(this.application)
+        val user = UserModel.fromStorage(application)
         tvTitle.text = getString(R.string.home_title_text, user.name)
 
         val px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, resources.displayMetrics).toInt()
@@ -83,7 +83,7 @@ class Home : AppCompatActivity() {
         loading.visibility = View.VISIBLE
         btnRetry.visibility = View.GONE
         queue.add(Api.Mirror.all(
-                this.application,
+                application,
                 Response.Listener { response ->
                     loading.visibility = View.GONE
                     response.data?.let { mirrors ->

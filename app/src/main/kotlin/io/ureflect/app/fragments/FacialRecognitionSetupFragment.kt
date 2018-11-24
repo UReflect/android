@@ -60,7 +60,7 @@ class FacialRecognitionSetupFragment(var next: () -> Unit, var upload: (String, 
                 getString(R.string.neutral_right_text)
         )
         setupUI()
-        this.context?.let { context ->
+        context?.let { context ->
             thatContext = context
             hasContext = true
             setupCamera()
@@ -117,11 +117,11 @@ class FacialRecognitionSetupFragment(var next: () -> Unit, var upload: (String, 
             CAMERA_REQUEST_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
                     btnNext.visibility = View.VISIBLE
-                    if (step < this.images.size) {
-                        this.images[step] = imageFilePath
-                        this.adapter.notifyItemChanged(step)
+                    if (step < images.size) {
+                        images[step] = imageFilePath
+                        adapter.notifyItemChanged(step)
                     } else {
-                        this.images.add(imageFilePath)
+                        images.add(imageFilePath)
                     }
                 }
             }

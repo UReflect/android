@@ -56,7 +56,7 @@ class NewProfile : AppCompatActivity() {
         queue = Volley.newRequestQueue(this)
 
         getArg<MirrorModel>(MIRROR)?.let {
-            this.mirror = it
+            mirror = it
         } ?: finish()
 
         setupFragments()
@@ -127,7 +127,7 @@ class NewProfile : AppCompatActivity() {
                 Response.Listener { response ->
                     loader.visibility = View.GONE
                     response.data?.let {
-                        this.profile = it
+                        profile = it
                         callback()
                     } ?: run {
                         errorSnackbar(root, getString(R.string.api_parse_error))

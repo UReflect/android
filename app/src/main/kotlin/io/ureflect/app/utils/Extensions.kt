@@ -20,9 +20,9 @@ import java.io.Serializable
 
 inline fun FragmentManager.inTransaction(func: FragmentTransaction.() -> FragmentTransaction) = beginTransaction().func().commit()
 
-fun Snackbar.setTextColor(color: Int): Snackbar = this.apply { view.findViewById<TextView>(android.support.design.R.id.snackbar_text).setTextColor(color) }
+fun Snackbar.setTextColor(color: Int): Snackbar = apply { view.findViewById<TextView>(android.support.design.R.id.snackbar_text).setTextColor(color) }
 
-fun Snackbar.setBackgroundColor(color: Int): Snackbar = this.apply { view.setBackgroundColor(color) }
+fun Snackbar.setBackgroundColor(color: Int): Snackbar = apply { view.setBackgroundColor(color) }
 
 fun errorSnackbar(root: CoordinatorLayout, msg: String) = Snackbar.make(root, msg, Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
 
@@ -37,7 +37,7 @@ fun Context.successSnackbar(root: CoordinatorLayout) = Snackbar.make(root, getSt
         .show()
 
 fun AppCompatActivity.logout() {
-    Storage.clear(this.application)
+    Storage.clear(application)
     startActivity(mainIntent())
     finish()
 }
@@ -67,9 +67,9 @@ inline fun <reified T : Serializable> Activity.getArg(identifier: String): T? {
     return null
 }
 
-fun String.isValidEmail(): Boolean = this.isNotEmpty() && Patterns.EMAIL_ADDRESS.matcher(this).matches()
+fun String.isValidEmail(): Boolean = isNotEmpty() && Patterns.EMAIL_ADDRESS.matcher(this).matches()
 
-fun TextInputLayout.afterTextChanged(afterTextChanged: (String) -> Unit) = this.editText?.addTextChangedListener(object : TextWatcher {
+fun TextInputLayout.afterTextChanged(afterTextChanged: (String) -> Unit) = editText?.addTextChangedListener(object : TextWatcher {
     override fun afterTextChanged(s: Editable?) {
         afterTextChanged.invoke(s.toString())
     }
@@ -83,11 +83,11 @@ fun TextInputLayout.afterTextChanged(afterTextChanged: (String) -> Unit) = this.
  * @returns true if valid, false if not valid
  */
 fun TextInputLayout.validate(validator: (String) -> Boolean, message: String): Boolean {
-    val valid = validator(this.editText?.text.toString())
-    this.error = if (valid) null else message
+    val valid = validator(editText?.text.toString())
+    error = if (valid) null else message
     return valid
 }
 
-fun TextInputLayout.autoValidate(validator: (String) -> Boolean, message: String) = this.afterTextChanged {
-    this.error = if (validator(it)) null else message
+fun TextInputLayout.autoValidate(validator: (String) -> Boolean, message: String) = afterTextChanged {
+    error = if (validator(it)) null else message
 }

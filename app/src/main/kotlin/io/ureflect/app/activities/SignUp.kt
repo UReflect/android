@@ -91,8 +91,8 @@ class SignUp : AppCompatActivity() {
                         .apply { addProperty("name", "$firstName $lastName") },
                 Response.Listener { response ->
                     loader.visibility = View.GONE
-                    val user = response.data?.user?.toStorage(this.application)
-                    val token = response.data?.token?.toStorage(this.application, TOKEN)
+                    val user = response.data?.user?.toStorage(application)
+                    val token = response.data?.token?.toStorage(application, TOKEN)
                     if (user == null || token == null) {
                         errorSnackbar(root, getString(R.string.api_parse_error))
                         return@Listener
