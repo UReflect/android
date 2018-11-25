@@ -9,29 +9,25 @@ import android.view.ViewGroup
 import io.ureflect.app.R
 import kotlinx.android.synthetic.main.view_image.view.*
 
-class ImageAdapter(val data: List<String>, private val margin: Int) : RecyclerView.Adapter<ImageAdapter.ImageAdapterViewHolder>() {
+class ImageAdapter(val data: List<String>, private val margin: Int) : RecyclerView.Adapter<ImageAdapter.ImageViewHolder>() {
     /**
      * Number of mirror icon on the screen
      */
     private val NB = 5
 
-    override fun onBindViewHolder(holder: ImageAdapterViewHolder, position: Int) = holder.bind(data[position])
+    override fun onBindViewHolder(holder: ImageViewHolder, position: Int) = holder.bind(data[position])
 
     override fun getItemCount(): Int = data.size
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageAdapterViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
         val v: View = LayoutInflater.from(parent.context).inflate(R.layout.view_image, parent, false)
         val side = ((parent.measuredWidth - margin * (NB - 1)) / NB)
         v.layoutParams = RecyclerView.LayoutParams(side, side)
         return ImageViewHolder(v)
     }
 
-    abstract class ImageAdapterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        abstract fun bind(path: String)
-    }
-
-    class ImageViewHolder(itemView: View) : ImageAdapterViewHolder(itemView) {
-        override fun bind(path: String) = with(itemView) {
+    class ImageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        fun bind(path: String) = with(itemView) {
             ivPreview.setImageBitmap(getScaledBitmap(this, path))
         }
 

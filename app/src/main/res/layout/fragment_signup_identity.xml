@@ -5,72 +5,82 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryDark">
 
-    <LinearLayout
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
-        <TextView
-            android:id="@+id/tvTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:gravity="center_vertical"
-            android:text="@string/signup_identity_title_text"
-            android:textColor="@color/colorTitle"
-            android:textSize="20sp" />
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/evFirstnameLayout"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            app:errorEnabled="true">
-
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/evFirstname"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/form_text_first_name"
-                android:inputType="text"
-                android:textColor="@color/colorText" />
-
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/evLastnameLayout"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            app:errorEnabled="true">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/evLastname"
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:gravity="start|center_vertical"
+                android:text="@string/signup_identity_title_text"
+                android:textColor="@color/colorTitle"
+                android:textSize="20sp" />
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/evFirstnameLayout"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                app:errorEnabled="true">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/evFirstname"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/form_text_first_name"
+                    android:inputType="text"
+                    android:textColor="@color/colorText" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/evLastnameLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/form_text_last_name"
-                android:inputType="text"
-                android:textColor="@color/colorText" />
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                app:errorEnabled="true">
 
-        </android.support.design.widget.TextInputLayout>
-    </LinearLayout>
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/evLastname"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/form_text_last_name"
+                    android:inputType="text"
+                    android:textColor="@color/colorText" />
 
-    <io.ureflect.app.ui.AnimatedButton
-        android:id="@+id/btn"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="16dp"
-        android:background="@color/colorPrimary"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        android:text="@string/ok_btn_text"
-        android:textColor="@color/colorText"
-        android:layout_gravity="bottom|end"
-        app:layout_behavior="io.ureflect.app.ui.MoveUpwardBehavior" />
+            </android.support.design.widget.TextInputLayout>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <io.ureflect.app.ui.AnimatedButton
+                android:id="@+id/btn"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_gravity="bottom|end"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="16dp"
+                android:background="@color/colorPrimary"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:text="@string/ok_btn_text"
+                android:textColor="@color/colorText"
+                app:layout_behavior="io.ureflect.app.ui.MoveUpwardBehavior" />
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
 </android.support.design.widget.CoordinatorLayout>

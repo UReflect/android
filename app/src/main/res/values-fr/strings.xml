@@ -73,4 +73,14 @@
     <string name="mirror_title_text">Miroir</string>
     <string name="mirror_delete_text">Supprimer le miroir</string>
     <string name="mirror_confirmation_text">Ce miroir sera supprimé.</string>
+    <string name="settings_title_text">Réglages</string>
+    <string name="form_text_payment">Méthodes de payment</string>
+    <string name="card_visa_text">Carte VISA *%1$s</string>
+    <string name="card_mastercard_text">Mastercard *%1$s</string>
+    <string name="card_amex_text">AMEX *%1$s</string>
+    <string name="card_discover_text">Discover *%1$s</string>
+    <string name="card_jcb_text">JCB *%1$s</string>
+    <string name="card_diners_text">Diners Club *%1$s</string>
+    <string name="card_other_text">Other *%1$s</string>
+    <string name="internet_error">Vérifiez votre connection internet</string>
 </resources>

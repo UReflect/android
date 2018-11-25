@@ -125,7 +125,7 @@ class NewProfile : AppCompatActivity() {
                 application,
                 JsonObject().apply { addProperty("title", title) },
                 Response.Listener { response ->
-                    loader.visibility = View.GONE
+                    loader.visibility = View.INVISIBLE
                     response.data?.let {
                         profile = it
                         callback()
@@ -134,8 +134,8 @@ class NewProfile : AppCompatActivity() {
                     }
                 },
                 Response.ErrorListener { error ->
-                    loader.visibility = View.GONE
-                    errorSnackbar(root, error.errMsg(getString(R.string.api_parse_error)), error.expired())
+                    loader.visibility = View.INVISIBLE
+                    errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)), error.expired())
                 }
         ).apply { tag = TAG })
     }
@@ -154,7 +154,7 @@ class NewProfile : AppCompatActivity() {
                 },
                 Response.ErrorListener { error ->
                     loader.visibility = View.GONE
-                    errorSnackbar(root, error.errMsg(getString(R.string.api_parse_error)), error.expired())
+                    errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)), error.expired())
                 }
         ).apply { tag = TAG })
     }
@@ -173,7 +173,7 @@ class NewProfile : AppCompatActivity() {
                 },
                 Response.ErrorListener { error ->
                     loader.visibility = View.INVISIBLE
-                    errorSnackbar(root, error.errMsg(getString(R.string.api_parse_error)), error.expired())
+                    errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)), error.expired())
                 }
         ).apply { tag = TAG })
     }
@@ -196,7 +196,7 @@ class NewProfile : AppCompatActivity() {
                 },
                 Response.ErrorListener { error ->
                     loader.visibility = View.INVISIBLE
-                    errorSnackbar(root, error.errMsg(getString(R.string.api_parse_error)), error.expired())
+                    errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)), error.expired())
                 }
         ).apply { tag = TAG })
     }

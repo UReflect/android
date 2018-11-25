@@ -37,7 +37,6 @@ class Home : AppCompatActivity() {
 
     private lateinit var queue: RequestQueue
     private lateinit var mirrors: ArrayList<MirrorModel>
-    private lateinit var mirrorAdapter: EntityAdapter<MirrorModel>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,6 +67,10 @@ class Home : AppCompatActivity() {
         rvMirrors.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         rvMirrors.addItemDecoration(EqualSpacingItemDecoration(px, EqualSpacingItemDecoration.HORIZONTAL))
 
+        ivSettings.setOnClickListener {
+            startActivity(settingsIntent())
+        }
+
         btnLogout.transformationMethod = null
         btnRetry.setOnClickListener {
             loadMirrors()
@@ -88,12 +91,11 @@ class Home : AppCompatActivity() {
                     loading.visibility = View.GONE
                     response.data?.let { mirrors ->
                         this.mirrors = mirrors
-                        mirrorAdapter = EntityAdapter(mirrors, {
+                        rvMirrors.adapter = EntityAdapter(mirrors, {
                             startActivity(newMirrorIntent())
                         }, { mirror ->
                             startActivity(mirror?.let { mirrorIntent(it) })
                         }, 4.5f, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, resources.displayMetrics).toInt())
-                        rvMirrors.adapter = mirrorAdapter
                     } ?: run {
                         btnRetry.visibility = View.VISIBLE
                         errorSnackbar(root, getString(R.string.api_parse_error))
@@ -102,7 +104,7 @@ class Home : AppCompatActivity() {
                 Response.ErrorListener { error ->
                     loading.visibility = View.GONE
                     btnRetry.visibility = View.VISIBLE
-                    errorSnackbar(root, error.errMsg(getString(R.string.api_parse_error)), error.expired())
+                    errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)), error.expired())
                 }
         ).apply { tag = TAG })
     }

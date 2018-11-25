@@ -90,7 +90,7 @@ class SignUp : AppCompatActivity() {
                         .apply { addProperty("password", password) }
                         .apply { addProperty("name", "$firstName $lastName") },
                 Response.Listener { response ->
-                    loader.visibility = View.GONE
+                    loader.visibility = View.INVISIBLE
                     val user = response.data?.user?.toStorage(application)
                     val token = response.data?.token?.toStorage(application, TOKEN)
                     if (user == null || token == null) {
@@ -100,8 +100,8 @@ class SignUp : AppCompatActivity() {
                     toHomeView()
                 },
                 Response.ErrorListener { error ->
-                    loader.visibility = View.GONE
-                    errorSnackbar(root, error.errMsg(getString(R.string.api_parse_error)), error.expired())
+                    loader.visibility = View.INVISIBLE
+                    errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)), error.expired())
                 }
         ).apply { tag = TAG })
     }

@@ -88,6 +88,7 @@ class EditProfile : AppCompatActivity() {
                     replaceFragment(setPinFragment, R.id.flFragment)
                 }
             }.apply { isDoublePass = false }
+            hideKeyboard()
             addFragment(verifyPinFragment, R.id.flFragment)
             step = Steps.VERIFY_PIN
         }
@@ -102,6 +103,7 @@ class EditProfile : AppCompatActivity() {
                     callback()
                 }
             })
+            hideKeyboard()
             addFragment(facialFragment, R.id.flFragment)
             step = Steps.FACIAL
         }
@@ -145,7 +147,7 @@ class EditProfile : AppCompatActivity() {
                 },
                 Response.ErrorListener { error ->
                     loading.visibility = View.GONE
-                    errorSnackbar(root, error.errMsg(getString(R.string.api_parse_error)), error.expired())
+                    errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)), error.expired())
                 }
         ).apply { tag = NewProfile.TAG })
     }
@@ -165,7 +167,7 @@ class EditProfile : AppCompatActivity() {
                 },
                 Response.ErrorListener { error ->
                     loader.visibility = View.GONE
-                    errorSnackbar(root, error.errMsg(getString(R.string.api_parse_error)), error.expired())
+                    errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)), error.expired())
                 }
         ).apply { tag = NewProfile.TAG })
     }
@@ -184,7 +186,7 @@ class EditProfile : AppCompatActivity() {
                 },
                 Response.ErrorListener { error ->
                     loader.visibility = View.INVISIBLE
-                    errorSnackbar(root, error.errMsg(getString(R.string.api_parse_error)), error.expired())
+                    errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)), error.expired())
                 }
         ).apply { tag = NewProfile.TAG })
 
@@ -204,7 +206,7 @@ class EditProfile : AppCompatActivity() {
                 },
                 Response.ErrorListener { error ->
                     loader.visibility = View.INVISIBLE
-                    errorSnackbar(root, error.errMsg(getString(R.string.api_parse_error)), error.expired())
+                    errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)), error.expired())
                 }
         ).apply { tag = NewProfile.TAG })
 
@@ -227,7 +229,7 @@ class EditProfile : AppCompatActivity() {
                 },
                 Response.ErrorListener { error ->
                     loading.visibility = View.GONE
-                    errorSnackbar(root, error.errMsg(getString(R.string.api_parse_error)), error.expired())
+                    errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)), error.expired())
                 }
         ).apply { tag = NewProfile.TAG })
     }

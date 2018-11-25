@@ -1,13 +1,11 @@
 package io.ureflect.app.activities
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.Volley
@@ -22,6 +20,7 @@ import io.ureflect.app.services.Api
 import io.ureflect.app.services.errMsg
 import io.ureflect.app.services.expired
 import io.ureflect.app.utils.errorSnackbar
+import io.ureflect.app.utils.hideKeyboard
 import kotlinx.android.synthetic.main.activity_new_mirror.*
 import kotlinx.android.synthetic.main.fragment_new_mirror_code.*
 import java.util.*
@@ -108,19 +107,9 @@ class NewMirror : AppCompatActivity() {
                 Response.ErrorListener { error ->
                     loader.visibility = View.GONE
                     hideKeyboard()
-                    errorSnackbar(root, error.errMsg(getString(R.string.api_parse_error)), error.expired())
+                    errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)), error.expired())
                 }
         ).apply { tag = TAG })
-    }
-
-    private fun hideKeyboard() {
-        var view = currentFocus
-        if (view == null) {
-            view = View(this)
-        }
-        getSystemService(Activity.INPUT_METHOD_SERVICE).let {
-            (it as InputMethodManager).hideSoftInputFromWindow(view.windowToken, 0)
-        }
     }
 
     private fun createMirror() {
@@ -143,7 +132,7 @@ class NewMirror : AppCompatActivity() {
                 },
                 Response.ErrorListener { error ->
                     loader.visibility = View.GONE
-                    errorSnackbar(root, error.errMsg(getString(R.string.api_parse_error)), error.expired())
+                    errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)), error.expired())
                 }
         ).apply { tag = TAG })
     }

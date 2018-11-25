@@ -95,23 +95,28 @@ class Mirror : AppCompatActivity() {
         rvDevices.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         rvDevices.addItemDecoration(EqualSpacingItemDecoration(px, EqualSpacingItemDecoration.HORIZONTAL))
 
-        btnRetryProfiles.transformationMethod = null
         btnRetryProfiles.setOnClickListener {
             loadProfiles {
                 loadModules()
             }
         }
-        btnRetryModules.transformationMethod = null
+
         btnRetryModules.setOnClickListener {
-            loadModules()
+            if (::profiles.isInitialized) {
+                loadModules()
+            } else {
+                loadProfiles {
+                    loadModules()
+                }
+            }
         }
-        btnRetryProfiles.transformationMethod = null
-        btnRetryProfiles.setOnClickListener {
+
+        btnRetryDevices.setOnClickListener {
             loadDevices()
         }
     }
 
-    fun setupMirror() {
+    private fun setupMirror() {
         tvTitle.text = mirror.name
         tvNameDetails.text = mirror.name
         tvLocationDetails.text = mirror.location
@@ -156,13 +161,15 @@ class Mirror : AppCompatActivity() {
                         callback()
                     } ?: run {
                         btnRetryProfiles.visibility = View.VISIBLE
+                        btnRetryModules.visibility = View.VISIBLE
                         errorSnackbar(root, getString(R.string.api_parse_error))
                     }
                 },
                 Response.ErrorListener { error ->
                     loading.visibility = View.GONE
                     btnRetryProfiles.visibility = View.VISIBLE
-                    errorSnackbar(root, error.errMsg(getString(R.string.api_parse_error)), error.expired())
+                    btnRetryModules.visibility = View.VISIBLE
+                    errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)), error.expired())
                 }
         ).apply { tag = TAG })
     }
@@ -191,7 +198,7 @@ class Mirror : AppCompatActivity() {
                 Response.ErrorListener { error ->
                     loading.visibility = View.GONE
                     btnRetryDevices.visibility = View.VISIBLE
-                    errorSnackbar(root, error.errMsg(getString(R.string.api_parse_error)), error.expired())
+                    errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)), error.expired())
                 }
         ).apply { tag = TAG })
     }
@@ -221,7 +228,7 @@ class Mirror : AppCompatActivity() {
                     Response.ErrorListener { error ->
                         loading.visibility = View.GONE
                         btnRetryModules.visibility = View.VISIBLE
-                        errorSnackbar(root, error.errMsg(getString(R.string.api_parse_error)), error.expired())
+                        errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)), error.expired())
                     }
             ).apply { tag = TAG })
         }

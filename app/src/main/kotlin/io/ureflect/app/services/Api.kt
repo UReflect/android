@@ -1,14 +1,14 @@
 package io.ureflect.app.services
 
 import android.app.Application
+import android.content.Context
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.VolleyError
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import io.ureflect.app.models.ConnectedDeviceModel
-import io.ureflect.app.models.MirrorModel
-import io.ureflect.app.models.ProfileModel
+import io.ureflect.app.R
+import io.ureflect.app.models.*
 import io.ureflect.app.models.requests.AssetGsonRequest
 import io.ureflect.app.models.requests.GsonRequest
 import io.ureflect.app.models.requests.MultipartGsonRequest
@@ -20,11 +20,18 @@ import io.ureflect.app.utils.TOKEN
 import io.ureflect.app.utils.fromStorage
 import java.io.InputStream
 import java.lang.reflect.Type
+import java.net.UnknownHostException
 
 fun VolleyError.expired(): Boolean = networkResponse?.statusCode == 401 && errMsg().contains("Token expired")
 
-fun VolleyError.errMsg(fallback: String = ""): String {
+fun VolleyError.errMsg(context: Context? = null, fallback: String = ""): String {
     try {
+//        this.cause
+        if (context != null) {
+            if (this.cause is UnknownHostException) {
+                return context.getString(R.string.internet_error)
+            }
+        }
         networkResponse?.let {
             val errorResponse = Gson().fromJson(String(networkResponse.data), ApiErrorResponse::class.java)
             errorResponse.error?.let { error ->
@@ -122,6 +129,46 @@ object Api {
                         data,
                         genericType<ApiResponse<SigninResponse>>(),
                         null,
+                        callback,
+                        error
+                )
+    }
+
+    object User {
+        private const val url = "/v1/user"
+        private const val payments = "/payments"
+
+        /**
+         * data:
+         * email: String
+         * password: String
+         * ...
+         *
+         * Needs auth token
+         */
+        fun update(app: Application, userId: Long, data: Any, callback: Response.Listener<ApiResponse<UserModel>>, error: Response.ErrorListener):
+                GsonRequest<ApiResponse<UserModel>> =
+                GsonRequest(
+                        Request.Method.PUT,
+                        "$host$url/$userId",
+                        data,
+                        genericType<ApiResponse<UserModel>>(),
+                        mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),
+                        callback,
+                        error
+                )
+
+        /**
+         * Needs auth token
+         */
+        fun payments(app: Application, callback: Response.Listener<ApiResponse<ArrayList<CreditCardModel>>>, error: Response.ErrorListener):
+                GsonRequest<ApiResponse<ArrayList<CreditCardModel>>> =
+                GsonRequest(
+                        Request.Method.GET,
+                        "$host$url/$payments",
+                        Unit,
+                        genericType<ApiResponse<ArrayList<CreditCardModel>>>(),
+                        mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),
                         callback,
                         error
                 )

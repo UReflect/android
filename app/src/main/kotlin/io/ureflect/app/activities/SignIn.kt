@@ -62,7 +62,9 @@ class SignIn : AppCompatActivity() {
 
     private fun setupUI() {
         btnForgotPassword.transformationMethod = null
-        btnForgotPassword.setOnClickListener {}
+        btnForgotPassword.setOnClickListener {
+            //TODO :
+        }
 
         btnLogin.transformationMethod = null
         btnLogin.setOnClickListener {
@@ -72,18 +74,19 @@ class SignIn : AppCompatActivity() {
                         JsonObject().apply { addProperty("email", evMail.text.toString().toLowerCase()) }
                                 .apply { addProperty("password", evPassword.text.toString()) },
                         Response.Listener { response ->
-                            loading.visibility = View.GONE
-                            val user = response.data?.user?.toStorage(application)
+                            loading.visibility = View.INVISIBLE
+                            val user = response.data?.user?.apply { password = evPassword.text.toString() }?.toStorage(application)
                             val token = response.data?.token?.toStorage(application, TOKEN)
                             if (user == null || token == null) {
+                                Storage.clear(application)
                                 errorSnackbar(root, getString(R.string.api_parse_error))
                                 return@Listener
                             }
                             toHomeView()
                         },
                         Response.ErrorListener { error ->
-                            loading.visibility = View.GONE
-                            errorSnackbar(root, error.errMsg(getString(R.string.api_parse_error)), error.expired())
+                            loading.visibility = View.INVISIBLE
+                            errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)), error.expired())
                         }
                 ).apply { tag = TAG })
             } else if (triedOnce) {

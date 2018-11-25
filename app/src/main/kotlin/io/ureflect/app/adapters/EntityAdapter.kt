@@ -17,8 +17,8 @@ class EntityAdapter<T : NamedEntity>(val data: List<T>,
         /**
          * Number of entity icon on the screen
          */
-        private const val TYPE_ADD_ENTITY = 0
-        private const val TYPE_ENTITY = 1
+        const val TYPE_ADD_ENTITY = 0
+        const val TYPE_ENTITY = 1
     }
 
     override fun onBindViewHolder(holder: EntityAdapterViewHolder, position: Int) = when (position) {
