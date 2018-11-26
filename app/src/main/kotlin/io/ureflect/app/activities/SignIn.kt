@@ -3,8 +3,8 @@ package io.ureflect.app.activities
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
+import android.view.View
 import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.Volley
@@ -12,13 +12,17 @@ import com.google.gson.JsonObject
 import io.ureflect.app.R
 import io.ureflect.app.services.Api
 import io.ureflect.app.services.errMsg
+import io.ureflect.app.services.expired
 import io.ureflect.app.utils.*
 import kotlinx.android.synthetic.main.activity_signin.*
 
 fun Context.loginIntent(): Intent = Intent(this, SignIn::class.java)
 
 class SignIn : AppCompatActivity() {
-    private val TAG = "SignInActivity"
+    companion object {
+        const val TAG = "SignInActivity"
+    }
+
     private var triedOnce = false
     private lateinit var queue: RequestQueue
 
@@ -27,6 +31,7 @@ class SignIn : AppCompatActivity() {
         setContentView(R.layout.activity_signin)
         Api.log("starting login activity")
         queue = Volley.newRequestQueue(this)
+        queue
         setupUI()
     }
 
@@ -62,25 +67,25 @@ class SignIn : AppCompatActivity() {
         btnLogin.transformationMethod = null
         btnLogin.setOnClickListener {
             if (!loginPayloadError()) {
-                val data = JsonObject()
-                data.addProperty("email", evMail.text.toString().toLowerCase())
-                data.addProperty("password", evPassword.text.toString())
-
+                loading.visibility = View.VISIBLE
                 queue.add(Api.Auth.signin(
-                        data,
+                        JsonObject().apply { addProperty("email", evMail.text.toString().toLowerCase()) }
+                                .apply { addProperty("password", evPassword.text.toString()) },
                         Response.Listener { response ->
+                            loading.visibility = View.GONE
                             val user = response.data?.user?.toStorage(this.application)
                             val token = response.data?.token?.toStorage(this.application, TOKEN)
                             if (user == null || token == null) {
-                                Snackbar.make(root, getString(R.string.api_parse_error), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
+                                errorSnackbar(root, getString(R.string.api_parse_error))
                                 return@Listener
                             }
                             toHomeView()
                         },
                         Response.ErrorListener { error ->
-                            Snackbar.make(root, error.errMsg(getString(R.string.api_parse_error)), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
+                            loading.visibility = View.GONE
+                            errorSnackbar(root, error.errMsg(getString(R.string.api_parse_error)), error.expired())
                         }
-                ))
+                ).apply { tag = TAG })
             } else if (triedOnce) {
                 loginPayloadAutoValidate()
             }

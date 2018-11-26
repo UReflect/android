@@ -4,7 +4,7 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackground">
+    android:background="@color/colorPrimaryDark">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,10 +18,10 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
-            android:textAlignment="center"
             android:gravity="center_vertical"
             android:text="@string/new_mirror_code_title_text"
-            android:textColor="@color/colorText"
+            android:textAlignment="center"
+            android:textColor="@color/colorTitle"
             android:textSize="20sp" />
 
         <com.raycoarana.codeinputview.CodeInputView
@@ -42,7 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="8dp"
+            android:padding="16dp"
             android:text="@string/form_text_go"
             android:textColor="@color/colorPrimary" />
 
@@ -50,8 +50,8 @@
             android:id="@+id/loading"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_marginTop="16dp"
             android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
             android:indeterminate="true"
             android:indeterminateTint="@color/colorPrimary"
             android:visibility="gone" />

@@ -1,39 +1,51 @@
 package io.ureflect.app.activities
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.support.design.widget.Snackbar
-import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.Volley
 import com.google.gson.JsonObject
 import io.ureflect.app.R
 import io.ureflect.app.adapters.ListFragmentPagerAdapter
+import io.ureflect.app.fragments.CoordinatorRootFragment
 import io.ureflect.app.fragments.NewMirrorCodeFragment
 import io.ureflect.app.fragments.NewMirrorLocationFragment
 import io.ureflect.app.fragments.NewMirrorNameFragment
-import io.ureflect.app.models.MirrorModel
 import io.ureflect.app.services.Api
 import io.ureflect.app.services.errMsg
+import io.ureflect.app.services.expired
+import io.ureflect.app.utils.errorSnackbar
 import kotlinx.android.synthetic.main.activity_new_mirror.*
+import kotlinx.android.synthetic.main.fragment_new_mirror_code.*
+import java.util.*
 
-fun Context.newMirrorIntent(): Intent {
-    return Intent(this, NewMirror::class.java)
-}
+fun Context.newMirrorIntent(): Intent = Intent(this, NewMirror::class.java)
 
 class NewMirror : AppCompatActivity() {
-    private val TAG = "NewMirrorActivity"
+    companion object {
+        const val TAG = "NewMirrorActivity"
+    }
+
     private lateinit var queue: RequestQueue
     private lateinit var adapter: ListFragmentPagerAdapter
-    private var position = 0
-    private val fragments = ArrayList<Fragment>()
+    private var position = Steps.CODE.step
+    private val fragments = ArrayList<CoordinatorRootFragment>()
     private lateinit var name: String
     private lateinit var location: String
     private lateinit var mirrorId: String
+
+    enum class Steps(val step: Int) {
+        CODE(0),
+        NAME(1),
+        LOCATION(2)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,63 +60,99 @@ class NewMirror : AppCompatActivity() {
     }
 
     private fun setupFragments() {
-        fragments.add(NewMirrorCodeFragment({ i: Int ->
-            next(i)
-        }, { mirrorId: String ->
-            this.mirrorId = mirrorId
-        }))
-        fragments.add(NewMirrorNameFragment({ i: Int ->
-            next(i)
-        }, { name: String ->
-            this.name = name
-        }))
-        fragments.add(NewMirrorLocationFragment({ i: Int ->
-            next(i)
-        }, { location: String ->
-            this.location = location
-        }))
+        fragments.add(
+                NewMirrorCodeFragment {
+                    join {
+                        next(Steps.NAME)
+                    }
+                }
+        )
+        fragments.add(
+                NewMirrorNameFragment { name ->
+                    this.name = name
+                    next(Steps.LOCATION)
+                })
+        fragments.add(
+                NewMirrorLocationFragment { location ->
+                    this.location = location
+                    createMirror()
+                }
+        )
         adapter = ListFragmentPagerAdapter(supportFragmentManager, fragments)
         viewPager.adapter = adapter
         viewPager.currentItem = position
     }
 
-    private fun next(i: Int) {
-        position = i + 1
-        if (position < fragments.size) {
-            Handler().postDelayed({ viewPager.currentItem = i + 1 }, 100)
-        } else if (position == fragments.size) {
-            createMirror()
+    private fun next(step: Steps) {
+        position = step.step
+        Handler().postDelayed({ viewPager.currentItem = position }, 100)
+    }
+
+    private fun join(callback: () -> Unit) {
+        val root = fragments[Steps.CODE.step].getRoot()
+        val loader = fragments[Steps.CODE.step].getLoader()
+        loader.visibility = View.VISIBLE
+        queue.add(Api.Mirror.join(
+                application,
+                JsonObject().apply { addProperty("join_code", civCode.code) },
+                Response.Listener { response ->
+                    loader.visibility = View.GONE
+                    response.data?.ID?.let { mirrorId ->
+                        this.mirrorId = mirrorId
+                        callback()
+                    } ?: run {
+                        errorSnackbar(root, getString(R.string.api_parse_error))
+                        hideKeyboard()
+                    }
+                },
+                Response.ErrorListener { error ->
+                    loader.visibility = View.GONE
+                    hideKeyboard()
+                    errorSnackbar(root, error.errMsg(getString(R.string.api_parse_error)), error.expired())
+                }
+        ).apply { tag = TAG })
+    }
+
+    private fun hideKeyboard() {
+        var view = currentFocus
+        if (view == null) {
+            view = View(this)
+        }
+        getSystemService(Activity.INPUT_METHOD_SERVICE).let {
+            (it as InputMethodManager).hideSoftInputFromWindow(view.windowToken, 0)
         }
     }
 
     private fun createMirror() {
-        val data = JsonObject()
-        data.addProperty("name", name)
-        data.addProperty("location", location)
-
+        val root = fragments[Steps.LOCATION.step].getRoot()
+        val loader = fragments[Steps.LOCATION.step].getLoader()
+        loader.visibility = View.VISIBLE
         queue.add(Api.Mirror.update(
                 application,
                 mirrorId,
-                data,
+                JsonObject().apply { addProperty("name", name) }
+                        .apply { addProperty("location", location) }
+                        .apply { addProperty("timezone", TimeZone.getDefault().id) },
                 Response.Listener { response ->
-                    toMirrorView(response.data!!)
+                    loader.visibility = View.GONE
+                    response.data?.let {
+                        finish()
+                    } ?: run {
+                        errorSnackbar(root, getString(R.string.api_parse_error))
+                    }
                 },
                 Response.ErrorListener { error ->
-                    Snackbar.make(root, error.errMsg(getString(R.string.api_parse_error)), Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
+                    loader.visibility = View.GONE
+                    errorSnackbar(root, error.errMsg(getString(R.string.api_parse_error)), error.expired())
                 }
-        ))
-    }
-
-    private fun toMirrorView(mirror: MirrorModel) {
-        startActivity(mirrorIntent(mirror))
-        finish()
+        ).apply { tag = TAG })
     }
 
     override fun onBackPressed() {
-        if (position != 1) {
-            if (position == 0) {
-                super.onBackPressed()
-            } else {
+        when (position) {
+            Steps.CODE.step -> super.onBackPressed()
+            Steps.NAME.step -> Unit
+            else -> {
                 position -= 1
                 viewPager.currentItem = position
             }
