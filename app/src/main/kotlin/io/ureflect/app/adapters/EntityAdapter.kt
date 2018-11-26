@@ -8,11 +8,11 @@ import io.ureflect.app.R
 import io.ureflect.app.models.NamedEntity
 import kotlinx.android.synthetic.main.view_entity.view.*
 
-class EntityAdapter<T : NamedEntity>(val data: List<T>,
-                                     private val addListener: (T?) -> Unit,
-                                     private val selectListener: (T?) -> Unit,
-                                     private val nb: Float = 4.5f,
-                                     private val margin: Int = 0) : RecyclerView.Adapter<EntityAdapter<T>.EntityAdapterViewHolder>() {
+open class EntityAdapter<T : NamedEntity>(val data: List<T>,
+                                          private val addListener: (T?) -> Unit,
+                                          private val selectListener: (T?) -> Unit,
+                                          private val nb: Float = 4.5f,
+                                          private val margin: Int = 0) : RecyclerView.Adapter<EntityAdapter<T>.EntityAdapterViewHolder>() {
     companion object {
         /**
          * Number of entity icon on the screen
@@ -21,28 +21,23 @@ class EntityAdapter<T : NamedEntity>(val data: List<T>,
         const val TYPE_ENTITY = 1
     }
 
-    override fun onBindViewHolder(holder: EntityAdapterViewHolder, position: Int) = when (position) {
-        0 -> holder.bind(null, addListener)
-        else -> holder.bind(data[position - 1], selectListener)
+    override fun onBindViewHolder(holder: EntityAdapterViewHolder, position: Int) {
+        when (position) {
+            0 -> holder.bind(null, addListener)
+            else -> holder.bind(data[position - 1], selectListener)
+        }
     }
 
     override fun getItemCount(): Int = data.size + 1
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EntityAdapterViewHolder {
-        val v: View = when (viewType) {
-            TYPE_ADD_ENTITY -> LayoutInflater.from(parent.context).inflate(R.layout.view_add, parent, false)
-            TYPE_ENTITY -> LayoutInflater.from(parent.context).inflate(R.layout.view_entity, parent, false)
-            else -> LayoutInflater.from(parent.context).inflate(R.layout.view_entity, parent, false)
-        }
-
+    fun resize(parent: ViewGroup, v: View) {
         val side = ((parent.measuredWidth - margin * (nb + 1)) / nb).toInt()
         v.layoutParams = RecyclerView.LayoutParams(side, side)
+    }
 
-        return when (viewType) {
-            TYPE_ADD_ENTITY -> AddViewHolder(v)
-            TYPE_ENTITY -> EntityViewHolder(v)
-            else -> EntityViewHolder(v)
-        }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EntityAdapterViewHolder = when (viewType) {
+        TYPE_ADD_ENTITY -> AddViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.view_add, parent, false).apply { resize(parent, this) })
+        else -> EntityViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.view_entity, parent, false).apply { resize(parent, this) })
     }
 
     override fun getItemViewType(position: Int): Int = when (position) {

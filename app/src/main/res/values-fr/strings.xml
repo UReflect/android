@@ -83,4 +83,5 @@
     <string name="card_diners_text">Diners Club *%1$s</string>
     <string name="card_other_text">Other *%1$s</string>
     <string name="internet_error">Vérifiez votre connection internet</string>
+    <string name="invalid_card_error">Impossible de valider la carte</string>
 </resources>

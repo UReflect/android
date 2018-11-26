@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
+import android.util.TypedValue
 import android.view.View
 import com.android.volley.RequestQueue
 import com.android.volley.Response
@@ -41,6 +42,11 @@ class Settings : AppCompatActivity() {
         setupUI()
     }
 
+    override fun onResume() {
+        super.onResume()
+        loadCreditCards()
+    }
+
     override fun onStop() {
         super.onStop()
         queue.cancelAll(TAG)
@@ -66,7 +72,13 @@ class Settings : AppCompatActivity() {
         evEmail.setText(user.email)
         evPassword.setText(user.password)
 
+        val px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, resources.displayMetrics).toInt()
         rvCreditCards.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        rvCreditCards.addItemDecoration(EqualSpacingItemDecoration(px, EqualSpacingItemDecoration.HORIZONTAL))
+
+        btnRetry.setOnClickListener {
+            loadCreditCards()
+        }
 
         btn.setOnClickListener {
             if (!payloadError()) {
@@ -80,21 +92,16 @@ class Settings : AppCompatActivity() {
     private fun loadCreditCards() {
         loading.visibility = View.VISIBLE
         btnRetry.visibility = View.GONE
-        queue.add(Api.User.payments(
+        queue.add(Api.Misc.payments(
                 application,
                 Response.Listener { response ->
                     loading.visibility = View.GONE
-                    response.data?.let { creditCards ->
-                        this.creditCards = creditCards
-                        rvCreditCards.adapter = CreditCardAdapter(creditCards, {
-                            //TODO : something
-                        }, {
-                            //TODO : something
-                        })
-                    } ?: run {
-                        btnRetry.visibility = View.VISIBLE
-                        errorSnackbar(root, getString(R.string.api_parse_error))
-                    }
+                    this.creditCards = response.data ?: ArrayList()
+                    rvCreditCards.adapter = CreditCardAdapter(creditCards, {
+                        startActivity(newCreditCardIntent())
+                    }, {
+                        //TODO : something
+                    })
                 },
                 Response.ErrorListener { error ->
                     loading.visibility = View.GONE

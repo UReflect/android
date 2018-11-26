@@ -8,5 +8,6 @@
     <color name="colorTitle">#FFFFFF</color>
     <color name="colorText">#FFFFFF</color>
     <color name="colorSelected">#CCCCCC</color>
+    <color name="colorDisabled">#AAAAAA</color>
     <color name="colorBorder">#53597B</color>
 </resources>

@@ -63,6 +63,7 @@ object Api {
 
     object Misc {
         private const val ping = "/ping"
+        private const val payments = "payments"
 
         /**
          * Useless
@@ -89,6 +90,36 @@ object Api {
                         host + ping,
                         data,
                         genericType<ApiResponse<ArrayList<ConnectedDeviceModel>>>(),
+                        mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),
+                        callback,
+                        error
+                )
+
+        /**
+         * Needs auth token
+         */
+        fun payments(app: Application, callback: Response.Listener<ApiResponse<ArrayList<CreditCardModel>>>, error: Response.ErrorListener):
+                GsonRequest<ApiResponse<ArrayList<CreditCardModel>>> =
+                GsonRequest(
+                        Request.Method.GET,
+                        "$host/v1/$payments",
+                        Unit,
+                        genericType<ApiResponse<ArrayList<CreditCardModel>>>(),
+                        mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),
+                        callback,
+                        error
+                )
+
+        /**
+         * Needs auth token
+         */
+        fun createPayment(app: Application, data: Any, callback: Response.Listener<ApiResponse<CreditCardModel>>, error: Response.ErrorListener):
+                GsonRequest<ApiResponse<CreditCardModel>> =
+                GsonRequest(
+                        Request.Method.POST,
+                        "$host/v1/$payments",
+                        data,
+                        genericType<ApiResponse<CreditCardModel>>(),
                         mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),
                         callback,
                         error
@@ -136,7 +167,6 @@ object Api {
 
     object User {
         private const val url = "/v1/user"
-        private const val payments = "/payments"
 
         /**
          * data:
@@ -153,21 +183,6 @@ object Api {
                         "$host$url/$userId",
                         data,
                         genericType<ApiResponse<UserModel>>(),
-                        mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),
-                        callback,
-                        error
-                )
-
-        /**
-         * Needs auth token
-         */
-        fun payments(app: Application, callback: Response.Listener<ApiResponse<ArrayList<CreditCardModel>>>, error: Response.ErrorListener):
-                GsonRequest<ApiResponse<ArrayList<CreditCardModel>>> =
-                GsonRequest(
-                        Request.Method.GET,
-                        "$host$url/$payments",
-                        Unit,
-                        genericType<ApiResponse<ArrayList<CreditCardModel>>>(),
                         mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),
                         callback,
                         error

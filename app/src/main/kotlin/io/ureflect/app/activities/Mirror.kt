@@ -185,8 +185,10 @@ class Mirror : AppCompatActivity() {
                     response.data?.let { devices ->
                         this.devices = devices
                         deviceAdapter = EntityAdapter(devices, {
+                            //TODO :
                             //                            startActivity(pairDeviceIntent())
                         }, { device ->
+                            //TODO :
                             //                            startActivity(device?.let { deviceIntent(it) })
                         }, 4.5f, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, resources.displayMetrics).toInt())
                         rvDevices.adapter = deviceAdapter
@@ -215,8 +217,10 @@ class Mirror : AppCompatActivity() {
                         response.data?.let { profile ->
                             modules = profile.modules
                             moduleAdapter = EntityAdapter(modules, {
+                                //TODO :
                                 //                                startActivity(installModuleIntent(mirror))
                             }, { module ->
+                                //TODO :
                                 //                                startActivity(module?.let { moduleIntent(it) })
                             }, 4.5f, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, resources.displayMetrics).toInt())
                             rvModules.adapter = moduleAdapter

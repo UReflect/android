@@ -46,6 +46,9 @@
         <activity
             android:name=".activities.EditMirror"
             android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".activities.NewCreditCard"
+            android:windowSoftInputMode="adjustResize" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"

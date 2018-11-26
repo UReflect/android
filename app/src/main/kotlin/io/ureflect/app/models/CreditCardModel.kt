@@ -9,7 +9,6 @@ class CreditCardModel : Serializable, NamedEntity {
     var expMonth = 0
     var expYear = 0
     var last4 = ""
-    var isClicked = false
 
-    override fun name(): String = id
+    override fun name(): String = last4
 }
