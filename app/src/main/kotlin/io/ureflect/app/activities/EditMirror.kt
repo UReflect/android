@@ -16,7 +16,7 @@ import io.ureflect.app.R
 import io.ureflect.app.models.MirrorModel
 import io.ureflect.app.services.Api
 import io.ureflect.app.services.errMsg
-import io.ureflect.app.services.expired
+import io.ureflect.app.services.isExpired
 import io.ureflect.app.utils.*
 import kotlinx.android.synthetic.main.activity_edit_mirror.*
 import java.util.*
@@ -124,7 +124,13 @@ class EditMirror : AppCompatActivity() {
                 },
                 Response.ErrorListener { error ->
                     loading.visibility = View.GONE
-                    errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)), error.expired())
+                    if (error.isExpired()) {
+                        reLogin(loading, root, queue) {
+                            delete()
+                        }
+                    } else {
+                        errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)))
+                    }
                 }
         ).apply { tag = NewMirror.TAG })
     }
@@ -148,7 +154,13 @@ class EditMirror : AppCompatActivity() {
                 },
                 Response.ErrorListener { error ->
                     loading.visibility = View.GONE
-                    errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)), error.expired())
+                    if (error.isExpired()) {
+                        reLogin(loading, root, queue) {
+                            update()
+                        }
+                    } else {
+                        errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)))
+                    }
                 }
         ).apply { tag = NewMirror.TAG })
     }

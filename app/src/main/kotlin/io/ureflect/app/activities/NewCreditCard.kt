@@ -18,8 +18,9 @@ import io.ureflect.app.R
 import io.ureflect.app.models.CreditCardModel
 import io.ureflect.app.services.Api
 import io.ureflect.app.services.errMsg
-import io.ureflect.app.services.expired
+import io.ureflect.app.services.isExpired
 import io.ureflect.app.utils.errorSnackbar
+import io.ureflect.app.utils.reLogin
 import kotlinx.android.synthetic.main.activity_new_credit_card.*
 
 
@@ -129,7 +130,13 @@ class NewCreditCard : AppCompatActivity() {
                 },
                 Response.ErrorListener { error ->
                     loading.visibility = View.GONE
-                    errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)), error.expired())
+                    if (error.isExpired()) {
+                        reLogin(loading, root, queue) {
+                            createCreditCard(token, callback)
+                        }
+                    } else {
+                        errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)))
+                    }
                 }
         ).apply { tag = TAG })
     }

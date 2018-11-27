@@ -19,9 +19,10 @@ import io.ureflect.app.models.MirrorModel
 import io.ureflect.app.models.ProfileModel
 import io.ureflect.app.services.Api
 import io.ureflect.app.services.errMsg
-import io.ureflect.app.services.expired
+import io.ureflect.app.services.isExpired
 import io.ureflect.app.utils.errorSnackbar
 import io.ureflect.app.utils.getArg
+import io.ureflect.app.utils.reLogin
 import kotlinx.android.synthetic.main.activity_new_profile.*
 import java.util.*
 
@@ -135,7 +136,13 @@ class NewProfile : AppCompatActivity() {
                 },
                 Response.ErrorListener { error ->
                     loader.visibility = View.INVISIBLE
-                    errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)), error.expired())
+                    if (error.isExpired()) {
+                        reLogin(loader, root, queue) {
+                            createProfile(callback)
+                        }
+                    } else {
+                        errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)))
+                    }
                 }
         ).apply { tag = TAG })
     }
@@ -154,7 +161,13 @@ class NewProfile : AppCompatActivity() {
                 },
                 Response.ErrorListener { error ->
                     loader.visibility = View.GONE
-                    errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)), error.expired())
+                    if (error.isExpired()) {
+                        reLogin(loader, root, queue) {
+                            updateFacial(path, callback)
+                        }
+                    } else {
+                        errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)))
+                    }
                 }
         ).apply { tag = TAG })
     }
@@ -173,7 +186,13 @@ class NewProfile : AppCompatActivity() {
                 },
                 Response.ErrorListener { error ->
                     loader.visibility = View.INVISIBLE
-                    errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)), error.expired())
+                    if (error.isExpired()) {
+                        reLogin(loader, root, queue) {
+                            updatePin(callback)
+                        }
+                    } else {
+                        errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)))
+                    }
                 }
         ).apply { tag = TAG })
     }
@@ -196,7 +215,13 @@ class NewProfile : AppCompatActivity() {
                 },
                 Response.ErrorListener { error ->
                     loader.visibility = View.INVISIBLE
-                    errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)), error.expired())
+                    if (error.isExpired()) {
+                        reLogin(loader, root, queue) {
+                            linkToMirror()
+                        }
+                    } else {
+                        errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)))
+                    }
                 }
         ).apply { tag = TAG })
     }

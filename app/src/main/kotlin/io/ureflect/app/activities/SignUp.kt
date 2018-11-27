@@ -17,7 +17,6 @@ import io.ureflect.app.fragments.SignUpCredentialsFragment
 import io.ureflect.app.fragments.SignUpIdentityFragment
 import io.ureflect.app.services.Api
 import io.ureflect.app.services.errMsg
-import io.ureflect.app.services.expired
 import io.ureflect.app.utils.TOKEN
 import io.ureflect.app.utils.errorSnackbar
 import io.ureflect.app.utils.toStorage
@@ -101,7 +100,7 @@ class SignUp : AppCompatActivity() {
                 },
                 Response.ErrorListener { error ->
                     loader.visibility = View.INVISIBLE
-                    errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)), error.expired())
+                    errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)))
                 }
         ).apply { tag = TAG })
     }

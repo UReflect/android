@@ -19,10 +19,11 @@ import io.ureflect.app.models.ModuleModel
 import io.ureflect.app.models.ProfileModel
 import io.ureflect.app.services.Api
 import io.ureflect.app.services.errMsg
-import io.ureflect.app.services.expired
+import io.ureflect.app.services.isExpired
 import io.ureflect.app.utils.EqualSpacingItemDecoration
 import io.ureflect.app.utils.errorSnackbar
 import io.ureflect.app.utils.getArg
+import io.ureflect.app.utils.reLogin
 import kotlinx.android.synthetic.main.activity_mirror.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -169,7 +170,13 @@ class Mirror : AppCompatActivity() {
                     loading.visibility = View.GONE
                     btnRetryProfiles.visibility = View.VISIBLE
                     btnRetryModules.visibility = View.VISIBLE
-                    errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)), error.expired())
+                    if (error.isExpired()) {
+                        reLogin(loading, root, queue) {
+                            loadProfiles(callback)
+                        }
+                    } else {
+                        errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)))
+                    }
                 }
         ).apply { tag = TAG })
     }
@@ -200,7 +207,13 @@ class Mirror : AppCompatActivity() {
                 Response.ErrorListener { error ->
                     loading.visibility = View.GONE
                     btnRetryDevices.visibility = View.VISIBLE
-                    errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)), error.expired())
+                    if (error.isExpired()) {
+                        reLogin(loading, root, queue) {
+                            loadDevices()
+                        }
+                    } else {
+                        errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)))
+                    }
                 }
         ).apply { tag = TAG })
     }
@@ -232,7 +245,13 @@ class Mirror : AppCompatActivity() {
                     Response.ErrorListener { error ->
                         loading.visibility = View.GONE
                         btnRetryModules.visibility = View.VISIBLE
-                        errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)), error.expired())
+                        if (error.isExpired()) {
+                            reLogin(loading, root, queue) {
+                                loadModules()
+                            }
+                        } else {
+                            errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)))
+                        }
                     }
             ).apply { tag = TAG })
         }

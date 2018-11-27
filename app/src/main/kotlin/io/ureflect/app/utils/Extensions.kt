@@ -2,6 +2,7 @@ package io.ureflect.app.utils
 
 import android.app.Activity
 import android.content.Context
+import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.Snackbar
 import android.support.design.widget.TextInputLayout
 import android.support.v4.app.Fragment
@@ -14,9 +15,17 @@ import android.text.TextWatcher
 import android.util.Patterns
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.ProgressBar
 import android.widget.TextView
+import com.android.volley.RequestQueue
+import com.android.volley.Response
+import com.google.gson.JsonObject
 import io.ureflect.app.R
+import io.ureflect.app.activities.SignIn
 import io.ureflect.app.mainIntent
+import io.ureflect.app.models.UserModel
+import io.ureflect.app.services.Api
+import io.ureflect.app.services.errMsg
 import java.io.Serializable
 
 inline fun FragmentManager.inTransaction(func: FragmentTransaction.() -> FragmentTransaction) = beginTransaction().func().commit()
@@ -37,8 +46,8 @@ fun AppCompatActivity.hideKeyboard() {
     }
 }
 
-fun AppCompatActivity.errorSnackbar(root: View, msg: String, expired: Boolean = false) = Snackbar.make(root, msg, Snackbar.LENGTH_INDEFINITE)
-        .apply { if (expired) setAction("Logout") { logout() } else setAction("Dismiss") {} }
+fun AppCompatActivity.errorSnackbar(root: View, msg: String) = Snackbar.make(root, msg, Snackbar.LENGTH_INDEFINITE)
+        .apply { setAction("Dismiss") {} }
         .show()
 
 fun Context.successSnackbar(root: View) = Snackbar.make(root, getString(R.string.success_text), Snackbar.LENGTH_SHORT)
@@ -46,6 +55,30 @@ fun Context.successSnackbar(root: View) = Snackbar.make(root, getString(R.string
         .setBackgroundColor(ResourcesCompat.getColor(resources, R.color.colorSuccess, null))
         .setActionTextColor(ResourcesCompat.getColor(resources, R.color.colorText, null))
         .show()
+
+fun AppCompatActivity.reLogin(loading: ProgressBar, root: CoordinatorLayout, queue: RequestQueue, callback: () -> Unit) {
+    val visibility = loading.visibility
+    loading.visibility = View.VISIBLE
+    queue.add(Api.Auth.signin(
+            JsonObject().apply { addProperty("email", UserModel.fromStorage(application).email) }
+                    .apply { addProperty("password", UserModel.fromStorage(application).password) },
+            Response.Listener { response ->
+                loading.visibility = visibility
+                val user = response.data?.user?.apply { password = UserModel.fromStorage(application).password }?.toStorage(application)
+                val token = response.data?.token?.toStorage(application, TOKEN)
+                if (user == null || token == null) {
+                    Storage.clear(application)
+                    errorSnackbar(root, getString(R.string.api_parse_error))
+                    return@Listener
+                }
+                callback()
+            },
+            Response.ErrorListener { error ->
+                loading.visibility = visibility
+                errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)))
+            }
+    ).apply { tag = SignIn.TAG })
+}
 
 fun AppCompatActivity.logout() {
     Storage.clear(application)

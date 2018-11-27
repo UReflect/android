@@ -17,7 +17,7 @@ import io.ureflect.app.models.CreditCardModel
 import io.ureflect.app.models.UserModel
 import io.ureflect.app.services.Api
 import io.ureflect.app.services.errMsg
-import io.ureflect.app.services.expired
+import io.ureflect.app.services.isExpired
 import io.ureflect.app.utils.*
 import kotlinx.android.synthetic.main.activity_settings.*
 
@@ -100,13 +100,19 @@ class Settings : AppCompatActivity() {
                     rvCreditCards.adapter = CreditCardAdapter(creditCards, {
                         startActivity(newCreditCardIntent())
                     }, {
-                        //TODO : something
+                        //TODO : Delete popup I guess
                     })
                 },
                 Response.ErrorListener { error ->
                     loading.visibility = View.GONE
                     btnRetry.visibility = View.VISIBLE
-                    errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)), error.expired())
+                    if (error.isExpired()) {
+                        reLogin(loading, root, queue) {
+                            loadCreditCards()
+                        }
+                    } else {
+                        errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)))
+                    }
                 }
         ).apply { tag = Home.TAG })
     }
@@ -129,7 +135,13 @@ class Settings : AppCompatActivity() {
                 },
                 Response.ErrorListener { error ->
                     loading.visibility = View.GONE
-                    errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)), error.expired())
+                    if (error.isExpired()) {
+                        reLogin(loading, root, queue) {
+                            update()
+                        }
+                    } else {
+                        errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)))
+                    }
                 }
         ).apply { tag = NewMirror.TAG })
     }

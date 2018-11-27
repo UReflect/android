@@ -10,6 +10,7 @@ import com.google.gson.reflect.TypeToken
 import io.ureflect.app.R
 import io.ureflect.app.models.*
 import io.ureflect.app.models.requests.AssetGsonRequest
+import io.ureflect.app.models.requests.AuthExpiredMockGsonRequest
 import io.ureflect.app.models.requests.GsonRequest
 import io.ureflect.app.models.requests.MultipartGsonRequest
 import io.ureflect.app.models.responses.ApiErrorResponse
@@ -22,11 +23,10 @@ import java.io.InputStream
 import java.lang.reflect.Type
 import java.net.UnknownHostException
 
-fun VolleyError.expired(): Boolean = networkResponse?.statusCode == 401 && errMsg().contains("Token expired")
+fun VolleyError.isExpired() = networkResponse?.statusCode == 401 && errMsg().contains("Token expired")
 
 fun VolleyError.errMsg(context: Context? = null, fallback: String = ""): String {
     try {
-//        this.cause
         if (context != null) {
             if (this.cause is UnknownHostException) {
                 return context.getString(R.string.internet_error)
@@ -35,15 +35,15 @@ fun VolleyError.errMsg(context: Context? = null, fallback: String = ""): String 
         networkResponse?.let {
             val errorResponse = Gson().fromJson(String(networkResponse.data), ApiErrorResponse::class.java)
             errorResponse.error?.let { error ->
-                return error
+                return error.capitalize()
             }
         }
         message?.let { error ->
-            return error
+            return error.capitalize()
         }
     } catch (e: Exception) {
     }
-    return fallback
+    return fallback.capitalize()
 }
 
 object Api {
@@ -64,6 +64,21 @@ object Api {
     object Misc {
         private const val ping = "/ping"
         private const val payments = "payments"
+
+        /**
+         * Needs auth token
+         */
+        fun expired(app: Application, callback: Response.Listener<ApiResponse<ArrayList<MirrorModel>>>, error: Response.ErrorListener):
+                GsonRequest<ApiResponse<ArrayList<MirrorModel>>> =
+                AuthExpiredMockGsonRequest(
+                        Request.Method.GET,
+                        host + ping,
+                        Unit,
+                        genericType<ApiResponse<ArrayList<MirrorModel>>>(),
+                        mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),
+                        callback,
+                        error
+                )
 
         /**
          * Useless

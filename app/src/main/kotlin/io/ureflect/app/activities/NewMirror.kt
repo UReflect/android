@@ -18,9 +18,10 @@ import io.ureflect.app.fragments.NewMirrorLocationFragment
 import io.ureflect.app.fragments.NewMirrorNameFragment
 import io.ureflect.app.services.Api
 import io.ureflect.app.services.errMsg
-import io.ureflect.app.services.expired
+import io.ureflect.app.services.isExpired
 import io.ureflect.app.utils.errorSnackbar
 import io.ureflect.app.utils.hideKeyboard
+import io.ureflect.app.utils.reLogin
 import kotlinx.android.synthetic.main.activity_new_mirror.*
 import kotlinx.android.synthetic.main.fragment_new_mirror_code.*
 import java.util.*
@@ -107,7 +108,13 @@ class NewMirror : AppCompatActivity() {
                 Response.ErrorListener { error ->
                     loader.visibility = View.GONE
                     hideKeyboard()
-                    errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)), error.expired())
+                    if (error.isExpired()) {
+                        reLogin(loader, root, queue) {
+                            join(callback)
+                        }
+                    } else {
+                        errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)))
+                    }
                 }
         ).apply { tag = TAG })
     }
@@ -132,7 +139,13 @@ class NewMirror : AppCompatActivity() {
                 },
                 Response.ErrorListener { error ->
                     loader.visibility = View.GONE
-                    errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)), error.expired())
+                    if (error.isExpired()) {
+                        reLogin(loading, root, queue) {
+                            createMirror()
+                        }
+                    } else {
+                        errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)))
+                    }
                 }
         ).apply { tag = TAG })
     }

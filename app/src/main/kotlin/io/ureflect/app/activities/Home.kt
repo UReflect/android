@@ -16,10 +16,11 @@ import io.ureflect.app.models.MirrorModel
 import io.ureflect.app.models.UserModel
 import io.ureflect.app.services.Api
 import io.ureflect.app.services.errMsg
-import io.ureflect.app.services.expired
+import io.ureflect.app.services.isExpired
 import io.ureflect.app.utils.EqualSpacingItemDecoration
 import io.ureflect.app.utils.errorSnackbar
 import io.ureflect.app.utils.logout
+import io.ureflect.app.utils.reLogin
 import kotlinx.android.synthetic.main.activity_home.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -85,7 +86,7 @@ class Home : AppCompatActivity() {
     private fun loadMirrors() {
         loading.visibility = View.VISIBLE
         btnRetry.visibility = View.GONE
-        queue.add(Api.Mirror.all(
+        queue.add(Api.Misc.expired(
                 application,
                 Response.Listener { response ->
                     loading.visibility = View.GONE
@@ -104,7 +105,13 @@ class Home : AppCompatActivity() {
                 Response.ErrorListener { error ->
                     loading.visibility = View.GONE
                     btnRetry.visibility = View.VISIBLE
-                    errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)), error.expired())
+                    if (error.isExpired()) {
+                        reLogin(loading, root, queue) {
+                            loadMirrors()
+                        }
+                    } else {
+                        errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)))
+                    }
                 }
         ).apply { tag = TAG })
     }
