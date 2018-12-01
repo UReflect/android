@@ -1,5 +1,6 @@
 package io.ureflect.app.models.requests
 
+import android.util.Log
 import com.android.volley.NetworkResponse
 import com.android.volley.ParseError
 import com.android.volley.Request
@@ -31,7 +32,8 @@ open class GsonRequest<T>(method: Int,
                           errorListener: Response.ErrorListener) : Request<T>(method, url, errorListener) {
     private val gson = Gson()
 
-    override fun getHeaders(): MutableMap<String, String> = headers ?: super.getHeaders()
+    override fun getHeaders(): MutableMap<String, String> = (headers
+            ?: super.getHeaders()).apply { Log.i("Volley", url) }
 
     override fun deliverResponse(response: T) = listener.onResponse(response)
 

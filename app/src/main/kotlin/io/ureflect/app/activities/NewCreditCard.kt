@@ -116,7 +116,7 @@ class NewCreditCard : AppCompatActivity() {
 
     private fun createCreditCard(token: String, callback: () -> Unit) {
         loading.visibility = View.VISIBLE
-        queue.add(Api.Misc.createPayment(
+        queue.add(Api.Payment.create(
                 application,
                 JsonObject().apply { addProperty("token", token) },
                 Response.Listener { response ->

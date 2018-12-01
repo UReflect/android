@@ -84,4 +84,13 @@
     <string name="card_other_text">Other *%1$s</string>
     <string name="internet_error">Check your internet connection</string>
     <string name="invalid_card_error">Could not validate card</string>
+    <string name="store_title_text">Store</string>
+    <string name="install_btn_text">Install</string>
+    <string name="form_text_search_module">Search an app</string>
+    <string name="module_comments_text">Comments</string>
+    <string name="text_no_results">No results</string>
+    <string name="module_rating_text">%1$d rating%2$s</string>
+    <string name="module_description_text">Description</string>
+    <string name="module_price_text">%1$s €</string>
+    <string name="free_text">Free</string>
 </resources>

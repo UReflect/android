@@ -9,8 +9,8 @@ import io.ureflect.app.models.NamedEntity
 import kotlinx.android.synthetic.main.view_entity.view.*
 
 open class EntityAdapter<T : NamedEntity>(val data: List<T>,
-                                          private val addListener: (T?) -> Unit,
-                                          private val selectListener: (T?) -> Unit,
+                                          private val addListener: (T?, View) -> Unit,
+                                          private val selectListener: (T?, View) -> Unit,
                                           private val nb: Float = 4.5f,
                                           private val margin: Int = 0) : RecyclerView.Adapter<EntityAdapter<T>.EntityAdapterViewHolder>() {
     companion object {
@@ -30,7 +30,7 @@ open class EntityAdapter<T : NamedEntity>(val data: List<T>,
 
     override fun getItemCount(): Int = data.size + 1
 
-    fun resize(parent: ViewGroup, v: View) {
+    open fun resize(parent: ViewGroup, v: View) {
         val side = ((parent.measuredWidth - margin * (nb + 1)) / nb).toInt()
         v.layoutParams = RecyclerView.LayoutParams(side, side)
     }
@@ -46,19 +46,19 @@ open class EntityAdapter<T : NamedEntity>(val data: List<T>,
     }
 
     abstract inner class EntityAdapterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        abstract fun bind(entity: T?, listener: (T?) -> Unit)
+        abstract fun bind(entity: T?, listener: (T?, View) -> Unit)
     }
 
     inner class AddViewHolder(itemView: View) : EntityAdapterViewHolder(itemView) {
-        override fun bind(entity: T?, listener: (T?) -> Unit) = with(itemView) {
-            setOnClickListener { listener(entity) }
+        override fun bind(entity: T?, listener: (T?, View) -> Unit) = with(itemView) {
+            setOnClickListener { listener(entity, this) }
         }
     }
 
     inner class EntityViewHolder(itemView: View) : EntityAdapterViewHolder(itemView) {
-        override fun bind(entity: T?, listener: (T?) -> Unit) = with(itemView) {
+        override fun bind(entity: T?, listener: (T?, View) -> Unit) = with(itemView) {
+            setOnClickListener { entity?.let { it1 -> listener(it1, this) } }
             tvName.text = entity?.name()
-            setOnClickListener { entity?.let { it1 -> listener(it1) } }
         }
     }
 }

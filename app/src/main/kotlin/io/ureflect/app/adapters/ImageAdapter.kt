@@ -19,12 +19,12 @@ class ImageAdapter(val data: List<String>, private val margin: Int) : RecyclerVi
 
     override fun getItemCount(): Int = data.size
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
-        val v: View = LayoutInflater.from(parent.context).inflate(R.layout.view_image, parent, false)
-        val side = ((parent.measuredWidth - margin * (NB - 1)) / NB)
+    private fun resize(parent: ViewGroup, v: View) {
+        val side = ((parent.measuredWidth - margin * (NB + 1)) / NB)
         v.layoutParams = RecyclerView.LayoutParams(side, side)
-        return ImageViewHolder(v)
     }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder = ImageViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.view_image, parent, false).apply { resize(parent, this) })
 
     class ImageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(path: String) = with(itemView) {

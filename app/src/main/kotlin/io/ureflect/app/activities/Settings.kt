@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.PopupMenu
 import android.util.TypedValue
 import android.view.View
 import com.android.volley.RequestQueue
@@ -92,15 +93,30 @@ class Settings : AppCompatActivity() {
     private fun loadCreditCards() {
         loading.visibility = View.VISIBLE
         btnRetry.visibility = View.GONE
-        queue.add(Api.Misc.payments(
+        queue.add(Api.Payment.all(
                 application,
                 Response.Listener { response ->
                     loading.visibility = View.GONE
                     this.creditCards = response.data ?: ArrayList()
-                    rvCreditCards.adapter = CreditCardAdapter(creditCards, {
+                    rvCreditCards.adapter = CreditCardAdapter(creditCards, { _: CreditCardModel?, _: View ->
                         startActivity(newCreditCardIntent())
-                    }, {
-                        //TODO : Delete popup I guess
+                    }, { card: CreditCardModel?, view: View ->
+                        PopupMenu(this, view)
+                                .apply { menu.add("Delete") }
+                                .apply {
+                                    setOnMenuItemClickListener {
+                                        when (it.title) {
+                                            "Delete" -> {
+                                                card?.let {
+                                                    deleteCard(card)
+                                                    return@setOnMenuItemClickListener true
+                                                }
+                                            }
+                                        }
+                                        return@setOnMenuItemClickListener false
+                                    }
+                                }
+                                .apply { show() }
                     })
                 },
                 Response.ErrorListener { error ->
@@ -109,6 +125,28 @@ class Settings : AppCompatActivity() {
                     if (error.isExpired()) {
                         reLogin(loading, root, queue) {
                             loadCreditCards()
+                        }
+                    } else {
+                        errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)))
+                    }
+                }
+        ).apply { tag = Home.TAG })
+    }
+
+    private fun deleteCard(card: CreditCardModel) {
+        loading.visibility = View.VISIBLE
+        queue.add(Api.Payment.delete(
+                application,
+                card.id,
+                Response.Listener {
+                    loading.visibility = View.GONE
+                    loadCreditCards()
+                },
+                Response.ErrorListener { error ->
+                    loading.visibility = View.GONE
+                    if (error.isExpired()) {
+                        reLogin(loading, root, queue) {
+                            deleteCard(card)
                         }
                     } else {
                         errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)))

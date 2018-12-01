@@ -21,7 +21,7 @@ class MoveUpwardBehavior : CoordinatorLayout.Behavior<View> {
         val translationY = -Math.min(0.0f, dependency.translationY - dependency.height)
         (child.layoutParams as CoordinatorLayout.LayoutParams).bottomMargin = translationY.toInt()
         if (child is NestedScrollView && translationY.toInt() == dependency.height) {
-            child.smoothScrollBy(0, translationY.toInt())
+            child.smoothScrollBy(0, dependency.height)
         }
         child.requestLayout()
         return true

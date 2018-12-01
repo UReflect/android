@@ -153,9 +153,9 @@ class Mirror : AppCompatActivity() {
                     loading.visibility = View.GONE
                     response.data?.let { profiles ->
                         this.profiles = profiles
-                        profileAdapter = EntityAdapter(profiles, {
+                        profileAdapter = EntityAdapter(profiles, { _: ProfileModel?, _: View ->
                             startActivity(newProfileIntent(mirror))
-                        }, { profile ->
+                        }, { profile: ProfileModel?, _: View ->
                             startActivity(profile?.let { editProfileIntent(it) })
                         }, 4.5f, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, resources.displayMetrics).toInt())
                         rvProfiles.adapter = profileAdapter
@@ -191,10 +191,10 @@ class Mirror : AppCompatActivity() {
                     loading.visibility = View.GONE
                     response.data?.let { devices ->
                         this.devices = devices
-                        deviceAdapter = EntityAdapter(devices, {
+                        deviceAdapter = EntityAdapter(devices, { _: ConnectedDeviceModel?, _: View ->
                             //TODO :
                             //                            startActivity(pairDeviceIntent())
-                        }, { device ->
+                        }, { _: ConnectedDeviceModel?, _: View ->
                             //TODO :
                             //                            startActivity(device?.let { deviceIntent(it) })
                         }, 4.5f, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, resources.displayMetrics).toInt())
@@ -229,10 +229,9 @@ class Mirror : AppCompatActivity() {
                         loading.visibility = View.GONE
                         response.data?.let { profile ->
                             modules = profile.modules
-                            moduleAdapter = EntityAdapter(modules, {
-                                //TODO :
-                                //                                startActivity(installModuleIntent(mirror))
-                            }, { module ->
+                            moduleAdapter = EntityAdapter(modules, { _: ModuleModel?, _: View ->
+                                startActivity(storeIntent())
+                            }, { _: ModuleModel?, _: View ->
                                 //TODO :
                                 //                                startActivity(module?.let { moduleIntent(it) })
                             }, 4.5f, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, resources.displayMetrics).toInt())

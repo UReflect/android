@@ -9,6 +9,8 @@
         <item name="colorControlNormal">@color/colorText</item>
         <item name="colorControlActivated">@color/colorText</item>
         <item name="colorControlHighlight">@color/colorText</item>
+        <item name="android:textColorHint">@color/colorText</item>
+        <item name="android:editTextColor">@color/colorText</item>
     </style>
 
     <style name="Widget.Design.TextInputLayout" parent="AppTheme">

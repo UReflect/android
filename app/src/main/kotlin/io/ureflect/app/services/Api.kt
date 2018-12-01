@@ -63,7 +63,6 @@ object Api {
 
     object Misc {
         private const val ping = "/ping"
-        private const val payments = "payments"
 
         /**
          * Needs auth token
@@ -109,15 +108,54 @@ object Api {
                         callback,
                         error
                 )
+    }
+
+    object Module {
+        private const val url = "/v1/module"
+        private const val comments = "comments"
 
         /**
          * Needs auth token
          */
-        fun payments(app: Application, callback: Response.Listener<ApiResponse<ArrayList<CreditCardModel>>>, error: Response.ErrorListener):
+        fun all(app: Application, query: String, callback: Response.Listener<ApiResponse<ArrayList<ModuleModel>>>, error: Response.ErrorListener):
+                GsonRequest<ApiResponse<ArrayList<ModuleModel>>> =
+                GsonRequest(
+                        Request.Method.GET,
+                        "$host$url" + 's' + if (!query.isEmpty()) "?$query" else "",
+                        Unit,
+                        genericType<ApiResponse<ArrayList<ModuleModel>>>(),
+                        mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),
+                        callback,
+                        error
+                )
+
+        /**
+         * Needs auth token
+         */
+        fun comments(app: Application, moduleId: Long, callback: Response.Listener<ApiResponse<ArrayList<CommentModel>>>, error: Response.ErrorListener):
+                GsonRequest<ApiResponse<ArrayList<CommentModel>>> =
+                GsonRequest(
+                        Request.Method.GET,
+                        "$host$url/$moduleId/$comments",
+                        Unit,
+                        genericType<ApiResponse<ArrayList<CommentModel>>>(),
+                        mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),
+                        callback,
+                        error
+                )
+    }
+
+    object Payment {
+        private const val url = "payments"
+
+        /**
+         * Needs auth token
+         */
+        fun all(app: Application, callback: Response.Listener<ApiResponse<ArrayList<CreditCardModel>>>, error: Response.ErrorListener):
                 GsonRequest<ApiResponse<ArrayList<CreditCardModel>>> =
                 GsonRequest(
                         Request.Method.GET,
-                        "$host/v1/$payments",
+                        "$host/v1/$url",
                         Unit,
                         genericType<ApiResponse<ArrayList<CreditCardModel>>>(),
                         mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),
@@ -128,11 +166,29 @@ object Api {
         /**
          * Needs auth token
          */
-        fun createPayment(app: Application, data: Any, callback: Response.Listener<ApiResponse<CreditCardModel>>, error: Response.ErrorListener):
+        fun delete(app: Application, cardId: String, callback: Response.Listener<SimpleApiResponse>, error: Response.ErrorListener):
+                GsonRequest<SimpleApiResponse> =
+                GsonRequest(
+                        Request.Method.DELETE,
+                        "$host/v1/$url/$cardId",
+                        Unit,
+                        genericType<SimpleApiResponse>(),
+                        mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),
+                        callback,
+                        error
+                )
+
+        /**
+         * Needs auth token
+         *
+         * data :
+         * token: String
+         */
+        fun create(app: Application, data: Any, callback: Response.Listener<ApiResponse<CreditCardModel>>, error: Response.ErrorListener):
                 GsonRequest<ApiResponse<CreditCardModel>> =
                 GsonRequest(
                         Request.Method.POST,
-                        "$host/v1/$payments",
+                        "$host/v1/$url",
                         data,
                         genericType<ApiResponse<CreditCardModel>>(),
                         mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),

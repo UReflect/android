@@ -7,7 +7,7 @@ import io.ureflect.app.R
 import io.ureflect.app.models.CreditCardModel
 import kotlinx.android.synthetic.main.view_credit_card.view.*
 
-class CreditCardAdapter(data: List<CreditCardModel>, addListener: (CreditCardModel?) -> Unit, selectListener: (CreditCardModel?) -> Unit) : EntityAdapter<CreditCardModel>(data, addListener, selectListener) {
+class CreditCardAdapter(data: List<CreditCardModel>, addListener: (CreditCardModel?, View) -> Unit, selectListener: (CreditCardModel?, View) -> Unit) : EntityAdapter<CreditCardModel>(data, addListener, selectListener) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EntityAdapterViewHolder = when (viewType) {
         EntityAdapter.TYPE_ADD_ENTITY -> AddViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.view_add, parent, false).apply { resize(parent, this) })
@@ -15,7 +15,14 @@ class CreditCardAdapter(data: List<CreditCardModel>, addListener: (CreditCardMod
     }
 
     inner class CreditCardAdapterViewHolder(itemView: View) : EntityAdapterViewHolder(itemView) {
-        override fun bind(entity: CreditCardModel?, listener: (CreditCardModel?) -> Unit) = with(itemView) {
+        override fun bind(entity: CreditCardModel?, listener: (CreditCardModel?, View) -> Unit) = with(itemView) {
+            setOnLongClickListener {
+                entity?.let { card ->
+                    listener(card, this)
+                    return@setOnLongClickListener true
+                }
+                return@setOnLongClickListener false
+            }
             when (entity?.brand?.toLowerCase()) {
                 "visa" -> {
                     tvName.text = context.getString(R.string.card_visa_text, entity.last4)

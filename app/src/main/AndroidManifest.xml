@@ -49,6 +49,12 @@
         <activity
             android:name=".activities.NewCreditCard"
             android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".activities.Store"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".activities.Module"
+            android:windowSoftInputMode="adjustResize" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
