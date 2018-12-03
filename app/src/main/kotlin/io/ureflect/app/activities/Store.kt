@@ -13,20 +13,14 @@ import com.android.volley.toolbox.Volley
 import io.ureflect.app.R
 import io.ureflect.app.adapters.ModuleAdapter
 import io.ureflect.app.models.ModuleModel
+import io.ureflect.app.models.ProfileModel
 import io.ureflect.app.services.Api
 import io.ureflect.app.services.errMsg
 import io.ureflect.app.services.isExpired
-import io.ureflect.app.utils.EqualSpacingItemDecoration
-import io.ureflect.app.utils.errorSnackbar
-import io.ureflect.app.utils.reLogin
+import io.ureflect.app.utils.*
 import kotlinx.android.synthetic.main.activity_store.*
-import java.util.*
 
-fun Context.storeIntent(): Intent {
-    val intent = Intent(this, Store::class.java)
-    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-    return intent
-}
+fun Context.storeIntent(profileId: Long): Intent = Intent(this, Store::class.java).apply { putExtra(ProfileModel.TAG, profileId) }
 
 class Store : AppCompatActivity() {
     companion object {
@@ -35,11 +29,18 @@ class Store : AppCompatActivity() {
 
     private lateinit var queue: RequestQueue
     private lateinit var modules: ArrayList<ModuleModel>
+    private var profileId: Long = -1
+    private lateinit var installedModules: ArrayList<ModuleModel>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_store)
         Api.log("starting store activity")
+
+        getArg<Long>(ProfileModel.TAG)?.let {
+            profileId = it
+        } ?: finish()
+
         queue = Volley.newRequestQueue(this)
         setupUI()
     }
@@ -47,6 +48,10 @@ class Store : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         loadModules()
+
+        fromStorage<ArrayList<ModuleModel>>(application, ModuleModel.LIST_TAG)?.let {
+            installedModules = it
+        } ?: finish()
     }
 
     override fun onStop() {
@@ -75,9 +80,71 @@ class Store : AppCompatActivity() {
     private fun buildQuery(): String {
         val query = if (!emptySearch()) "query=" + svSearch.query + '&' else ""
         val order = "order=title"
-        //invert
-        //limit
         return "$query$order"
+    }
+
+    private fun installOrUninstallModule(module: ModuleModel) {
+        if (module.is_installed) {
+            uninstallModule(module)
+        } else {
+            installModule(module)
+        }
+    }
+
+    private fun uninstallModule(module: ModuleModel) {
+        loading.visibility = View.VISIBLE
+        queue.add(Api.Module.uninstall(
+                application,
+                module.ID,
+                profileId,
+                Unit,
+                Response.Listener {
+                    loading.visibility = View.GONE
+                    successSnackbar(root)
+                    module.is_installed = false
+                    installedModules.remove(module)
+                    installedModules.toStorage(application, ModuleModel.LIST_TAG)
+                    rvModules.adapter.notifyDataSetChanged()
+                },
+                Response.ErrorListener { error ->
+                    loading.visibility = View.GONE
+                    if (error.isExpired()) {
+                        reLogin(loading, root, queue) {
+                            installModule(module)
+                        }
+                    } else {
+                        errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)))
+                    }
+                }
+        ).apply { tag = Module.TAG })
+    }
+
+    private fun installModule(module: ModuleModel) {
+        loading.visibility = View.VISIBLE
+        queue.add(Api.Module.install(
+                application,
+                module.ID,
+                profileId,
+                Unit,
+                Response.Listener {
+                    loading.visibility = View.GONE
+                    successSnackbar(root)
+                    module.is_installed = true
+                    installedModules.add(module)
+                    installedModules.toStorage(application, ModuleModel.LIST_TAG)
+                    rvModules.adapter.notifyDataSetChanged()
+                },
+                Response.ErrorListener { error ->
+                    loading.visibility = View.GONE
+                    if (error.isExpired()) {
+                        reLogin(loading, root, queue) {
+                            installModule(module)
+                        }
+                    } else {
+                        errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)))
+                    }
+                }
+        ).apply { tag = Module.TAG })
     }
 
     private fun loadModules() {
@@ -89,11 +156,14 @@ class Store : AppCompatActivity() {
                 Response.Listener { response ->
                     loading.visibility = View.GONE
                     response.data?.let { modules ->
+                        modules.forEach {
+                            it.is_installed = installedModules.contains(it)
+                        }
                         this.modules = modules
-                        rvModules.adapter = ModuleAdapter(modules, { module: ModuleModel?, view: View ->
-                            module?.let { startActivity(moduleIntent(module)) }
+                        rvModules.adapter = ModuleAdapter(modules, { module: ModuleModel?, _: View ->
+                            module?.let { startActivity(moduleIntent(module, profileId)) }
                         }, { module: ModuleModel?, view: View ->
-                            //TODO : install
+                            module?.let { installOrUninstallModule(module) }
                         })
                         tvEmpty.visibility = if (modules.isEmpty()) View.VISIBLE else View.GONE
                     } ?: run {

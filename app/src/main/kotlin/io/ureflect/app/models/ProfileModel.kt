@@ -10,4 +10,8 @@ class ProfileModel : Serializable, NamedEntity {
     var modules: ArrayList<ModuleModel> = ArrayList()
 
     override fun name(): String = title
+
+    companion object {
+        const val TAG = "PROFILE"
+    }
 }

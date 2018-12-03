@@ -60,11 +60,13 @@ fun AppCompatActivity.reLogin(loading: ProgressBar, root: CoordinatorLayout, que
     val visibility = loading.visibility
     loading.visibility = View.VISIBLE
     queue.add(Api.Auth.signin(
-            JsonObject().apply { addProperty("email", UserModel.fromStorage(application).email) }
-                    .apply { addProperty("password", UserModel.fromStorage(application).password) },
+            JsonObject().apply { addProperty("email", fromStorage<UserModel>(application, UserModel.TAG)?.email) }
+                    .apply { addProperty("password", fromStorage<UserModel>(application, UserModel.TAG)?.password) },
             Response.Listener { response ->
                 loading.visibility = visibility
-                val user = response.data?.user?.apply { password = UserModel.fromStorage(application).password }?.toStorage(application)
+                val user = response.data?.user?.apply {
+                    password = fromStorage<UserModel>(application, UserModel.TAG)?.password ?: ""
+                }?.toStorage(application, UserModel.TAG)
                 val token = response.data?.token?.toStorage(application, TOKEN)
                 if (user == null || token == null) {
                     Storage.clear(application)

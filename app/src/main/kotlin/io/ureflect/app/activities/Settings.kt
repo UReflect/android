@@ -39,7 +39,11 @@ class Settings : AppCompatActivity() {
         setContentView(R.layout.activity_settings)
         Api.log("starting Settings activity")
         queue = Volley.newRequestQueue(this)
-        this.user = UserModel.fromStorage(application)
+        fromStorage<UserModel>(application, UserModel.TAG)?.let {
+            this.user = it
+        } ?: run {
+            finish()
+        }
         setupUI()
     }
 
@@ -165,7 +169,7 @@ class Settings : AppCompatActivity() {
                 Response.Listener { response ->
                     loading.visibility = View.GONE
                     response.data?.let {
-                        user = it.apply { password = evPassword.text.toString() }.toStorage(application)
+                        user = it.apply { password = evPassword.text.toString() }.toStorage(application, UserModel.TAG)
                         successSnackbar(root)
                     } ?: run {
                         errorSnackbar(root, getString(R.string.api_parse_error))

@@ -20,20 +20,18 @@ import io.ureflect.app.models.ProfileModel
 import io.ureflect.app.services.Api
 import io.ureflect.app.services.errMsg
 import io.ureflect.app.services.isExpired
-import io.ureflect.app.utils.EqualSpacingItemDecoration
-import io.ureflect.app.utils.errorSnackbar
-import io.ureflect.app.utils.getArg
-import io.ureflect.app.utils.reLogin
+import io.ureflect.app.utils.*
 import kotlinx.android.synthetic.main.activity_mirror.*
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashSet
 
-fun Context.mirrorIntent(mirror: MirrorModel): Intent = Intent(this, Mirror::class.java).apply { putExtra(Mirror.MIRROR, mirror) }
+fun Context.mirrorIntent(mirror: MirrorModel): Intent = Intent(this, Mirror::class.java).apply { putExtra(MirrorModel.TAG, mirror) }
 
 class Mirror : AppCompatActivity() {
     companion object {
         private const val EDIT_MIRROR = 12321
-        const val MIRROR = "mirror"
         const val TAG = "MirrorActivity"
     }
 
@@ -52,7 +50,7 @@ class Mirror : AppCompatActivity() {
         Api.log("starting mirror activity")
         queue = Volley.newRequestQueue(this)
 
-        getArg<MirrorModel>(MIRROR)?.let {
+        getArg<MirrorModel>(MirrorModel.TAG)?.let {
             mirror = it
         } ?: finish()
 
@@ -129,7 +127,7 @@ class Mirror : AppCompatActivity() {
         when (requestCode) {
             EDIT_MIRROR -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    data?.getSerializableExtra(MIRROR)?.let {
+                    data?.getSerializableExtra(MirrorModel.TAG)?.let {
                         if (it is MirrorModel) {
                             mirror = it
                             setupMirror()
@@ -184,7 +182,7 @@ class Mirror : AppCompatActivity() {
     private fun loadDevices() {
         loading.visibility = View.VISIBLE
         btnRetryDevices.visibility = View.GONE
-        queue.add(Api.Misc.connectedDevices(
+        queue.add(Api.Device.all(
                 application,
                 application.assets.open("connectedDevices.json"),
                 Response.Listener { response ->
@@ -192,11 +190,10 @@ class Mirror : AppCompatActivity() {
                     response.data?.let { devices ->
                         this.devices = devices
                         deviceAdapter = EntityAdapter(devices, { _: ConnectedDeviceModel?, _: View ->
-                            //TODO :
-                            //                            startActivity(pairDeviceIntent())
+                            errorSnackbar(root, getString(R.string.not_implemented_error))
+//                            startActivity(pairDeviceIntent(mirror))
                         }, { _: ConnectedDeviceModel?, _: View ->
-                            //TODO :
-                            //                            startActivity(device?.let { deviceIntent(it) })
+                            errorSnackbar(root, getString(R.string.not_implemented_error))
                         }, 4.5f, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, resources.displayMetrics).toInt())
                         rvDevices.adapter = deviceAdapter
                     } ?: run {
@@ -219,23 +216,24 @@ class Mirror : AppCompatActivity() {
     }
 
     private fun loadModules() {
-        if (profiles.size > 0) {
+        loadModulesForProfile()
+    }
+
+    private fun loadModulesForProfile(i: Int = 0, list: ArrayList<ModuleModel> = ArrayList()) {
+        if (profiles.size > i) {
             loading.visibility = View.VISIBLE
             btnRetryModules.visibility = View.GONE
             queue.add(Api.Profile.one(
                     application,
-                    profiles[0].ID, //TODO : This is shit
+                    profiles[i].ID,
                     Response.Listener { response ->
                         loading.visibility = View.GONE
                         response.data?.let { profile ->
-                            modules = profile.modules
-                            moduleAdapter = EntityAdapter(modules, { _: ModuleModel?, _: View ->
-                                startActivity(storeIntent())
-                            }, { _: ModuleModel?, _: View ->
-                                //TODO :
-                                //                                startActivity(module?.let { moduleIntent(it) })
-                            }, 4.5f, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, resources.displayMetrics).toInt())
-                            rvModules.adapter = moduleAdapter
+                            profile.modules.forEach {
+                                it.is_installed = true
+                            }
+                            list.addAll(profile.modules)
+                            loadModulesForProfile(i + 1, list)
                         } ?: run {
                             btnRetryModules.visibility = View.VISIBLE
                             errorSnackbar(root, getString(R.string.api_parse_error))
@@ -253,6 +251,18 @@ class Mirror : AppCompatActivity() {
                         }
                     }
             ).apply { tag = TAG })
+        } else {
+            modules = ArrayList(HashSet(list)).toStorage(application, ModuleModel.LIST_TAG)
+            moduleAdapter = EntityAdapter(modules, { _: ModuleModel?, _: View ->
+                if (profiles.size > 0) {
+                    startActivity(storeIntent(profiles[0].ID)) //TODO : ProfileID won't be necessary after next API update
+                } else {
+                    errorSnackbar(root, getString(R.string.need_profile_error))
+                }
+            }, { module: ModuleModel?, _: View ->
+                module?.let { startActivity(moduleIntent(module, profiles[0].ID)) } //TODO : ProfileID won't be necessary after next API update
+            }, 4.5f, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, resources.displayMetrics).toInt())
+            rvModules.adapter = moduleAdapter
         }
     }
 }

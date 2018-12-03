@@ -89,8 +89,16 @@
     <string name="form_text_search_module">Search an app</string>
     <string name="module_comments_text">Comments</string>
     <string name="text_no_results">No results</string>
-    <string name="module_rating_text">%1$d rating%2$s</string>
+    <string name="module_ratings_text">%1$d rating%2$s</string>
     <string name="module_description_text">Description</string>
     <string name="module_price_text">%1$s €</string>
     <string name="free_text">Free</string>
+    <string name="module_rating_text">Rating</string>
+    <string name="rate_btn_text">Rate</string>
+    <string name="module_rate_text">Rate this module</string>
+    <string name="module_rate_update_text">Update your rating</string>
+    <string name="pair_device_title_text">Connected device</string>
+    <string name="not_implemented_error">Feature unavailable for your current application version</string>
+    <string name="need_profile_error">At least one profile is needed to install modules</string>
+    <string name="uninstall_btn_text">Uninstall</string>
 </resources>

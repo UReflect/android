@@ -74,7 +74,7 @@ object Api {
                         host + ping,
                         Unit,
                         genericType<ApiResponse<ArrayList<MirrorModel>>>(),
-                        mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),
+                        mutableMapOf("x-access-token" to (fromStorage<String>(app, TOKEN) ?: "")),
                         callback,
                         error
                 )
@@ -93,18 +93,20 @@ object Api {
                         callback,
                         error
                 )
+    }
 
+    object Device {
         /**
          * Useless
          */
-        fun connectedDevices(app: Application, data: InputStream, callback: Response.Listener<ApiResponse<ArrayList<ConnectedDeviceModel>>>, error: Response.ErrorListener):
+        fun all(app: Application, data: InputStream, callback: Response.Listener<ApiResponse<ArrayList<ConnectedDeviceModel>>>, error: Response.ErrorListener):
                 AssetGsonRequest<ApiResponse<ArrayList<ConnectedDeviceModel>>> =
                 AssetGsonRequest(
                         Request.Method.GET,
-                        host + ping,
+                        "$host/ping",
                         data,
                         genericType<ApiResponse<ArrayList<ConnectedDeviceModel>>>(),
-                        mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),
+                        mutableMapOf("x-access-token" to (fromStorage<String>(app, TOKEN) ?: "")),
                         callback,
                         error
                 )
@@ -113,6 +115,10 @@ object Api {
     object Module {
         private const val url = "/v1/module"
         private const val comments = "comments"
+        private const val mark = "mark"
+        private const val comment = "comment"
+        private const val install = "install"
+        private const val uninstall = "uninstall"
 
         /**
          * Needs auth token
@@ -124,7 +130,7 @@ object Api {
                         "$host$url" + 's' + if (!query.isEmpty()) "?$query" else "",
                         Unit,
                         genericType<ApiResponse<ArrayList<ModuleModel>>>(),
-                        mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),
+                        mutableMapOf("x-access-token" to (fromStorage<String>(app, TOKEN) ?: "")),
                         callback,
                         error
                 )
@@ -139,7 +145,73 @@ object Api {
                         "$host$url/$moduleId/$comments",
                         Unit,
                         genericType<ApiResponse<ArrayList<CommentModel>>>(),
-                        mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),
+                        mutableMapOf("x-access-token" to (fromStorage<String>(app, TOKEN) ?: "")),
+                        callback,
+                        error
+                )
+
+        /**
+         * data:
+         * value: Int
+         *
+         * Needs auth token
+         */
+        fun rate(app: Application, moduleId: Long, data: Any, callback: Response.Listener<ApiResponse<ModuleModel>>, error: Response.ErrorListener):
+                GsonRequest<ApiResponse<ModuleModel>> =
+                GsonRequest(
+                        Request.Method.POST,
+                        "$host$url/$moduleId/$mark",
+                        data,
+                        genericType<ApiResponse<ModuleModel>>(),
+                        mutableMapOf("x-access-token" to (fromStorage<String>(app, TOKEN) ?: "")),
+                        callback,
+                        error
+                )
+
+        /**
+         * data:
+         * value: String
+         *
+         * Needs auth token
+         */
+        fun comment(app: Application, moduleId: Long, data: Any, callback: Response.Listener<ApiResponse<ModuleModel>>, error: Response.ErrorListener):
+                GsonRequest<ApiResponse<ModuleModel>> =
+                GsonRequest(
+                        Request.Method.POST,
+                        "$host$url/$moduleId/$comment",
+                        data,
+                        genericType<ApiResponse<ModuleModel>>(),
+                        mutableMapOf("x-access-token" to (fromStorage<String>(app, TOKEN) ?: "")),
+                        callback,
+                        error
+                )
+
+        /**
+         * Needs auth token
+         */
+        fun install(app: Application, moduleId: Long, profileId: Long, data: Any, callback: Response.Listener<ApiResponse<ModuleModel>>, error: Response.ErrorListener):
+                GsonRequest<ApiResponse<ModuleModel>> =
+                GsonRequest(
+                        Request.Method.POST,
+                        "$host$url/$moduleId/$install/$profileId",
+                        data,
+                        genericType<ApiResponse<ModuleModel>>(),
+                        mutableMapOf("x-access-token" to (fromStorage<String>(app, TOKEN) ?: "")),
+                        callback,
+                        error
+                )
+
+        /**
+         * Needs auth token
+         */
+        fun uninstall(app: Application, moduleId: Long, profileId: Long, data: Any, callback: Response.Listener<ApiResponse<ModuleModel>>, error: Response.ErrorListener):
+                GsonRequest<ApiResponse<ModuleModel>> =
+                GsonRequest(
+                        Request.Method.POST,
+                        "$host$url/$moduleId/$uninstall/$profileId",
+                        data,
+                        genericType<ApiResponse<ModuleModel>>(),
+                        mutableMapOf("x-access-token" to (fromStorage<String>(app, TOKEN) ?: "")),
                         callback,
                         error
                 )
@@ -158,7 +230,7 @@ object Api {
                         "$host/v1/$url",
                         Unit,
                         genericType<ApiResponse<ArrayList<CreditCardModel>>>(),
-                        mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),
+                        mutableMapOf("x-access-token" to (fromStorage<String>(app, TOKEN) ?: "")),
                         callback,
                         error
                 )
@@ -173,7 +245,7 @@ object Api {
                         "$host/v1/$url/$cardId",
                         Unit,
                         genericType<SimpleApiResponse>(),
-                        mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),
+                        mutableMapOf("x-access-token" to (fromStorage<String>(app, TOKEN) ?: "")),
                         callback,
                         error
                 )
@@ -191,7 +263,7 @@ object Api {
                         "$host/v1/$url",
                         data,
                         genericType<ApiResponse<CreditCardModel>>(),
-                        mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),
+                        mutableMapOf("x-access-token" to (fromStorage<String>(app, TOKEN) ?: "")),
                         callback,
                         error
                 )
@@ -254,7 +326,7 @@ object Api {
                         "$host$url/$userId",
                         data,
                         genericType<ApiResponse<UserModel>>(),
-                        mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),
+                        mutableMapOf("x-access-token" to (fromStorage<String>(app, TOKEN) ?: "")),
                         callback,
                         error
                 )
@@ -277,7 +349,7 @@ object Api {
                         host + url,
                         Unit,
                         genericType<ApiResponse<ArrayList<MirrorModel>>>(),
-                        mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),
+                        mutableMapOf("x-access-token" to (fromStorage<String>(app, TOKEN) ?: "")),
                         callback,
                         error
                 )
@@ -295,7 +367,7 @@ object Api {
                         "$host$url/$join",
                         data,
                         genericType<ApiResponse<MirrorModel>>(),
-                        mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),
+                        mutableMapOf("x-access-token" to (fromStorage<String>(app, TOKEN) ?: "")),
                         callback,
                         error
                 )
@@ -310,7 +382,7 @@ object Api {
                         "$host$url/$mirrorId/$unjoin",
                         Unit,
                         genericType<ApiResponse<MirrorModel>>(),
-                        mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),
+                        mutableMapOf("x-access-token" to (fromStorage<String>(app, TOKEN) ?: "")),
                         callback,
                         error
                 )
@@ -331,7 +403,7 @@ object Api {
                         "$host$url/$mirrorId",
                         data,
                         genericType<ApiResponse<MirrorModel>>(),
-                        mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),
+                        mutableMapOf("x-access-token" to (fromStorage<String>(app, TOKEN) ?: "")),
                         callback,
                         error
                 )
@@ -349,7 +421,7 @@ object Api {
                         "$host$url" + "s" + "/$mirrorId/$linkProfile",
                         data,
                         genericType<ApiResponse<ProfileModel>>(),
-                        mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),
+                        mutableMapOf("x-access-token" to (fromStorage<String>(app, TOKEN) ?: "")),
                         callback,
                         error
                 )
@@ -364,7 +436,7 @@ object Api {
                         "$host$url/$mirrorId/$allProfile",
                         Unit,
                         genericType<ApiResponse<ArrayList<ProfileModel>>>(),
-                        mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),
+                        mutableMapOf("x-access-token" to (fromStorage<String>(app, TOKEN) ?: "")),
                         callback,
                         error
                 )
@@ -386,7 +458,7 @@ object Api {
                         host + url,
                         Unit,
                         genericType<ApiResponse<ArrayList<ProfileModel>>>(),
-                        mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),
+                        mutableMapOf("x-access-token" to (fromStorage<String>(app, TOKEN) ?: "")),
                         callback,
                         error
                 )
@@ -401,7 +473,7 @@ object Api {
                         "$host$url/$profileId",
                         Unit,
                         genericType<ApiResponse<ProfileModel>>(),
-                        mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),
+                        mutableMapOf("x-access-token" to (fromStorage<String>(app, TOKEN) ?: "")),
                         callback,
                         error
                 )
@@ -420,7 +492,7 @@ object Api {
                         host + url,
                         data,
                         genericType<ApiResponse<ProfileModel>>(),
-                        mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),
+                        mutableMapOf("x-access-token" to (fromStorage<String>(app, TOKEN) ?: "")),
                         callback,
                         error
                 )
@@ -439,7 +511,7 @@ object Api {
                         "$host$url/$profileId",
                         data,
                         genericType<ApiResponse<ProfileModel>>(),
-                        mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),
+                        mutableMapOf("x-access-token" to (fromStorage<String>(app, TOKEN) ?: "")),
                         callback,
                         error
                 )
@@ -454,7 +526,7 @@ object Api {
                         "$host$url/$profileId",
                         Unit,
                         genericType<SimpleApiResponse>(),
-                        mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),
+                        mutableMapOf("x-access-token" to (fromStorage<String>(app, TOKEN) ?: "")),
                         callback,
                         error
                 )
@@ -469,7 +541,7 @@ object Api {
                         "$host$url/$profileId/$face",
                         fileParts,
                         genericType<ApiResponse<ProfileModel>>(),
-                        mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),
+                        mutableMapOf("x-access-token" to (fromStorage<String>(app, TOKEN) ?: "")),
                         callback,
                         error
                 )
@@ -487,7 +559,7 @@ object Api {
                         "$host$url/$profileId/$pin",
                         data,
                         genericType<ApiResponse<ProfileModel>>(),
-                        mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),
+                        mutableMapOf("x-access-token" to (fromStorage<String>(app, TOKEN) ?: "")),
                         callback,
                         error
                 )
@@ -505,7 +577,7 @@ object Api {
                         "$host$url/$profileId/$pin/$verify",
                         data,
                         genericType<ApiResponse<ProfileModel>>(),
-                        mutableMapOf("x-access-token" to String.fromStorage(app, TOKEN)),
+                        mutableMapOf("x-access-token" to (fromStorage<String>(app, TOKEN) ?: "")),
                         callback,
                         error
                 )

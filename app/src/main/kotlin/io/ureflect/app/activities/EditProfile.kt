@@ -22,11 +22,10 @@ import io.ureflect.app.utils.*
 import kotlinx.android.synthetic.main.activity_edit_profile.*
 import java.util.*
 
-fun Context.editProfileIntent(profile: ProfileModel): Intent = Intent(this, EditProfile::class.java).apply { putExtra(EditProfile.PROFILE, profile) }
+fun Context.editProfileIntent(profile: ProfileModel): Intent = Intent(this, EditProfile::class.java).apply { putExtra(ProfileModel.TAG, profile) }
 
 class EditProfile : AppCompatActivity() {
     companion object {
-        const val PROFILE = "Profile"
         const val TAG = "ProfileActivity"
     }
 
@@ -51,7 +50,7 @@ class EditProfile : AppCompatActivity() {
         Api.log("starting EditProfile activity")
         queue = Volley.newRequestQueue(this)
 
-        getArg<ProfileModel>(PROFILE)?.let {
+        getArg<ProfileModel>(ProfileModel.TAG)?.let {
             profile = it
         } ?: finish()
 

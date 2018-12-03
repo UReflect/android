@@ -10,6 +10,7 @@ import com.android.volley.Response
 import com.android.volley.toolbox.Volley
 import com.google.gson.JsonObject
 import io.ureflect.app.R
+import io.ureflect.app.models.UserModel
 import io.ureflect.app.services.Api
 import io.ureflect.app.services.errMsg
 import io.ureflect.app.utils.*
@@ -74,7 +75,7 @@ class SignIn : AppCompatActivity() {
                                 .apply { addProperty("password", evPassword.text.toString()) },
                         Response.Listener { response ->
                             loading.visibility = View.INVISIBLE
-                            val user = response.data?.user?.apply { password = evPassword.text.toString() }?.toStorage(application)
+                            val user = response.data?.user?.apply { password = evPassword.text.toString() }?.toStorage(application, UserModel.TAG)
                             val token = response.data?.token?.toStorage(application, TOKEN)
                             if (user == null || token == null) {
                                 Storage.clear(application)

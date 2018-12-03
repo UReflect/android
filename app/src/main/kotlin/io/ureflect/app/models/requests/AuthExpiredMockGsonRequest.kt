@@ -9,14 +9,6 @@ import java.lang.reflect.Type
 
 /**
  * Make a request with a file and return a parsed object from JSON.
- *
- * @param method Method of the http request
- * @param url URL of the request to make
- * @param fileParts Files to send
- * @param type Relevant class object, for Gson's reflection
- * @param headers Map of request headers
- * @param listener Callback for success
- * @param errorListener Callback for error
  */
 class AuthExpiredMockGsonRequest<T>(method: Int,
                                     url: String,

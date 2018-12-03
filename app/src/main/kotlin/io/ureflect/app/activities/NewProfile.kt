@@ -11,7 +11,6 @@ import com.android.volley.Response
 import com.android.volley.toolbox.Volley
 import com.google.gson.JsonObject
 import io.ureflect.app.R
-import io.ureflect.app.activities.Mirror.Companion.MIRROR
 import io.ureflect.app.adapters.ListFragmentPagerAdapter
 import io.ureflect.app.fragments.*
 import io.ureflect.app.fragments.BackPressedFragment.Companion.NOT_HANDLED
@@ -26,7 +25,7 @@ import io.ureflect.app.utils.reLogin
 import kotlinx.android.synthetic.main.activity_new_profile.*
 import java.util.*
 
-fun Context.newProfileIntent(mirror: MirrorModel): Intent = Intent(this, NewProfile::class.java).apply { putExtra(Mirror.MIRROR, mirror) }
+fun Context.newProfileIntent(mirror: MirrorModel): Intent = Intent(this, NewProfile::class.java).apply { putExtra(MirrorModel.TAG, mirror) }
 
 class NewProfile : AppCompatActivity() {
     companion object {
@@ -56,7 +55,7 @@ class NewProfile : AppCompatActivity() {
         setContentView(R.layout.activity_new_profile)
         queue = Volley.newRequestQueue(this)
 
-        getArg<MirrorModel>(MIRROR)?.let {
+        getArg<MirrorModel>(MirrorModel.TAG)?.let {
             mirror = it
         } ?: finish()
 

@@ -17,10 +17,7 @@ import io.ureflect.app.models.UserModel
 import io.ureflect.app.services.Api
 import io.ureflect.app.services.errMsg
 import io.ureflect.app.services.isExpired
-import io.ureflect.app.utils.EqualSpacingItemDecoration
-import io.ureflect.app.utils.errorSnackbar
-import io.ureflect.app.utils.logout
-import io.ureflect.app.utils.reLogin
+import io.ureflect.app.utils.*
 import kotlinx.android.synthetic.main.activity_home.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -61,8 +58,11 @@ class Home : AppCompatActivity() {
         val formatter = SimpleDateFormat("EEEE dd MMMM", Locale.getDefault())
         tvDate.text = formatter.format(Date()).toUpperCase()
 
-        val user = UserModel.fromStorage(application)
-        tvTitle.text = getString(R.string.home_title_text, user.name)
+        fromStorage<UserModel>(application, UserModel.TAG)?.let {
+            tvTitle.text = getString(R.string.home_title_text, it.name)
+        } ?: run {
+            finish()
+        }
 
         val px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, resources.displayMetrics).toInt()
         rvMirrors.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
@@ -91,9 +91,9 @@ class Home : AppCompatActivity() {
                     loading.visibility = View.GONE
                     response.data?.let { mirrors ->
                         this.mirrors = mirrors
-                        rvMirrors.adapter = EntityAdapter(mirrors, { mirror: MirrorModel?, view: View ->
+                        rvMirrors.adapter = EntityAdapter(mirrors, { _: MirrorModel?, _: View ->
                             startActivity(newMirrorIntent())
-                        }, { mirror: MirrorModel?, view: View ->
+                        }, { mirror: MirrorModel?, _: View ->
                             startActivity(mirror?.let { mirrorIntent(it) })
                         }, 4.5f, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, resources.displayMetrics).toInt())
                     } ?: run {

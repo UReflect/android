@@ -89,8 +89,16 @@
     <string name="form_text_search_module">Chercher une app</string>
     <string name="module_comments_text">Commentaires</string>
     <string name="text_no_results">Pas de résultat</string>
-    <string name="module_rating_text">%1$d notation%2$s</string>
+    <string name="module_ratings_text">%1$d notation%2$s</string>
     <string name="module_description_text">Description</string>
     <string name="module_price_text">%1$s €</string>
     <string name="free_text">Gratuit</string>
+    <string name="module_rating_text">Evaluation</string>
+    <string name="rate_btn_text">Noter</string>
+    <string name="module_rate_text">Notez ce module</string>
+    <string name="module_rate_update_text">Mettez à jour votre vote</string>
+    <string name="pair_device_title_text">Objet connecté</string>
+    <string name="not_implemented_error">Fonctionnalité non disponible pour votre version de l\'application</string>
+    <string name="need_profile_error">Un profile est nécessaire pour installer des modules</string>
+    <string name="uninstall_btn_text">Désinstaller</string>
 </resources>

@@ -19,6 +19,7 @@ class ModuleAdapter(val data: List<ModuleModel>, private val viewListener: (Modu
     class ModuleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(module: ModuleModel, viewListener: (ModuleModel?, View) -> Unit, installListener: (ModuleModel?, View) -> Unit) = with(itemView) {
             tvTitle.text = module.title
+            btnInstall.text = if (module.is_installed) context.getString(R.string.uninstall_btn_text) else context.getString(R.string.install_btn_text)
             tvTitle.setOnClickListener { viewListener(module, this) }
             logo.setOnClickListener { viewListener(module, this) }
             btnInstall.setOnClickListener { installListener(module, this) }

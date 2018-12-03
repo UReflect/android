@@ -15,6 +15,7 @@ import io.ureflect.app.adapters.ListFragmentPagerAdapter
 import io.ureflect.app.fragments.CoordinatorRootFragment
 import io.ureflect.app.fragments.SignUpCredentialsFragment
 import io.ureflect.app.fragments.SignUpIdentityFragment
+import io.ureflect.app.models.UserModel
 import io.ureflect.app.services.Api
 import io.ureflect.app.services.errMsg
 import io.ureflect.app.utils.TOKEN
@@ -90,7 +91,7 @@ class SignUp : AppCompatActivity() {
                         .apply { addProperty("name", "$firstName $lastName") },
                 Response.Listener { response ->
                     loader.visibility = View.INVISIBLE
-                    val user = response.data?.user?.toStorage(application)
+                    val user = response.data?.user?.toStorage(application, UserModel.TAG)
                     val token = response.data?.token?.toStorage(application, TOKEN)
                     if (user == null || token == null) {
                         errorSnackbar(root, getString(R.string.api_parse_error))

@@ -37,7 +37,6 @@
         android:textSize="16sp" />
 
     <android.support.v7.widget.CardView
-        android:id="@+id/btnInstall"
         android:layout_width="wrap_content"
         android:layout_height="24dp"
         android:layout_gravity="center_vertical"
@@ -45,6 +44,7 @@
         app:cardCornerRadius="4dp">
 
         <io.ureflect.app.ui.AnimatedButton
+            android:id="@+id/btnInstall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"

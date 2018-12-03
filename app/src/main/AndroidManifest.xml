@@ -55,6 +55,9 @@
         <activity
             android:name=".activities.Module"
             android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".activities.PairDevice"
+            android:windowSoftInputMode="adjustResize" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
