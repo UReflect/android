@@ -4,7 +4,7 @@ import java.io.Serializable
 
 class MirrorModel : Serializable, NamedEntity {
     private val serialVersionUID = 0L
-    var ID: String = ""
+    var ID: Long = -1
     var name: String = ""
     var location: String = ""
     var serial: String = ""
@@ -15,4 +15,8 @@ class MirrorModel : Serializable, NamedEntity {
     var userID: String = ""
 
     override fun name(): String = name
+
+    companion object {
+        const val TAG = "MIRROR"
+    }
 }

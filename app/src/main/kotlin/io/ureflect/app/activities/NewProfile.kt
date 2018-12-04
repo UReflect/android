@@ -11,7 +11,6 @@ import com.android.volley.Response
 import com.android.volley.toolbox.Volley
 import com.google.gson.JsonObject
 import io.ureflect.app.R
-import io.ureflect.app.activities.Mirror.Companion.MIRROR
 import io.ureflect.app.adapters.ListFragmentPagerAdapter
 import io.ureflect.app.fragments.*
 import io.ureflect.app.fragments.BackPressedFragment.Companion.NOT_HANDLED
@@ -19,13 +18,15 @@ import io.ureflect.app.models.MirrorModel
 import io.ureflect.app.models.ProfileModel
 import io.ureflect.app.services.Api
 import io.ureflect.app.services.errMsg
-import io.ureflect.app.services.expired
+import io.ureflect.app.services.isExpired
 import io.ureflect.app.utils.errorSnackbar
 import io.ureflect.app.utils.getArg
+import io.ureflect.app.utils.hideKeyboard
+import io.ureflect.app.utils.reLogin
 import kotlinx.android.synthetic.main.activity_new_profile.*
 import java.util.*
 
-fun Context.newProfileIntent(mirror: MirrorModel): Intent = Intent(this, NewProfile::class.java).apply { putExtra(Mirror.MIRROR, mirror) }
+fun Context.newProfileIntent(mirror: MirrorModel): Intent = Intent(this, NewProfile::class.java).apply { putExtra(MirrorModel.TAG, mirror) }
 
 class NewProfile : AppCompatActivity() {
     companion object {
@@ -55,8 +56,8 @@ class NewProfile : AppCompatActivity() {
         setContentView(R.layout.activity_new_profile)
         queue = Volley.newRequestQueue(this)
 
-        getArg<MirrorModel>(MIRROR)?.let {
-            this.mirror = it
+        getArg<MirrorModel>(MirrorModel.TAG)?.let {
+            mirror = it
         } ?: finish()
 
         setupFragments()
@@ -72,6 +73,7 @@ class NewProfile : AppCompatActivity() {
                 NewProfileNameFragment { title ->
                     this.title = title
                     createProfile {
+                        hideKeyboard()
                         next(Steps.FACIAL_MSG)
                     }
                 }
@@ -125,17 +127,23 @@ class NewProfile : AppCompatActivity() {
                 application,
                 JsonObject().apply { addProperty("title", title) },
                 Response.Listener { response ->
-                    loader.visibility = View.GONE
+                    loader.visibility = View.INVISIBLE
                     response.data?.let {
-                        this.profile = it
+                        profile = it
                         callback()
                     } ?: run {
                         errorSnackbar(root, getString(R.string.api_parse_error))
                     }
                 },
                 Response.ErrorListener { error ->
-                    loader.visibility = View.GONE
-                    errorSnackbar(root, error.errMsg(getString(R.string.api_parse_error)), error.expired())
+                    loader.visibility = View.INVISIBLE
+                    if (error.isExpired()) {
+                        reLogin(loader, root, queue) {
+                            createProfile(callback)
+                        }
+                    } else {
+                        errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)))
+                    }
                 }
         ).apply { tag = TAG })
     }
@@ -154,7 +162,13 @@ class NewProfile : AppCompatActivity() {
                 },
                 Response.ErrorListener { error ->
                     loader.visibility = View.GONE
-                    errorSnackbar(root, error.errMsg(getString(R.string.api_parse_error)), error.expired())
+                    if (error.isExpired()) {
+                        reLogin(loader, root, queue) {
+                            updateFacial(path, callback)
+                        }
+                    } else {
+                        errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)))
+                    }
                 }
         ).apply { tag = TAG })
     }
@@ -173,7 +187,13 @@ class NewProfile : AppCompatActivity() {
                 },
                 Response.ErrorListener { error ->
                     loader.visibility = View.INVISIBLE
-                    errorSnackbar(root, error.errMsg(getString(R.string.api_parse_error)), error.expired())
+                    if (error.isExpired()) {
+                        reLogin(loader, root, queue) {
+                            updatePin(callback)
+                        }
+                    } else {
+                        errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)))
+                    }
                 }
         ).apply { tag = TAG })
     }
@@ -196,7 +216,13 @@ class NewProfile : AppCompatActivity() {
                 },
                 Response.ErrorListener { error ->
                     loader.visibility = View.INVISIBLE
-                    errorSnackbar(root, error.errMsg(getString(R.string.api_parse_error)), error.expired())
+                    if (error.isExpired()) {
+                        reLogin(loader, root, queue) {
+                            linkToMirror()
+                        }
+                    } else {
+                        errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)))
+                    }
                 }
         ).apply { tag = TAG })
     }
@@ -204,6 +230,7 @@ class NewProfile : AppCompatActivity() {
     override fun onBackPressed() {
         when (position) {
             Steps.NAME.step -> super.onBackPressed()
+            Steps.FACIAL_MSG.step -> Unit
             Steps.PIN.step -> {
                 if ((fragments[position] as BackPressedFragment).backPressed() == NOT_HANDLED) {
                     position = when (skipFacial) {

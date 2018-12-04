@@ -49,7 +49,9 @@ dependencies {
     implementation 'com.raycoarana.codeinputview:codeinputview:1.2.5'
     implementation 'com.android.support:cardview-v7:27.1.1'
     implementation 'com.android.support:support-v4:27.1.1'
-    implementation group: 'cz.msebera.android' , name: 'httpclient', version: '4.4.1.1'
+    implementation 'com.stripe:stripe-android:6.1.2'
+    implementation 'com.braintreepayments:card-form:3.4.1' /*New version is sdk 28*/
+    implementation group: 'cz.msebera.android', name: 'httpclient', version: '4.4.1.1'
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.8.2'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

@@ -2,11 +2,11 @@ package io.ureflect.app.ui
 
 import android.content.Context
 import android.graphics.LightingColorFilter
+import android.support.v7.widget.AppCompatButton
 import android.util.AttributeSet
 import android.view.MotionEvent
-import android.widget.Button
 
-class AnimatedButton(context: Context, attrs: AttributeSet) : Button(context, attrs) {
+class AnimatedButton(context: Context, attrs: AttributeSet) : AppCompatButton(context, attrs) {
     init {
         setOnTouchListener { v, event ->
             when (event.action) {

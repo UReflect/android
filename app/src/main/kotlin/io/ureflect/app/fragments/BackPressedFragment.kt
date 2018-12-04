@@ -4,7 +4,7 @@ interface BackPressedFragment {
     fun backPressed(): Boolean
 
     companion object {
-        val HANDLED = true
-        val NOT_HANDLED = false
+        const val HANDLED = true
+        const val NOT_HANDLED = false
     }
 }

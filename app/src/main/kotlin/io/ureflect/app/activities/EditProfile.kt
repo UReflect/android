@@ -17,17 +17,15 @@ import io.ureflect.app.fragments.PinFragment
 import io.ureflect.app.models.ProfileModel
 import io.ureflect.app.services.Api
 import io.ureflect.app.services.errMsg
-import io.ureflect.app.services.expired
+import io.ureflect.app.services.isExpired
 import io.ureflect.app.utils.*
-import kotlinx.android.synthetic.main.activity_profile.*
+import kotlinx.android.synthetic.main.activity_edit_profile.*
 import java.util.*
 
+fun Context.editProfileIntent(profile: ProfileModel): Intent = Intent(this, EditProfile::class.java).apply { putExtra(ProfileModel.TAG, profile) }
 
-fun Context.profileIntent(profile: ProfileModel): Intent = Intent(this, Profile::class.java).apply { putExtra(Profile.PROFILE, profile) }
-
-class Profile : AppCompatActivity() {
+class EditProfile : AppCompatActivity() {
     companion object {
-        const val PROFILE = "Profile"
         const val TAG = "ProfileActivity"
     }
 
@@ -48,12 +46,12 @@ class Profile : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_profile)
-        Api.log("starting Profile activity")
+        setContentView(R.layout.activity_edit_profile)
+        Api.log("starting EditProfile activity")
         queue = Volley.newRequestQueue(this)
 
-        getArg<ProfileModel>(PROFILE)?.let {
-            this.profile = it
+        getArg<ProfileModel>(ProfileModel.TAG)?.let {
+            profile = it
         } ?: finish()
 
         setupUI()
@@ -74,7 +72,7 @@ class Profile : AppCompatActivity() {
     private fun setupUI() {
         evProfileTitle.setText(profile.title)
 
-        llPin.setOnClickListener {
+        tvPin.setOnClickListener {
             verifyPinFragment = PinFragment { pin ->
                 verifyPin(pin) {
                     setPinFragment = PinFragment { pin ->
@@ -88,11 +86,12 @@ class Profile : AppCompatActivity() {
                     replaceFragment(setPinFragment, R.id.flFragment)
                 }
             }.apply { isDoublePass = false }
+            hideKeyboard()
             addFragment(verifyPinFragment, R.id.flFragment)
             step = Steps.VERIFY_PIN
         }
 
-        llFacial.setOnClickListener {
+        tvFacial.setOnClickListener {
             facialFragment = FacialRecognitionSetupFragment({
                 removeFragment(facialFragment)
                 step = Steps.OUT
@@ -102,6 +101,7 @@ class Profile : AppCompatActivity() {
                     callback()
                 }
             })
+            hideKeyboard()
             addFragment(facialFragment, R.id.flFragment)
             step = Steps.FACIAL
         }
@@ -145,7 +145,13 @@ class Profile : AppCompatActivity() {
                 },
                 Response.ErrorListener { error ->
                     loading.visibility = View.GONE
-                    errorSnackbar(root, error.errMsg(getString(R.string.api_parse_error)), error.expired())
+                    if (error.isExpired()) {
+                        reLogin(loading, root, queue) {
+                            delete()
+                        }
+                    } else {
+                        errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)))
+                    }
                 }
         ).apply { tag = NewProfile.TAG })
     }
@@ -165,7 +171,13 @@ class Profile : AppCompatActivity() {
                 },
                 Response.ErrorListener { error ->
                     loader.visibility = View.GONE
-                    errorSnackbar(root, error.errMsg(getString(R.string.api_parse_error)), error.expired())
+                    if (error.isExpired()) {
+                        reLogin(loader, root, queue) {
+                            updateFacial(path, callback)
+                        }
+                    } else {
+                        errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)))
+                    }
                 }
         ).apply { tag = NewProfile.TAG })
     }
@@ -184,7 +196,13 @@ class Profile : AppCompatActivity() {
                 },
                 Response.ErrorListener { error ->
                     loader.visibility = View.INVISIBLE
-                    errorSnackbar(root, error.errMsg(getString(R.string.api_parse_error)), error.expired())
+                    if (error.isExpired()) {
+                        reLogin(loader, root, queue) {
+                            verifyPin(pin, callback)
+                        }
+                    } else {
+                        errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)))
+                    }
                 }
         ).apply { tag = NewProfile.TAG })
 
@@ -204,7 +222,13 @@ class Profile : AppCompatActivity() {
                 },
                 Response.ErrorListener { error ->
                     loader.visibility = View.INVISIBLE
-                    errorSnackbar(root, error.errMsg(getString(R.string.api_parse_error)), error.expired())
+                    if (error.isExpired()) {
+                        reLogin(loader, root, queue) {
+                            updatePin(pin, callback)
+                        }
+                    } else {
+                        errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)))
+                    }
                 }
         ).apply { tag = NewProfile.TAG })
 
@@ -219,7 +243,7 @@ class Profile : AppCompatActivity() {
                 Response.Listener { response ->
                     loading.visibility = View.GONE
                     response.data?.let {
-                        this.profile = it
+                        profile = it
                         successSnackbar(root)
                     } ?: run {
                         errorSnackbar(root, getString(R.string.api_parse_error))
@@ -227,7 +251,13 @@ class Profile : AppCompatActivity() {
                 },
                 Response.ErrorListener { error ->
                     loading.visibility = View.GONE
-                    errorSnackbar(root, error.errMsg(getString(R.string.api_parse_error)), error.expired())
+                    if (error.isExpired()) {
+                        reLogin(loading, root, queue) {
+                            updateTitle()
+                        }
+                    } else {
+                        errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)))
+                    }
                 }
         ).apply { tag = NewProfile.TAG })
     }
@@ -235,19 +265,19 @@ class Profile : AppCompatActivity() {
     override fun onBackPressed() {
         when (step) {
             Steps.VERIFY_PIN -> {
-                if (this.verifyPinFragment.backPressed() == NOT_HANDLED) {
+                if (verifyPinFragment.backPressed() == NOT_HANDLED) {
                     removeFragment(verifyPinFragment)
                     step = Steps.OUT
                 }
             }
             Steps.SET_PIN -> {
-                if (this.setPinFragment.backPressed() == NOT_HANDLED) {
+                if (setPinFragment.backPressed() == NOT_HANDLED) {
                     removeFragment(setPinFragment)
                     step = Steps.OUT
                 }
             }
             Steps.FACIAL -> {
-                if (this.facialFragment.backPressed() == NOT_HANDLED) {
+                if (facialFragment.backPressed() == NOT_HANDLED) {
                     removeFragment(facialFragment)
                     step = Steps.OUT
                 }

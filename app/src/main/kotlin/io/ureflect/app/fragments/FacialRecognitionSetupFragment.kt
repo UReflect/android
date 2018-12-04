@@ -42,10 +42,10 @@ class FacialRecognitionSetupFragment(var next: () -> Unit, var upload: (String, 
     private lateinit var adapter: ImageAdapter
     private var hasContext = false
     private var step = 0
-    private var waitingForNext = false;
+    private var waitingForNext = false
 
     companion object {
-        private val CAMERA_REQUEST_CODE = 0
+        private const val CAMERA_REQUEST_CODE = 0
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_facial_setup, container, false)
@@ -60,7 +60,7 @@ class FacialRecognitionSetupFragment(var next: () -> Unit, var upload: (String, 
                 getString(R.string.neutral_right_text)
         )
         setupUI()
-        this.context?.let { context ->
+        context?.let { context ->
             thatContext = context
             hasContext = true
             setupCamera()
@@ -117,11 +117,11 @@ class FacialRecognitionSetupFragment(var next: () -> Unit, var upload: (String, 
             CAMERA_REQUEST_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
                     btnNext.visibility = View.VISIBLE
-                    if (step < this.images.size) {
-                        this.images[step] = imageFilePath
-                        this.adapter.notifyItemChanged(step)
+                    if (step < images.size) {
+                        images[step] = imageFilePath
+                        adapter.notifyItemChanged(step)
                     } else {
-                        this.images.add(imageFilePath)
+                        images.add(imageFilePath)
                     }
                 }
             }

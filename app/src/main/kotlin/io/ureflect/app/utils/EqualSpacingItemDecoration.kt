@@ -16,7 +16,7 @@ class EqualSpacingItemDecoration @JvmOverloads constructor(private val spacing: 
     }
 
     fun forceTop(b: Boolean) {
-        this.forceTop = b
+        forceTop = b
     }
 
     private fun setSpacingForDirection(outRect: Rect,

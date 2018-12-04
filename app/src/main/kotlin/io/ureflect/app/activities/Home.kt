@@ -16,10 +16,8 @@ import io.ureflect.app.models.MirrorModel
 import io.ureflect.app.models.UserModel
 import io.ureflect.app.services.Api
 import io.ureflect.app.services.errMsg
-import io.ureflect.app.services.expired
-import io.ureflect.app.utils.EqualSpacingItemDecoration
-import io.ureflect.app.utils.errorSnackbar
-import io.ureflect.app.utils.logout
+import io.ureflect.app.services.isExpired
+import io.ureflect.app.utils.*
 import kotlinx.android.synthetic.main.activity_home.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -37,7 +35,6 @@ class Home : AppCompatActivity() {
 
     private lateinit var queue: RequestQueue
     private lateinit var mirrors: ArrayList<MirrorModel>
-    private lateinit var mirrorAdapter: EntityAdapter<MirrorModel>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,14 +58,20 @@ class Home : AppCompatActivity() {
         val formatter = SimpleDateFormat("EEEE dd MMMM", Locale.getDefault())
         tvDate.text = formatter.format(Date()).toUpperCase()
 
-        val user = UserModel.fromStorage(this.application)
-        tvTitle.text = getString(R.string.home_title_text, user.name)
+        fromStorage<UserModel>(application, UserModel.TAG)?.let {
+            tvTitle.text = getString(R.string.home_title_text, it.name)
+        } ?: run {
+            finish()
+        }
 
         val px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, resources.displayMetrics).toInt()
         rvMirrors.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         rvMirrors.addItemDecoration(EqualSpacingItemDecoration(px, EqualSpacingItemDecoration.HORIZONTAL))
 
-        btnLogout.transformationMethod = null
+        ivSettings.setOnClickListener {
+            startActivity(settingsIntent())
+        }
+
         btnRetry.setOnClickListener {
             loadMirrors()
         }
@@ -83,17 +86,16 @@ class Home : AppCompatActivity() {
         loading.visibility = View.VISIBLE
         btnRetry.visibility = View.GONE
         queue.add(Api.Mirror.all(
-                this.application,
+                application,
                 Response.Listener { response ->
                     loading.visibility = View.GONE
                     response.data?.let { mirrors ->
                         this.mirrors = mirrors
-                        mirrorAdapter = EntityAdapter(mirrors, {
+                        rvMirrors.adapter = EntityAdapter(mirrors, { _: MirrorModel?, _: View ->
                             startActivity(newMirrorIntent())
-                        }, { mirror ->
+                        }, { mirror: MirrorModel?, _: View ->
                             startActivity(mirror?.let { mirrorIntent(it) })
                         }, 4.5f, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, resources.displayMetrics).toInt())
-                        rvMirrors.adapter = mirrorAdapter
                     } ?: run {
                         btnRetry.visibility = View.VISIBLE
                         errorSnackbar(root, getString(R.string.api_parse_error))
@@ -102,7 +104,13 @@ class Home : AppCompatActivity() {
                 Response.ErrorListener { error ->
                     loading.visibility = View.GONE
                     btnRetry.visibility = View.VISIBLE
-                    errorSnackbar(root, error.errMsg(getString(R.string.api_parse_error)), error.expired())
+                    if (error.isExpired()) {
+                        reLogin(loading, root, queue) {
+                            loadMirrors()
+                        }
+                    } else {
+                        errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)))
+                    }
                 }
         ).apply { tag = TAG })
     }

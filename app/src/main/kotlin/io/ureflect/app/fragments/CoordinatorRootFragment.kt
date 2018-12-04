@@ -27,7 +27,7 @@ abstract class CoordinatorRootFragment : Fragment() {
     fun getRoot(): CoordinatorLayout = view
 
     fun getLoader(): ProgressBar {
-        this.view.findViewById<View>(R.id.loading)?.let {
+        view.findViewById<View>(R.id.loading)?.let {
             if (it is ProgressBar) {
                 return it
             }
