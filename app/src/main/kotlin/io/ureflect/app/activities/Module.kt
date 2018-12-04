@@ -26,7 +26,6 @@ import io.ureflect.app.utils.*
 import kotlinx.android.synthetic.main.activity_module.*
 import java.util.*
 
-
 fun Context.moduleIntent(module: ModuleModel, profileId: Long): Intent = Intent(this, Module::class.java)
         .apply { putExtra(ModuleModel.TAG, module) }
         .apply { putExtra(ProfileModel.TAG, profileId) }
@@ -99,7 +98,7 @@ class Module : AppCompatActivity() {
     }
 
     private fun setupRatings() {
-        tvRating.text = resources.getQuantityString(R.plurals.module_ratings_text, module.rating_nb)
+        tvRating.text = resources.getQuantityString(R.plurals.module_ratings_text, module.rating_nb, module.rating_nb)
 
         llRating.visibility = if (module.rating_nb != 0) View.VISIBLE else View.GONE
         listOf(ivStar1, ivStar2, ivStar3, ivStar4, ivStar5).forEachIndexed { i: Int, star ->

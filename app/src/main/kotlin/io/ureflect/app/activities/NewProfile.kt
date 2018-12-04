@@ -21,6 +21,7 @@ import io.ureflect.app.services.errMsg
 import io.ureflect.app.services.isExpired
 import io.ureflect.app.utils.errorSnackbar
 import io.ureflect.app.utils.getArg
+import io.ureflect.app.utils.hideKeyboard
 import io.ureflect.app.utils.reLogin
 import kotlinx.android.synthetic.main.activity_new_profile.*
 import java.util.*
@@ -72,6 +73,7 @@ class NewProfile : AppCompatActivity() {
                 NewProfileNameFragment { title ->
                     this.title = title
                     createProfile {
+                        hideKeyboard()
                         next(Steps.FACIAL_MSG)
                     }
                 }
@@ -228,6 +230,7 @@ class NewProfile : AppCompatActivity() {
     override fun onBackPressed() {
         when (position) {
             Steps.NAME.step -> super.onBackPressed()
+            Steps.FACIAL_MSG.step -> Unit
             Steps.PIN.step -> {
                 if ((fragments[position] as BackPressedFragment).backPressed() == NOT_HANDLED) {
                     position = when (skipFacial) {
