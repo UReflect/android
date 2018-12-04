@@ -21,6 +21,7 @@ import io.ureflect.app.services.errMsg
 import io.ureflect.app.utils.TOKEN
 import io.ureflect.app.utils.errorSnackbar
 import io.ureflect.app.utils.toStorage
+import kotlinx.android.synthetic.main.activity_signin.*
 import kotlinx.android.synthetic.main.activity_signup.*
 
 fun Context.registerIntent(): Intent = Intent(this, SignUp::class.java)
@@ -86,12 +87,12 @@ class SignUp : AppCompatActivity() {
         val loader = fragments[Steps.CREDENTIAL.step].getLoader()
         loader.visibility = View.VISIBLE
         queue.add(Api.Auth.signup(
-                JsonObject().apply { addProperty("email", email) }
+                JsonObject().apply { addProperty("email", email.toLowerCase()) }
                         .apply { addProperty("password", password) }
                         .apply { addProperty("name", "$firstName $lastName") },
                 Response.Listener { response ->
                     loader.visibility = View.INVISIBLE
-                    val user = response.data?.user?.toStorage(application, UserModel.TAG)
+                    val user = response.data?.user?.apply { password = evPassword.text.toString() }?.toStorage(application, UserModel.TAG)
                     val token = response.data?.token?.toStorage(application, TOKEN)
                     if (user == null || token == null) {
                         errorSnackbar(root, getString(R.string.api_parse_error))

@@ -13,7 +13,9 @@ class ImageAdapter(val data: List<String>, private val margin: Int) : RecyclerVi
     /**
      * Number of mirror icon on the screen
      */
-    private val NB = 5
+    companion object {
+        private const val NB = 5
+    }
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) = holder.bind(data[position])
 

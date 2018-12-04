@@ -260,7 +260,11 @@ class Mirror : AppCompatActivity() {
                     errorSnackbar(root, getString(R.string.need_profile_error))
                 }
             }, { module: ModuleModel?, _: View ->
-                module?.let { startActivity(moduleIntent(module, profiles[0].ID)) } //TODO : ProfileID won't be necessary after next API update
+                if (profiles.size > 0) {
+                    module?.let { startActivity(moduleIntent(module, profiles[0].ID)) } //TODO : ProfileID won't be necessary after next API update
+                } else {
+                    errorSnackbar(root, getString(R.string.need_profile_error))
+                }
             }, 4.5f, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, resources.displayMetrics).toInt())
             rvModules.adapter = moduleAdapter
         }

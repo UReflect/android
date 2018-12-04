@@ -164,7 +164,7 @@ class Settings : AppCompatActivity() {
         queue.add(Api.User.update(
                 application,
                 user.ID,
-                JsonObject().apply { addProperty("email", evEmail.text.toString()) }
+                JsonObject().apply { addProperty("email", evEmail.text.toString().toLowerCase()) }
                         .apply { addProperty("password", evPassword.text.toString()) },
                 Response.Listener { response ->
                     loading.visibility = View.GONE

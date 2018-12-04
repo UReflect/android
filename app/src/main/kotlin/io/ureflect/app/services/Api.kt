@@ -10,7 +10,6 @@ import com.google.gson.reflect.TypeToken
 import io.ureflect.app.R
 import io.ureflect.app.models.*
 import io.ureflect.app.models.requests.AssetGsonRequest
-import io.ureflect.app.models.requests.AuthExpiredMockGsonRequest
 import io.ureflect.app.models.requests.GsonRequest
 import io.ureflect.app.models.requests.MultipartGsonRequest
 import io.ureflect.app.models.responses.ApiErrorResponse
@@ -63,21 +62,6 @@ object Api {
 
     object Misc {
         private const val ping = "/ping"
-
-        /**
-         * Needs auth token
-         */
-        fun expired(app: Application, callback: Response.Listener<ApiResponse<ArrayList<MirrorModel>>>, error: Response.ErrorListener):
-                GsonRequest<ApiResponse<ArrayList<MirrorModel>>> =
-                AuthExpiredMockGsonRequest(
-                        Request.Method.GET,
-                        host + ping,
-                        Unit,
-                        genericType<ApiResponse<ArrayList<MirrorModel>>>(),
-                        mutableMapOf("x-access-token" to (fromStorage<String>(app, TOKEN) ?: "")),
-                        callback,
-                        error
-                )
 
         /**
          * Useless
@@ -272,6 +256,23 @@ object Api {
     object Auth {
         private const val signin = "/v1/signin"
         private const val signup = "/v1/signup"
+        private const val lost = "/v1/lost"
+
+        /**
+         * data:
+         * email: String
+         */
+        fun lost(data: Any, callback: Response.Listener<SimpleApiResponse>, error: Response.ErrorListener):
+                GsonRequest<SimpleApiResponse> =
+                GsonRequest(
+                        Request.Method.POST,
+                        host + lost,
+                        data,
+                        genericType<SimpleApiResponse>(),
+                        null,
+                        callback,
+                        error
+                )
 
         /**
          * data:

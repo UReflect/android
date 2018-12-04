@@ -46,11 +46,8 @@ fun AppCompatActivity.hideKeyboard() {
     }
 }
 
-fun AppCompatActivity.errorSnackbar(root: View, msg: String) = Snackbar.make(root, msg, Snackbar.LENGTH_INDEFINITE)
-        .apply { setAction("Dismiss") {} }
-        .show()
-
-fun Context.successSnackbar(root: View) = Snackbar.make(root, getString(R.string.success_text), Snackbar.LENGTH_SHORT)
+fun Context.successSnackbar(root: View, msg: String? = null) = Snackbar.make(root, msg
+        ?: getString(R.string.success_text), Snackbar.LENGTH_SHORT)
         .setAction("Dismiss") {}
         .setBackgroundColor(ResourcesCompat.getColor(resources, R.color.colorSuccess, null))
         .setActionTextColor(ResourcesCompat.getColor(resources, R.color.colorText, null))
@@ -60,7 +57,7 @@ fun AppCompatActivity.reLogin(loading: ProgressBar, root: CoordinatorLayout, que
     val visibility = loading.visibility
     loading.visibility = View.VISIBLE
     queue.add(Api.Auth.signin(
-            JsonObject().apply { addProperty("email", fromStorage<UserModel>(application, UserModel.TAG)?.email) }
+            JsonObject().apply { addProperty("email", fromStorage<UserModel>(application, UserModel.TAG)?.email?.toLowerCase()) }
                     .apply { addProperty("password", fromStorage<UserModel>(application, UserModel.TAG)?.password) },
             Response.Listener { response ->
                 loading.visibility = visibility

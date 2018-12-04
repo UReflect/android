@@ -99,7 +99,7 @@ class Module : AppCompatActivity() {
     }
 
     private fun setupRatings() {
-        tvRating.text = getString(R.string.module_ratings_text, module.rating_nb, if (module.rating_nb > 0) "s" else "")
+        tvRating.text = resources.getQuantityString(R.plurals.module_ratings_text, module.rating_nb)
 
         llRating.visibility = if (module.rating_nb != 0) View.VISIBLE else View.GONE
         listOf(ivStar1, ivStar2, ivStar3, ivStar4, ivStar5).forEachIndexed { i: Int, star ->
@@ -139,18 +139,18 @@ class Module : AppCompatActivity() {
     private fun showCommentPopup() {
         val input: EditText = layoutInflater.inflate(R.layout.view_new_comment, null) as EditText
         AlertDialog.Builder(this)
-                .apply { title = "Comment" }
-                .apply { setMessage("Enter comment") }
+                .apply { title = getString(R.string.module_comment_text) }
+                .apply { setMessage(R.string.enter_comment_text) }
                 .apply { setView(input) }
                 .apply {
-                    setPositiveButton("Comment") { _, _ ->
-                        val value = input.text
+                    setPositiveButton(R.string.module_comment_text) { _, _ ->
+                        val value = input.text.trim()
                         if (!value.isEmpty()) {
                             comment(value.toString())
                         }
                     }
                 }
-                .apply { setNegativeButton("Cancel") { _, _ -> } }
+                .apply { setNegativeButton(R.string.cancel_btn_text) { _, _ -> } }
                 .apply { show() }
     }
 

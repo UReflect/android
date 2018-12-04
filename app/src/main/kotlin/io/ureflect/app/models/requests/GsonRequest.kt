@@ -37,7 +37,9 @@ open class GsonRequest<T>(method: Int,
 
     override fun deliverResponse(response: T) = listener.onResponse(response)
 
-    override fun getBody(): ByteArray = gson.toJson(data).toByteArray()
+    override fun getBody(): ByteArray = gson.toJson(data).toByteArray().apply {
+        Log.i("Volley", String(this))
+    }
 
     override fun parseNetworkResponse(response: NetworkResponse?): Response<T> {
         return try {

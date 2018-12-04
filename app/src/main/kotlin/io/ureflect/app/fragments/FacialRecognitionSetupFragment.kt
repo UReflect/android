@@ -42,10 +42,10 @@ class FacialRecognitionSetupFragment(var next: () -> Unit, var upload: (String, 
     private lateinit var adapter: ImageAdapter
     private var hasContext = false
     private var step = 0
-    private var waitingForNext = false;
+    private var waitingForNext = false
 
     companion object {
-        private val CAMERA_REQUEST_CODE = 0
+        private const val CAMERA_REQUEST_CODE = 0
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_facial_setup, container, false)

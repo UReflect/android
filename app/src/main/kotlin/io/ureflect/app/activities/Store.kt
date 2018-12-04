@@ -162,7 +162,7 @@ class Store : AppCompatActivity() {
                         this.modules = modules
                         rvModules.adapter = ModuleAdapter(modules, { module: ModuleModel?, _: View ->
                             module?.let { startActivity(moduleIntent(module, profileId)) }
-                        }, { module: ModuleModel?, view: View ->
+                        }, { module: ModuleModel?, _: View ->
                             module?.let { installOrUninstallModule(module) }
                         })
                         tvEmpty.visibility = if (modules.isEmpty()) View.VISIBLE else View.GONE

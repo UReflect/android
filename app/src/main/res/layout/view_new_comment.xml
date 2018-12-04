@@ -3,11 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center_horizontal"
+    android:gravity="start|top"
+    android:hint="@string/module_comment_text"
+    android:inputType="text"
+    android:lines="3"
     android:maxLines="5"
     android:paddingStart="24dp"
     android:paddingEnd="24dp"
     android:singleLine="false"
-    android:lines="3"
-    android:gravity="start|top"
-    android:textCursorDrawable="@null"
-    android:textColor="@color/text_color" />
+    android:textColor="@color/text_color"
+    android:textCursorDrawable="@null" />
