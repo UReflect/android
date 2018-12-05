@@ -42,7 +42,6 @@ class Module : AppCompatActivity() {
     private lateinit var comments: ArrayList<CommentModel>
     private lateinit var commentAdapter: EntityAdapter<CommentModel>
     private var rating = -1
-    private var myRating: Int = -1
     private lateinit var installedModules: ArrayList<ModuleModel>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -105,15 +104,15 @@ class Module : AppCompatActivity() {
             star.setImageResource(if (module.rating >= i + 1) R.drawable.icon_star_active else R.drawable.icon_star_idle)
         }
 
-        myRating = fromStorage<Int>(application, RATING + "/" + module.ID) ?: -1  //TODO : This should be on the API
+        val rate = module.your_rating?.value ?: 0
         listOf(ivStar21, ivStar22, ivStar23, ivStar24, ivStar25).forEachIndexed { i: Int, star ->
-            star.setImageResource(if (myRating >= i + 1) R.drawable.icon_star_active else R.drawable.icon_star_idle)
+            star.setImageResource(if (rate >= i + 1) R.drawable.icon_star_active else R.drawable.icon_star_idle)
             star.setOnClickListener {
                 registerRate(i + 1)
             }
         }
 
-        if (myRating != -1) {
+        if (module.your_rating != null) {
             tvRateMsg.text = getString(R.string.module_rate_update_text)
             btnRate.text = getString(R.string.update_btn_text)
         } else {
@@ -128,7 +127,8 @@ class Module : AppCompatActivity() {
     }
 
     private fun registerRate(rate: Int) {
-        btnRate.visibility = if (rate != myRating) View.VISIBLE else View.GONE
+        val myRate = module.your_rating?.value ?: 0
+        btnRate.visibility = if (rate != myRate) View.VISIBLE else View.GONE
         listOf(ivStar21, ivStar22, ivStar23, ivStar24, ivStar25).forEachIndexed { i: Int, star ->
             star.setImageResource(if (rate >= i + 1) R.drawable.icon_star_active else R.drawable.icon_star_idle)
         }
@@ -250,9 +250,8 @@ class Module : AppCompatActivity() {
                     loading.visibility = View.GONE
                     response.data?.let { module ->
                         this.module = module
-                        rating.toStorage(application, RATING + "/" + module.ID) //TODO : This should be on the API
                         setupRatings()
-                        registerRate(myRating)
+                        registerRate(rating)
                     } ?: run {
                         errorSnackbar(root, getString(R.string.api_parse_error))
                     }

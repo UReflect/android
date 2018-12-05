@@ -94,6 +94,7 @@ class Mirror : AppCompatActivity() {
         rvDevices.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         rvDevices.addItemDecoration(EqualSpacingItemDecoration(px, EqualSpacingItemDecoration.HORIZONTAL))
 
+
         btnRetryProfiles.setOnClickListener {
             loadProfiles {
                 loadModules()

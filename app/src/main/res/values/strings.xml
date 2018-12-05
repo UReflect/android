@@ -105,6 +105,7 @@
     <string name="need_profile_error">At least one profile is needed to install modules</string>
     <string name="uninstall_btn_text">Uninstall</string>
     <string name="check_email_text">We just sent you an email to reinitialize your password</string>
+    <string name="check_email_change_text">We just sent an email to your new address to confirm it</string>
     <string name="cancel_btn_text">Cancel</string>
     <string name="module_comment_text">Comment</string>
     <string name="enter_comment_text">Enter comment</string>

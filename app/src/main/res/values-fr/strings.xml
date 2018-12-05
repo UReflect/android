@@ -105,6 +105,7 @@
     <string name="need_profile_error">Un profile est nécessaire pour installer des modules</string>
     <string name="uninstall_btn_text">Désinstaller</string>
     <string name="check_email_text">Nous vous avons envoyé un email pour reinitialiser votre mot de passe</string>
+    <string name="check_email_change_text">Nous avons envoyé un email sur votre nouvelle address pour la valider</string>
     <string name="cancel_btn_text">Annuler</string>
     <string name="module_comment_text">Commentaire</string>
     <string name="enter_comment_text">Votre commentaire</string>
