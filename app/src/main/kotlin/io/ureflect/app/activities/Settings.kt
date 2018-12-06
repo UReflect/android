@@ -62,6 +62,7 @@ class Settings : AppCompatActivity() {
         error = error || !evEmailLayout.validate({ s -> s.isNotEmpty() }, getString(R.string.form_error_email_required))
         error = error || !evEmailLayout.validate({ s -> s.isValidEmail() }, getString(R.string.form_error_email_incorrect))
         error = error || !evPasswordLayout.validate({ s -> s.isNotEmpty() }, getString(R.string.form_error_password_required))
+        error = error || !evPasswordLayout.validate({ s -> s.length > 6 }, getString(R.string.form_error_password_too_short))
         return error
     }
 
@@ -70,6 +71,7 @@ class Settings : AppCompatActivity() {
         evEmailLayout.autoValidate({ s -> s.isNotEmpty() }, getString(R.string.form_error_email_required))
         evEmailLayout.autoValidate({ s -> s.isValidEmail() }, getString(R.string.form_error_email_incorrect))
         evPasswordLayout.autoValidate({ s -> s.isNotEmpty() }, getString(R.string.form_error_password_required))
+        evPasswordLayout.autoValidate({ s -> s.length > 6 }, getString(R.string.form_error_password_too_short))
     }
 
 

@@ -111,4 +111,5 @@
     <string name="enter_comment_text">Votre commentaire</string>
     <string name="enter_email_text">Votre email</string>
     <string name="logo_text">Logo</string>
+    <string name="form_error_password_too_short">Le mot de passe doit contenir au moins 6 caractères</string>
 </resources>

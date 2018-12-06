@@ -166,7 +166,7 @@ class EditMirror : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        setResult(Activity.RESULT_OK, Intent().apply { putExtra("mirror", mirror) })
+        setResult(Activity.RESULT_OK, Intent().apply { putExtra(MirrorModel.TAG, mirror) })
         finish()
     }
 }

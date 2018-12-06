@@ -25,7 +25,6 @@ import io.ureflect.app.activities.SignIn
 import io.ureflect.app.mainIntent
 import io.ureflect.app.models.UserModel
 import io.ureflect.app.services.Api
-import io.ureflect.app.services.errMsg
 import java.io.Serializable
 
 inline fun FragmentManager.inTransaction(func: FragmentTransaction.() -> FragmentTransaction) = beginTransaction().func().commit()
@@ -74,7 +73,7 @@ fun AppCompatActivity.reLogin(loading: ProgressBar, root: CoordinatorLayout, que
             },
             Response.ErrorListener { error ->
                 loading.visibility = visibility
-                errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)))
+                logout()
             }
     ).apply { tag = SignIn.TAG })
 }
