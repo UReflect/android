@@ -2,11 +2,18 @@
   "data": [
     {
       "id": 1,
-      "name": "Phillips hue"
+      "name": "Phillips hue",
+      "description": "Connected light"
     },
     {
       "id": 2,
-      "name": "Mi band 3"
+      "name": "Oral B",
+      "description": "Toothbrush"
+    },
+    {
+      "id": 3,
+      "name": "Weight Gurus",
+      "description": "Weighing balance"
     }
   ],
   "message": "Success"

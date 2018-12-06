@@ -13,6 +13,7 @@ open class EntityAdapter<T : NamedEntity>(val data: List<T>,
                                           private val selectListener: (T?, View) -> Unit,
                                           private val nb: Float = 4.5f,
                                           private val margin: Int = 0) : RecyclerView.Adapter<EntityAdapter<T>.EntityAdapterViewHolder>() {
+
     companion object {
         /**
          * Number of entity icon on the screen

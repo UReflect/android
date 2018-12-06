@@ -100,7 +100,7 @@
     <string name="rate_btn_text">Noter</string>
     <string name="module_rate_text">Notez ce module</string>
     <string name="module_rate_update_text">Mettez à jour votre vote</string>
-    <string name="pair_device_title_text">Objet connecté</string>
+    <string name="pair_device_title_text">Associer un objet</string>
     <string name="not_implemented_error">Fonctionnalité non disponible pour votre version de l\'application</string>
     <string name="need_profile_error">Un profile est nécessaire pour installer des modules</string>
     <string name="uninstall_btn_text">Désinstaller</string>
@@ -112,4 +112,10 @@
     <string name="enter_email_text">Votre email</string>
     <string name="logo_text">Logo</string>
     <string name="form_error_password_too_short">Le mot de passe doit contenir au moins 6 caractères</string>
+    <string name="bluetooth_text">Bluetooth</string>
+    <string name="no_bluetooth_text">Pas d\'objets bluetooth</string>
+    <string name="pairing_info_text">Informations</string>
+    <string name="device_confirmation_text">L\'objet connecté sera supprimé</string>
+    <string name="device_delete_text">Supprimer l\'objet</string>
+    <string name="device_title_text">Objet connecté</string>
 </resources>

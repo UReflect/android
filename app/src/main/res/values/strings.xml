@@ -100,7 +100,7 @@
     <string name="rate_btn_text">Rate</string>
     <string name="module_rate_text">Rate this module</string>
     <string name="module_rate_update_text">Update your rating</string>
-    <string name="pair_device_title_text">Connected device</string>
+    <string name="pair_device_title_text">Pairing</string>
     <string name="not_implemented_error">Feature unavailable for your current application version</string>
     <string name="need_profile_error">At least one profile is needed to install modules</string>
     <string name="uninstall_btn_text">Uninstall</string>
@@ -112,4 +112,10 @@
     <string name="enter_email_text">Enter your email</string>
     <string name="logo_text">Logo</string>
     <string name="form_error_password_too_short">Password must contain at least 6 characters</string>
+    <string name="bluetooth_text">Bluetooth</string>
+    <string name="no_bluetooth_text">No bluetooth devices</string>
+    <string name="pairing_info_text">Informations</string>
+    <string name="device_confirmation_text">The connected device will be deleted</string>
+    <string name="device_delete_text">Delete the device</string>
+    <string name="device_title_text">Connected device</string>
 </resources>
