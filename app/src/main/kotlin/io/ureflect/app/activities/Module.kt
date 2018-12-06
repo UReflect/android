@@ -52,13 +52,12 @@ class Module : AppCompatActivity() {
 
         getArg<ModuleModel>(ModuleModel.TAG)?.let {
             module = it
+            loadModule()
         } ?: finish()
 
         getArg<Long>(ProfileModel.TAG)?.let {
             profileId = it
         } ?: finish()
-
-        setupUI()
     }
 
     override fun onResume() {
@@ -73,6 +72,34 @@ class Module : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
         queue.cancelAll(TAG)
+    }
+
+    //TODO : Remove after next API update, not necessary though
+    private fun loadModule() {
+        loading.visibility = View.VISIBLE
+        queue.add(Api.Module.one(
+                application,
+                module.ID,
+                Response.Listener { response ->
+                    loading.visibility = View.GONE
+                    response.data?.let { module ->
+                        this.module = module
+                        setupUI()
+                    } ?: run {
+                        setupUI()
+                    }
+                },
+                Response.ErrorListener { error ->
+                    loading.visibility = View.GONE
+                    if (error.isExpired()) {
+                        reLogin(loading, root, queue) {
+                            installModule(module)
+                        }
+                    } else {
+                        setupUI()
+                    }
+                }
+        ).apply { tag = Module.TAG })
     }
 
     private fun setupUI() {
