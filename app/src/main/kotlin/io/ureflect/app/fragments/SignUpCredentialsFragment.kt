@@ -27,7 +27,7 @@ class SignUpCredentialsFragment(var next: (String, String) -> Unit) : Coordinato
         error = error || !evMailLayout.validate({ s -> s.isNotEmpty() }, getString(R.string.form_error_email_required))
         error = error || !evMailLayout.validate({ s -> s.isValidEmail() }, getString(R.string.form_error_email_incorrect))
         error = error || !evPasswordLayout.validate({ s -> s.isNotEmpty() }, getString(R.string.form_error_password_required))
-        error = error || !evPasswordLayout.validate({ s -> s.length > 6 }, getString(R.string.form_error_password_too_short))
+        error = error || !evPasswordLayout.validate({ s -> s.length >= 6 }, getString(R.string.form_error_password_too_short))
         return error
     }
 
@@ -36,7 +36,7 @@ class SignUpCredentialsFragment(var next: (String, String) -> Unit) : Coordinato
         evMailLayout.autoValidate({ s -> s.isNotEmpty() }, getString(R.string.form_error_email_required))
         evMailLayout.autoValidate({ s -> s.isValidEmail() }, getString(R.string.form_error_email_incorrect))
         evPasswordLayout.autoValidate({ s -> s.isNotEmpty() }, getString(R.string.form_error_password_required))
-        evPasswordLayout.autoValidate({ s -> s.length > 6 }, getString(R.string.form_error_password_too_short))
+        evPasswordLayout.autoValidate({ s -> s.length >= 6 }, getString(R.string.form_error_password_too_short))
     }
 
     private fun setupUI() {

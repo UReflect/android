@@ -118,4 +118,5 @@
     <string name="device_confirmation_text">The connected device will be deleted</string>
     <string name="device_delete_text">Delete the device</string>
     <string name="device_title_text">Connected device</string>
+    <string name="email_taken_error">This email is already used</string>
 </resources>
