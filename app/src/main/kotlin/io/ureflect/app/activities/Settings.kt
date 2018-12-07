@@ -62,6 +62,7 @@ class Settings : AppCompatActivity() {
         error = error || !evEmailLayout.validate({ s -> s.isNotEmpty() }, getString(R.string.form_error_email_required))
         error = error || !evEmailLayout.validate({ s -> s.isValidEmail() }, getString(R.string.form_error_email_incorrect))
         error = error || !evPasswordLayout.validate({ s -> s.isNotEmpty() }, getString(R.string.form_error_password_required))
+        error = error || !evPasswordLayout.validate({ s -> s.length >= 6 }, getString(R.string.form_error_password_too_short))
         return error
     }
 
@@ -70,6 +71,7 @@ class Settings : AppCompatActivity() {
         evEmailLayout.autoValidate({ s -> s.isNotEmpty() }, getString(R.string.form_error_email_required))
         evEmailLayout.autoValidate({ s -> s.isValidEmail() }, getString(R.string.form_error_email_incorrect))
         evPasswordLayout.autoValidate({ s -> s.isNotEmpty() }, getString(R.string.form_error_password_required))
+        evPasswordLayout.autoValidate({ s -> s.length >= 6 }, getString(R.string.form_error_password_too_short))
     }
 
 
@@ -169,13 +171,28 @@ class Settings : AppCompatActivity() {
                 Response.Listener { response ->
                     loading.visibility = View.GONE
                     response.data?.let {
-                        user = it.apply { password = evPassword.text.toString() }.toStorage(application, UserModel.TAG)
-                        successSnackbar(root)
+                        if (evEmail.text.toString() == user.email) {
+                            successSnackbar(root)
+                        } else {
+                            successSnackbar(root, getString(R.string.check_email_change_text))
+                        }
+                        user = it.apply {
+                            if (!evPassword.text.toString().isEmpty()) {
+                                password = evPassword.text.toString()
+                            }
+                        }
+                                .apply {
+                                    if (!evEmail.text.toString().isEmpty()) {
+                                        email = evEmail.text.toString()
+                                    }
+                                }
+                                .toStorage(application, UserModel.TAG)
                     } ?: run {
                         errorSnackbar(root, getString(R.string.api_parse_error))
                     }
                 },
-                Response.ErrorListener { error ->
+                Response.ErrorListener
+                { error ->
                     loading.visibility = View.GONE
                     if (error.isExpired()) {
                         reLogin(loading, root, queue) {
@@ -185,6 +202,7 @@ class Settings : AppCompatActivity() {
                         errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)))
                     }
                 }
-        ).apply { tag = NewMirror.TAG })
+        ).apply
+        { tag = NewMirror.TAG })
     }
 }

@@ -11,7 +11,7 @@
     <string name="ok_btn_text">OK</string>
     <string name="next_btn_text">Suivant</string>
     <string name="finish_btn_text">Finaliser</string>
-    <string name="logout_btn_text">Deconnection</string>
+    <string name="logout_btn_text">Deconnexion</string>
     <string name="next_step_btn_text">Etape suivante</string>
     <string name="update_btn_text">Mettre à jour</string>
     <string name="signin_btn_text">Je le connais déjà, je me connecte</string>
@@ -74,7 +74,7 @@
     <string name="mirror_delete_text">Supprimer le miroir</string>
     <string name="mirror_confirmation_text">Ce miroir sera supprimé.</string>
     <string name="settings_title_text">Réglages</string>
-    <string name="form_text_payment">Méthodes de payment</string>
+    <string name="form_text_payment">Méthodes de paiement</string>
     <string name="card_visa_text">Carte VISA *%1$s</string>
     <string name="card_mastercard_text">Mastercard *%1$s</string>
     <string name="card_amex_text">AMEX *%1$s</string>
@@ -100,14 +100,24 @@
     <string name="rate_btn_text">Noter</string>
     <string name="module_rate_text">Notez ce module</string>
     <string name="module_rate_update_text">Mettez à jour votre vote</string>
-    <string name="pair_device_title_text">Objet connecté</string>
+    <string name="pair_device_title_text">Associer un objet</string>
     <string name="not_implemented_error">Fonctionnalité non disponible pour votre version de l\'application</string>
     <string name="need_profile_error">Un profile est nécessaire pour installer des modules</string>
     <string name="uninstall_btn_text">Désinstaller</string>
     <string name="check_email_text">Nous vous avons envoyé un email pour reinitialiser votre mot de passe</string>
+    <string name="check_email_change_text">Nous avons envoyé un email sur votre nouvelle address pour la valider</string>
     <string name="cancel_btn_text">Annuler</string>
     <string name="module_comment_text">Commentaire</string>
     <string name="enter_comment_text">Votre commentaire</string>
     <string name="enter_email_text">Votre email</string>
     <string name="logo_text">Logo</string>
+    <string name="form_error_password_too_short">Le mot de passe doit contenir au moins 6 caractères</string>
+    <string name="bluetooth_text">Bluetooth</string>
+    <string name="no_bluetooth_text">Pas d\'objets bluetooth</string>
+    <string name="pairing_info_text">Informations</string>
+    <string name="device_confirmation_text">L\'objet connecté sera supprimé</string>
+    <string name="device_delete_text">Supprimer l\'objet</string>
+    <string name="device_title_text">Objet connecté</string>
+    <string name="email_taken_error">Cet email est déja utilisé</string>
+    <string name="dismiss_text">Cacher</string>
 </resources>

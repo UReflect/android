@@ -94,6 +94,7 @@ class Mirror : AppCompatActivity() {
         rvDevices.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         rvDevices.addItemDecoration(EqualSpacingItemDecoration(px, EqualSpacingItemDecoration.HORIZONTAL))
 
+
         btnRetryProfiles.setOnClickListener {
             loadProfiles {
                 loadModules()
@@ -182,37 +183,18 @@ class Mirror : AppCompatActivity() {
     private fun loadDevices() {
         loading.visibility = View.VISIBLE
         btnRetryDevices.visibility = View.GONE
-        queue.add(Api.Device.all(
-                application,
-                application.assets.open("connectedDevices.json"),
-                Response.Listener { response ->
-                    loading.visibility = View.GONE
-                    response.data?.let { devices ->
-                        this.devices = devices
-                        deviceAdapter = EntityAdapter(devices, { _: ConnectedDeviceModel?, _: View ->
-                            errorSnackbar(root, getString(R.string.not_implemented_error))
-//                            startActivity(pairDeviceIntent(mirror))
-                        }, { _: ConnectedDeviceModel?, _: View ->
-                            errorSnackbar(root, getString(R.string.not_implemented_error))
-                        }, 4.5f, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, resources.displayMetrics).toInt())
-                        rvDevices.adapter = deviceAdapter
-                    } ?: run {
-                        btnRetryDevices.visibility = View.VISIBLE
-                        errorSnackbar(root, getString(R.string.api_parse_error))
-                    }
-                },
-                Response.ErrorListener { error ->
-                    loading.visibility = View.GONE
-                    btnRetryDevices.visibility = View.VISIBLE
-                    if (error.isExpired()) {
-                        reLogin(loading, root, queue) {
-                            loadDevices()
-                        }
-                    } else {
-                        errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)))
-                    }
-                }
-        ).apply { tag = TAG })
+        this.devices = ArrayList()
+        fromStorage<ArrayList<ConnectedDeviceModel>>(application, ConnectedDeviceModel.LIST_TAG)?.let {
+            devices = it
+        }
+        deviceAdapter = EntityAdapter(devices, { _: ConnectedDeviceModel?, _: View ->
+            startActivity(pairDeviceIntent())
+        }, { device: ConnectedDeviceModel?, _: View ->
+            device?.let {
+                startActivity(editDeviceIntent(device))
+            }
+        }, 4.5f, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, resources.displayMetrics).toInt())
+        rvDevices.adapter = deviceAdapter
     }
 
     private fun loadModules() {

@@ -20,6 +20,7 @@ import io.ureflect.app.utils.TOKEN
 import io.ureflect.app.utils.fromStorage
 import java.io.InputStream
 import java.lang.reflect.Type
+import java.net.ConnectException
 import java.net.UnknownHostException
 
 fun VolleyError.isExpired() = networkResponse?.statusCode == 401 && errMsg().contains("Token expired")
@@ -28,6 +29,9 @@ fun VolleyError.errMsg(context: Context? = null, fallback: String = ""): String 
     try {
         if (context != null) {
             if (this.cause is UnknownHostException) {
+                return context.getString(R.string.internet_error)
+            }
+            if (this.cause is ConnectException) {
                 return context.getString(R.string.internet_error)
             }
         }
@@ -47,7 +51,7 @@ fun VolleyError.errMsg(context: Context? = null, fallback: String = ""): String 
 
 object Api {
     private const val host = "http://api.dev.ureflect.io"
-//        private const val host = "http://localhost:8000/api"
+//    private const val host = "http://localhost:9000"
 
     init {
         println("Api service initialized")
@@ -114,6 +118,21 @@ object Api {
                         "$host$url" + 's' + if (!query.isEmpty()) "?$query" else "",
                         Unit,
                         genericType<ApiResponse<ArrayList<ModuleModel>>>(),
+                        mutableMapOf("x-access-token" to (fromStorage<String>(app, TOKEN) ?: "")),
+                        callback,
+                        error
+                )
+
+        /**
+         * Needs auth token
+         */
+        fun one(app: Application, moduleId: Long, callback: Response.Listener<ApiResponse<ModuleModel>>, error: Response.ErrorListener):
+                GsonRequest<ApiResponse<ModuleModel>> =
+                GsonRequest(
+                        Request.Method.GET,
+                        "$host$url/$moduleId",
+                        Unit,
+                        genericType<ApiResponse<ModuleModel>>(),
                         mutableMapOf("x-access-token" to (fromStorage<String>(app, TOKEN) ?: "")),
                         callback,
                         error

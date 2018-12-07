@@ -102,7 +102,11 @@ class SignUp : AppCompatActivity() {
                 },
                 Response.ErrorListener { error ->
                     loader.visibility = View.INVISIBLE
-                    errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)))
+                    var errmsg = error.errMsg(this, getString(R.string.api_parse_error))
+                    if (errmsg.contains("idx_email")) {
+                        errmsg = getString(R.string.email_taken_error)
+                    }
+                    errorSnackbar(root, errmsg)
                 }
         ).apply { tag = TAG })
     }

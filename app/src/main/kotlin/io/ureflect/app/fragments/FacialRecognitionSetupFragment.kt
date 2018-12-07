@@ -30,8 +30,8 @@ import java.util.*
 class FacialRecognitionSetupFragment(var next: () -> Unit, var upload: (String, () -> Unit) -> Unit) : CoordinatorRootFragment(), BackPressedFragment {
     private lateinit var messages: List<String>
     private var names = Arrays.asList(
-            "smile",
-            "angry",
+//            "smile",
+//            "angry",
             "neutral",
             "neutral_left",
             "neutral_right"
@@ -53,8 +53,8 @@ class FacialRecognitionSetupFragment(var next: () -> Unit, var upload: (String, 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         messages = Arrays.asList(
-                getString(R.string.smile_text),
-                getString(R.string.angry_text),
+//                getString(R.string.smile_text),
+//                getString(R.string.angry_text),
                 getString(R.string.neutral_text),
                 getString(R.string.neutral_left_text),
                 getString(R.string.neutral_right_text)

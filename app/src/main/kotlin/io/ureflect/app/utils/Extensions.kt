@@ -25,7 +25,6 @@ import io.ureflect.app.activities.SignIn
 import io.ureflect.app.mainIntent
 import io.ureflect.app.models.UserModel
 import io.ureflect.app.services.Api
-import io.ureflect.app.services.errMsg
 import java.io.Serializable
 
 inline fun FragmentManager.inTransaction(func: FragmentTransaction.() -> FragmentTransaction) = beginTransaction().func().commit()
@@ -34,7 +33,7 @@ fun Snackbar.setTextColor(color: Int): Snackbar = apply { view.findViewById<Text
 
 fun Snackbar.setBackgroundColor(color: Int): Snackbar = apply { view.setBackgroundColor(color) }
 
-fun errorSnackbar(root: View, msg: String) = Snackbar.make(root, msg, Snackbar.LENGTH_INDEFINITE).setAction("Dismiss") {}.show()
+fun errorSnackbar(root: View, msg: String) = Snackbar.make(root, msg, Snackbar.LENGTH_INDEFINITE).setAction(root.context.getString(R.string.dismiss_text)) {}.show()
 
 fun AppCompatActivity.hideKeyboard() {
     var view = currentFocus
@@ -48,7 +47,7 @@ fun AppCompatActivity.hideKeyboard() {
 
 fun Context.successSnackbar(root: View, msg: String? = null) = Snackbar.make(root, msg
         ?: getString(R.string.success_text), Snackbar.LENGTH_SHORT)
-        .setAction("Dismiss") {}
+        .setAction(getString(R.string.dismiss_text)) {}
         .setBackgroundColor(ResourcesCompat.getColor(resources, R.color.colorSuccess, null))
         .setActionTextColor(ResourcesCompat.getColor(resources, R.color.colorText, null))
         .show()
@@ -74,7 +73,7 @@ fun AppCompatActivity.reLogin(loading: ProgressBar, root: CoordinatorLayout, que
             },
             Response.ErrorListener { error ->
                 loading.visibility = visibility
-                errorSnackbar(root, error.errMsg(this, getString(R.string.api_parse_error)))
+                logout()
             }
     ).apply { tag = SignIn.TAG })
 }

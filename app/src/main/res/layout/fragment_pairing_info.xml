@@ -30,10 +30,8 @@
                     android:layout_height="48dp"
                     android:layout_marginTop="8dp"
                     android:layout_weight="1"
-                    android:gravity="center"
-                    android:paddingStart="24dp"
-                    android:text="@string/pair_device_title_text"
-                    android:textAlignment="center"
+                    android:gravity="center_vertical"
+                    android:text="@string/pairing_info_text"
                     android:textColor="@color/colorTitle"
                     android:textSize="20sp" />
 
@@ -64,6 +62,24 @@
                     android:textColor="@color/colorText" />
 
             </android.support.design.widget.TextInputLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:textAllCaps="true"
+                android:text="@string/bluetooth_text"
+                android:textColor="@color/colorText" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="@string/no_bluetooth_text"
+                android:textColor="@color/colorText" />
 
             <View
                 android:layout_width="match_parent"

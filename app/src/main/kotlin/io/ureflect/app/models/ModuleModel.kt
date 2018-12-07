@@ -10,6 +10,8 @@ class ModuleModel : Serializable, NamedEntity {
     var price: Double = 0.0
     var rating: Double = 0.0
     var rating_nb: Int = 0
+    var owner_name: String = ""
+    var your_rating: RatingModel? = null
 
     var is_installed = false
 
