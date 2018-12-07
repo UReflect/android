@@ -11,7 +11,7 @@
     <string name="ok_btn_text">OK</string>
     <string name="next_btn_text">Suivant</string>
     <string name="finish_btn_text">Finaliser</string>
-    <string name="logout_btn_text">Deconnection</string>
+    <string name="logout_btn_text">Deconnexion</string>
     <string name="next_step_btn_text">Etape suivante</string>
     <string name="update_btn_text">Mettre à jour</string>
     <string name="signin_btn_text">Je le connais déjà, je me connecte</string>
@@ -74,7 +74,7 @@
     <string name="mirror_delete_text">Supprimer le miroir</string>
     <string name="mirror_confirmation_text">Ce miroir sera supprimé.</string>
     <string name="settings_title_text">Réglages</string>
-    <string name="form_text_payment">Méthodes de payment</string>
+    <string name="form_text_payment">Méthodes de paiement</string>
     <string name="card_visa_text">Carte VISA *%1$s</string>
     <string name="card_mastercard_text">Mastercard *%1$s</string>
     <string name="card_amex_text">AMEX *%1$s</string>
@@ -119,4 +119,5 @@
     <string name="device_delete_text">Supprimer l\'objet</string>
     <string name="device_title_text">Objet connecté</string>
     <string name="email_taken_error">Cet email est déja utilisé</string>
+    <string name="dismiss_text">Cacher</string>
 </resources>
