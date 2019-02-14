@@ -50,7 +50,7 @@ fun VolleyError.errMsg(context: Context? = null, fallback: String = ""): String 
 }
 
 object Api {
-    private const val host = "http://api.dev.ureflect.io"
+    private const val host = "https://api.dev.ureflect.io"
 //    private const val host = "http://localhost:9000"
 
     init {
